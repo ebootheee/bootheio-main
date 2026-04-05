@@ -1,110 +1,193 @@
 /*
-  theme.css — override any :root variable here to retheme the blog.
-
-  This is the only file you need to edit to customize the site's visual
-  appearance. All defaults are listed below as comments. Uncomment and
-  change any value to override it.
-
-  Note: this template defines explicit dark mode colors in Base.astro.
-  Overriding light-mode --color-* variables here won't affect dark mode.
-  To customize dark mode, also override --color-* variables inside a
-  @media (prefers-color-scheme: dark) block and/or in the :root.dark rule.
+  boothe.io theme — dark editorial with retro accents
+  Fonts: Instrument Serif (display), JetBrains Mono (body), VT323 (retro)
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=VT323&display=swap');
+
 :root {
-	/* --- Colors ---
-	--color-bg: #ffffff;
-	--color-bg-subtle: #fafafa;
-	--color-text: #1a1a1a;
-	--color-text-secondary: #525252;
-	--color-muted: #8b8b8b;
-	--color-border: #e5e5e5;
-	--color-border-subtle: #f0f0f0;
-	--color-surface: #f7f7f7;
-	--color-accent: #0066cc;
-	--color-accent-hover: #0052a3;
-	--color-on-accent: white;
-	--color-accent-ring: color-mix(in srgb, var(--color-accent) 25%, transparent);
-	*/
+  /* Colors - Dark mode default */
+  --color-bg: #050508;
+  --color-bg-subtle: #0c0c10;
+  --color-text: #d4d4d8;
+  --color-text-secondary: #a1a1aa;
+  --color-muted: #71717a;
+  --color-border: #1e1e24;
+  --color-border-subtle: #141418;
+  --color-surface: #0c0c10;
+  --color-accent: #22d3ee;
+  --color-accent-hover: #67e8f9;
+  --color-on-accent: #050508;
+  --color-accent-ring: rgba(34, 211, 238, 0.2);
 
-	/* --- Fonts ---
-	--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	--font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-	*/
+  /* Retro colors */
+  --color-retro: #f59e0b;
+  --color-retro-green: #4ade80;
 
-	/* --- Type scale ---
-	--font-size-xs: 0.8125rem;
-	--font-size-sm: 0.875rem;
-	--font-size-base: 1rem;
-	--font-size-lg: 1.125rem;
-	--font-size-xl: 1.25rem;
-	--font-size-2xl: 1.5rem;
-	--font-size-3xl: 2rem;
-	--font-size-4xl: 2.5rem;
-	--font-size-5xl: 3.5rem;
-	*/
+  /* Fonts */
+  --font-sans: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-pixel: 'VT323', monospace;
 
-	/* --- Line heights ---
-	--leading-tight: 1.15;
-	--leading-snug: 1.3;
-	--leading-normal: 1.5;
-	--leading-relaxed: 1.7;
-	*/
+  /* Shadows */
+  --shadow-dropdown: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
 
-	/* --- Letter spacing ---
-	--tracking-tight: -0.03em;    used on h1 and large titles
-	--tracking-snug: -0.02em;     used on h2–h6, site/card titles
-	--tracking-wide: 0.06em;      used on meta labels, TOC/widget titles
-	--tracking-wider: 0.08em;     used on footer headings, section labels
-	*/
+/* Force dark always */
+:root.light {
+  --color-bg: #050508;
+  --color-bg-subtle: #0c0c10;
+  --color-text: #d4d4d8;
+  --color-text-secondary: #a1a1aa;
+  --color-muted: #71717a;
+  --color-border: #1e1e24;
+  --color-border-subtle: #141418;
+  --color-surface: #0c0c10;
+  --color-accent: #22d3ee;
+  --color-accent-hover: #67e8f9;
+  --color-on-accent: #050508;
+}
 
-	/* --- Spacing ---
-	--spacing-1: 0.25rem;
-	--spacing-2: 0.5rem;
-	--spacing-3: 0.75rem;
-	--spacing-4: 1rem;
-	--spacing-5: 1.25rem;
-	--spacing-6: 1.5rem;
-	--spacing-8: 2rem;
-	--spacing-10: 2.5rem;
-	--spacing-12: 3rem;
-	--spacing-16: 4rem;
-	--spacing-20: 5rem;
-	--spacing-24: 6rem;
-	*/
+/* Headings use serif */
+h1, h2, h3 {
+  font-family: var(--font-serif) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
 
-	/* --- Layout ---
-	--content-width: 680px;       article/page body column width
-	--wide-width: 1200px;         max container width (home, archives)
-	--gutter-width: 200px;        right sidebar column (TOC) on article pages
-	--meta-col-width: 180px;      left meta column on article pages
-	--nav-height: 64px;           sticky header height
-	--search-input-width: 180px;  nav search box width
-	*/
+/* Dot grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: 0;
+}
 
-	/* --- Borders & radius ---
-	--radius: 4px;
-	--radius-lg: 8px;
-	*/
+/* Subtle top glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: rgba(34, 211, 238, 0.04);
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
 
-	/* --- Transitions ---
-	--transition-fast: 120ms ease;
-	--transition-base: 180ms ease;
-	*/
+body > * {
+  position: relative;
+  z-index: 1;
+}
 
-	/* --- Avatars ---
-	--avatar-size-xs: 18px;    card byline avatars
-	--avatar-size-sm: 20px;    post list byline avatars
-	--avatar-size-md: 24px;    featured post byline avatars
-	--avatar-size-lg: 32px;    single post byline avatars
-	*/
+/* Selection */
+::selection {
+  background: rgba(34, 211, 238, 0.25) !important;
+  color: #f4f4f5 !important;
+}
 
-	/* --- Shadows ---
-	--shadow-dropdown: 0 8px 30px rgba(0, 0, 0, 0.12);
-	--shadow-btn-active: 0 1px 2px rgba(0, 0, 0, 0.05);
-	*/
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050508; }
+::-webkit-scrollbar-thumb { background: #1e1e24; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2a2a32; }
 
-	/* --- Misc ---
-	--tag-padding-y: 2px;    vertical padding on tag pills
-	*/
+/* Card hover glow */
+.post-card .card-link {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.post-card .card-link:hover {
+  border-color: rgba(34, 211, 238, 0.3);
+  background: rgba(12, 12, 16, 0.5);
+}
+
+.post-card .card-placeholder {
+  display: none;
+}
+
+.post-card .card-image {
+  margin-bottom: var(--spacing-3);
+}
+
+/* Featured title serif override */
+.featured-title {
+  font-family: var(--font-serif) !important;
+  font-weight: 400 !important;
+}
+
+/* Article title */
+.article-title {
+  font-family: var(--font-serif) !important;
+  font-weight: 400 !important;
+}
+
+/* Tag pills */
+.card-tag, .meta-tag, .featured-tag {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+}
+
+/* Code blocks */
+.article-content code {
+  color: var(--color-accent) !important;
+  background: var(--color-surface) !important;
+}
+
+/* Sparkle animation */
+@keyframes sparkle-float {
+  0%, 100% { opacity: 0.15; transform: translateY(0px) scale(0.8); }
+  50% { opacity: 0.6; transform: translateY(-6px) scale(1.1); }
+}
+
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  font-family: var(--font-pixel);
+  color: var(--color-retro);
+  opacity: 0.4;
+  animation: sparkle-float ease-in-out infinite;
+  z-index: 0;
+}
+
+/* Retro elements */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes glow-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+.retro-text { font-family: var(--font-pixel); }
+.blink { animation: blink 1s step-end infinite; }
+.glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+/* Visitor counter */
+.visitor-counter-digit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 28px;
+  background: #000;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 2px;
+  font-family: var(--font-pixel);
+  color: var(--color-retro-green);
+  font-size: 1rem;
+  line-height: 1;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.15);
 }

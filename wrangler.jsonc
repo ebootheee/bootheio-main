@@ -19,6 +19,12 @@
 			"bucket_name": "bootheio-main","preview_bucket_name": "bootheio-main",
 		},
 	],
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "3aa5e1fd60b740b5a7aced572b31a3da"
+		}
+	],
 	"observability": {
 		"enabled": true,
 	},

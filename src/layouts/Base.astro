@@ -36,7 +36,7 @@ const {
 	author,
 	content,
 } = Astro.props;
-const siteTitle = "My Blog";
+const siteTitle = "boothe.io";
 // If title already includes site title (from getSeoMeta), use as-is
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 
@@ -74,7 +74,7 @@ const isLoggedIn = !!Astro.locals.user;
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=VT323&display=swap"
 			rel="stylesheet"
 		/>
 		<title>{fullTitle}</title>
@@ -95,9 +95,29 @@ const isLoggedIn = !!Astro.locals.user;
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
+		<!-- Sparkles -->
+		<div class="sparkle-container" aria-hidden="true">
+			<span class="sparkle" style="top: 12%; left: 8%; animation-duration: 3.2s; animation-delay: 0.3s;">+</span>
+			<span class="sparkle" style="top: 25%; left: 92%; animation-duration: 2.8s; animation-delay: 1.1s;">*</span>
+			<span class="sparkle" style="top: 45%; left: 15%; animation-duration: 3.5s; animation-delay: 0.7s;">.</span>
+			<span class="sparkle" style="top: 60%; left: 85%; animation-duration: 2.5s; animation-delay: 2.0s;">+</span>
+			<span class="sparkle" style="top: 78%; left: 5%; animation-duration: 3.0s; animation-delay: 1.5s;">*</span>
+			<span class="sparkle" style="top: 35%; left: 95%; animation-duration: 4.0s; animation-delay: 0.5s;">.</span>
+			<span class="sparkle" style="top: 8%; left: 50%; animation-duration: 3.8s; animation-delay: 2.3s;">+</span>
+			<span class="sparkle" style="top: 88%; left: 70%; animation-duration: 2.9s; animation-delay: 1.8s;">*</span>
+			<span class="sparkle" style="top: 55%; left: 3%; animation-duration: 3.3s; animation-delay: 0.9s;">+</span>
+			<span class="sparkle" style="top: 15%; left: 75%; animation-duration: 3.6s; animation-delay: 1.4s;">.</span>
+			<span class="sparkle" style="top: 70%; left: 40%; animation-duration: 2.7s; animation-delay: 2.5s;">*</span>
+			<span class="sparkle" style="top: 92%; left: 20%; animation-duration: 3.1s; animation-delay: 0.2s;">+</span>
+		</div>
+
 		<header class="site-header">
 			<nav class="nav">
-				<a href="/" class="site-title">{siteTitle}</a>
+				<a href="/" class="site-title" style="font-family: var(--font-serif); font-style: italic; font-weight: 400;">
+					{siteTitle}
+					<span style="display: inline-block; height: 16px; width: 1px; background: var(--color-border); margin: 0 12px; vertical-align: middle;" class="hide-mobile"></span>
+					<span style="font-family: var(--font-pixel); font-size: 0.7rem; color: var(--color-muted); font-style: normal;" class="hide-mobile">est. 2025</span>
+				</a>
 				<div class="nav-right">
 					<LiveSearch
 						placeholder="Search..."
@@ -116,6 +136,9 @@ const isLoggedIn = !!Astro.locals.user;
 							))
 						}
 					</div>
+					<a href="https://github.com/ebootheee" target="_blank" rel="noopener noreferrer" class="nav-github" aria-label="GitHub">
+						<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+					</a>
 					{
 						isLoggedIn && (
 							<a href="/_emdash/admin" class="nav-admin">
@@ -132,11 +155,24 @@ const isLoggedIn = !!Astro.locals.user;
 		</main>
 
 		<footer class="site-footer">
+			<!-- Webring -->
+			<div style="border-bottom: 1px dashed rgba(245, 158, 11, 0.2); text-align: center; padding: 10px 0; font-family: var(--font-pixel); font-size: 0.75rem; color: rgba(245, 158, 11, 0.6);">
+				<a href="#" style="color: inherit; text-decoration: none;">&lt;&lt; prev</a>
+				<span style="margin: 0 8px; opacity: 0.3;">|</span>
+				<span style="opacity: 0.8;">~ indie web ring ~</span>
+				<span style="margin: 0 8px; opacity: 0.3;">|</span>
+				<a href="#" style="color: inherit; text-decoration: none;">next &gt;&gt;</a>
+			</div>
 			<div class="footer-inner">
 				<div class="footer-grid">
 					<div class="footer-brand">
-						<a href="/" class="footer-logo">{siteTitle}</a>
-						<p class="footer-tagline">Thoughts, stories, and ideas.</p>
+						<a href="/" class="footer-logo" style="font-family: var(--font-serif); font-style: italic; font-weight: 400;">{siteTitle}</a>
+						<p class="footer-tagline">Technical writing, engineering projects, and 3D prints.</p>
+						<!-- Visitor counter -->
+						<div style="margin-top: 16px; display: flex; align-items: center; gap: 8px;">
+							<span style="font-family: var(--font-pixel); font-size: 0.7rem; color: var(--color-retro-green); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em;">Visitors</span>
+							<span id="visitor-counter" style="display: flex; gap: 2px;"></span>
+						</div>
 					</div>
 					<div class="footer-nav">
 						<h4 class="footer-heading">Navigate</h4>
@@ -185,6 +221,15 @@ const isLoggedIn = !!Astro.locals.user;
 					<p class="footer-copyright">
 						Powered by <a href="https://emdashcms.com">EmDash</a>
 					</p>
+					<div style="display: flex; gap: 8px; align-items: center;">
+						<span style="border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 4px; padding: 4px 10px; font-family: var(--font-pixel); font-size: 0.6rem; color: rgba(245, 158, 11, 0.6); text-align: center; line-height: 1.4;">
+							best viewed in<br/><span style="color: rgba(245, 158, 11, 0.9);">Netscape Navigator 4.0</span>
+						</span>
+						<span style="border: 1px dashed rgba(74, 222, 128, 0.3); border-radius: 4px; padding: 4px 10px; font-family: var(--font-pixel); font-size: 0.6rem; color: rgba(74, 222, 128, 0.6); display: flex; align-items: center; gap: 6px;">
+							<span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(74, 222, 128, 0.8);" class="glow-pulse"></span>
+							HTML 5.0 valid
+						</span>
+					</div>
 					<div class="theme-switcher">
 						<button
 							type="button"
@@ -625,6 +670,30 @@ const isLoggedIn = !!Astro.locals.user;
 				opacity: 1;
 			}
 
+			.nav-github {
+				color: var(--color-muted);
+				transition: color 0.2s ease;
+				display: flex;
+				align-items: center;
+			}
+
+			.nav-github:hover {
+				color: var(--color-accent);
+			}
+
+			.sparkle-container {
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			.hide-mobile {}
+
+			@media (max-width: 640px) {
+				.hide-mobile { display: none !important; }
+			}
+
 			/* Search styling */
 			.site-search {
 				position: relative;
@@ -967,6 +1036,17 @@ const isLoggedIn = !!Astro.locals.user;
 		</style>
 
 		<script>
+			// Visitor counter
+			const counter = document.getElementById('visitor-counter');
+			if (counter) {
+				let count = parseInt(localStorage.getItem('visitor-count') || '0');
+				if (count === 0) count = 13847 + Math.floor(Math.random() * 2000);
+				count += Math.floor(Math.random() * 3) + 1;
+				localStorage.setItem('visitor-count', count.toString());
+				const digits = count.toString().padStart(6, '0').split('');
+				counter.innerHTML = digits.map(d => `<span class="visitor-counter-digit">${d}</span>`).join('');
+			}
+
 			// ⌘K / Ctrl+K to focus search
 			document.addEventListener("keydown", (e) => {
 				if ((e.metaKey || e.ctrlKey) && e.key === "k") {
