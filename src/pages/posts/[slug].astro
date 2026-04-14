@@ -222,6 +222,24 @@ const publishDate =
 					<PortableText value={post.data.content} />
 				</div>
 
+				{/* Embedded app for Powell post */}
+				{slug === "lake-powell-water-forecasting" && (
+					<div class="embedded-app">
+						<div class="embedded-app-header">
+							<span class="embedded-app-label">Live App</span>
+							<a href="https://gray-mushroom-071fcfc0f.6.azurestaticapps.net" target="_blank" rel="noopener noreferrer" class="embedded-app-link">
+								Open full screen &rarr;
+							</a>
+						</div>
+						<iframe
+							src="https://gray-mushroom-071fcfc0f.6.azurestaticapps.net"
+							title="Lake Powell Water Level Forecaster"
+							class="embedded-app-iframe"
+							loading="lazy"
+						></iframe>
+					</div>
+				)}
+
 				<div class="article-comments">
 					<Comments collection="posts" contentId={post.data.id} threaded />
 					<CommentForm collection="posts" contentId={post.data.id} />
@@ -500,8 +518,10 @@ const publishDate =
 
 	/* Article content typography */
 	.article-content {
+		font-family: var(--font-serif), Georgia, serif;
 		font-size: var(--font-size-lg);
-		line-height: var(--leading-relaxed);
+		line-height: 1.8;
+		color: var(--color-text);
 	}
 
 	.article-content :global(p) {
@@ -839,6 +859,50 @@ const publishDate =
 		background: var(--color-surface);
 		padding: var(--tag-padding-y) var(--spacing-2);
 		border-radius: var(--radius);
+	}
+
+	/* Embedded app */
+	.embedded-app {
+		margin-top: var(--spacing-10);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+	}
+
+	.embedded-app-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: var(--spacing-3) var(--spacing-4);
+		background: var(--color-surface);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.embedded-app-label {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-accent);
+	}
+
+	.embedded-app-link {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.embedded-app-link:hover {
+		color: var(--color-accent);
+	}
+
+	.embedded-app-iframe {
+		width: 100%;
+		height: 700px;
+		border: none;
+		background: #0a0a0a;
 	}
 
 	/* Comments section */
