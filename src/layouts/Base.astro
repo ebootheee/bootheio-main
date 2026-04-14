@@ -410,7 +410,7 @@ const isLoggedIn = !!Astro.locals.user;
 
 				/* Typography */
 				--font-sans:
-					"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+					"Instrument Serif", Georgia, serif;
 				--font-mono:
 					"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 				--font-serif: "Instrument Serif", Georgia, serif;
@@ -534,7 +534,7 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			body {
-				font-family: var(--font-mono);
+				font-family: var(--font-sans);
 				font-size: var(--font-size-base);
 				line-height: var(--leading-relaxed);
 				color: var(--color-text);
@@ -647,6 +647,7 @@ const isLoggedIn = !!Astro.locals.user;
 				display: flex;
 				gap: var(--spacing-5);
 				font-size: var(--font-size-sm);
+				font-family: var(--font-mono);
 			}
 
 			.nav-links a {
@@ -865,6 +866,7 @@ const isLoggedIn = !!Astro.locals.user;
 				color: var(--color-text-secondary);
 				text-decoration: none;
 				font-size: var(--font-size-sm);
+				font-family: var(--font-mono);
 				transition: color var(--transition-fast);
 			}
 
