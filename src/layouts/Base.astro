@@ -389,18 +389,18 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			:root {
-				/* Colors - Light mode (default) */
-				--color-bg: #ffffff;
-				--color-bg-subtle: #fafafa;
-				--color-text: #1a1a1a;
-				--color-text-secondary: #525252;
-				--color-muted: #8b8b8b;
-				--color-border: #e5e5e5;
-				--color-border-subtle: #f0f0f0;
-				--color-surface: #f7f7f7;
-				--color-accent: #0066cc;
-				--color-accent-hover: #0052a3;
-				--color-on-accent: white;
+				/* Colors - always dark */
+				--color-bg: #050508;
+				--color-bg-subtle: #0c0c10;
+				--color-text: #d4d4d8;
+				--color-text-secondary: #a1a1aa;
+				--color-muted: #71717a;
+				--color-border: #1e1e24;
+				--color-border-subtle: #141418;
+				--color-surface: #0c0c10;
+				--color-accent: #22d3ee;
+				--color-accent-hover: #67e8f9;
+				--color-on-accent: #050508;
 				--color-accent-ring: color-mix(
 					in srgb,
 					var(--color-accent) 25%,
@@ -417,10 +417,13 @@ const isLoggedIn = !!Astro.locals.user;
 
 				/* Typography */
 				--font-sans:
-					"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-					sans-serif;
+					"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 				--font-mono:
 					"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+				--font-serif: "Instrument Serif", Georgia, serif;
+				--font-pixel: "VT323", monospace;
+				--color-retro: #f59e0b;
+				--color-retro-green: #4ade80;
 
 				/* Type scale - more refined */
 				--font-size-xs: 0.8125rem;
@@ -503,34 +506,34 @@ const isLoggedIn = !!Astro.locals.user;
 				--shadow-btn-active: 0 1px 2px rgba(0, 0, 0, 0.05);
 			}
 
-			/* Dark mode via system preference (when no explicit class) */
+			/* Dark mode — same as root (always dark) */
 			@media (prefers-color-scheme: dark) {
 				:root:not(.light) {
-					--color-bg: #0d0d0d;
-					--color-bg-subtle: #141414;
-					--color-text: #ededed;
-					--color-text-secondary: #a0a0a0;
-					--color-muted: #6b6b6b;
-					--color-border: #2a2a2a;
-					--color-border-subtle: #1f1f1f;
-					--color-surface: #181818;
-					--color-accent: #4d9fff;
-					--color-accent-hover: #6eb0ff;
+					--color-bg: #050508;
+					--color-bg-subtle: #0c0c10;
+					--color-text: #d4d4d8;
+					--color-text-secondary: #a1a1aa;
+					--color-muted: #71717a;
+					--color-border: #1e1e24;
+					--color-border-subtle: #141418;
+					--color-surface: #0c0c10;
+					--color-accent: #22d3ee;
+					--color-accent-hover: #67e8f9;
 				}
 			}
 
-			/* Explicit dark mode */
+			/* Explicit dark mode — same as root */
 			:root.dark {
-				--color-bg: #0d0d0d;
-				--color-bg-subtle: #141414;
-				--color-text: #ededed;
-				--color-text-secondary: #a0a0a0;
-				--color-muted: #6b6b6b;
-				--color-border: #2a2a2a;
-				--color-border-subtle: #1f1f1f;
-				--color-surface: #181818;
-				--color-accent: #4d9fff;
-				--color-accent-hover: #6eb0ff;
+				--color-bg: #050508;
+				--color-bg-subtle: #0c0c10;
+				--color-text: #d4d4d8;
+				--color-text-secondary: #a1a1aa;
+				--color-muted: #71717a;
+				--color-border: #1e1e24;
+				--color-border-subtle: #141418;
+				--color-surface: #0c0c10;
+				--color-accent: #22d3ee;
+				--color-accent-hover: #67e8f9;
 			}
 
 			html {
@@ -538,7 +541,7 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			body {
-				font-family: var(--font-sans);
+				font-family: var(--font-mono);
 				font-size: var(--font-size-base);
 				line-height: var(--leading-relaxed);
 				color: var(--color-text);
@@ -547,6 +550,27 @@ const isLoggedIn = !!Astro.locals.user;
 				-moz-osx-font-smoothing: grayscale;
 				min-height: 100vh;
 			}
+
+			/* Headings use serif */
+			h1, h2, h3 {
+				font-family: var(--font-serif) !important;
+				font-weight: 400 !important;
+			}
+
+			/* Selection */
+			::selection {
+				background: rgba(34, 211, 238, 0.25) !important;
+				color: #f4f4f5 !important;
+			}
+
+			/* Scrollbar */
+			::-webkit-scrollbar { width: 6px; }
+			::-webkit-scrollbar-track { background: #050508; }
+			::-webkit-scrollbar-thumb { background: #1e1e24; border-radius: 3px; }
+			::-webkit-scrollbar-thumb:hover { background: #2a2a32; }
+
+			/* Hide theme switcher — always dark */
+			.theme-switcher { display: none !important; }
 
 			a:where(:not([class*="emdash"]):not([class*="ec-"])) {
 				color: var(--color-accent);
