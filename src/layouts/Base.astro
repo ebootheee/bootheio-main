@@ -100,7 +100,8 @@ const isLoggedIn = !!Astro.locals.user;
 		<EmDashBodyStart page={pageCtx} />
 		<header class="site-header">
 			<nav class="nav">
-				<a href="/" class="site-title" style="font-family: var(--font-serif); font-style: italic; font-weight: 400;">
+				<a href="/" class="site-title" style="font-family: var(--font-serif); font-style: italic; font-weight: 400; display: inline-flex; align-items: center; gap: 10px;">
+					<img src="/apple-touch-icon.png" alt="" width="28" height="28" style="border-radius: 50%; display: block;" />
 					{siteTitle}
 					<span style="display: inline-block; height: 16px; width: 1px; background: var(--color-border); margin: 0 12px; vertical-align: middle;" class="hide-mobile"></span>
 					<span style="font-family: var(--font-pixel); font-size: 0.7rem; color: var(--color-muted); font-style: normal;" class="hide-mobile">est. 2025</span>
@@ -190,6 +191,7 @@ const isLoggedIn = !!Astro.locals.user;
 									</li>
 								))
 							}
+							<li><a href="https://github.com/ebootheee" target="_blank" rel="noopener noreferrer">GitHub</a></li>
 							<li><a href="/rss.xml">RSS Feed</a></li>
 						</ul>
 					</div>
