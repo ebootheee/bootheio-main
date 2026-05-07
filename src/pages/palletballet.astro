@@ -1,0 +1,1093 @@
+---
+import Base from "../layouts/Base.astro";
+
+const API_BASE = "https://palletballet-api.boothe.io";
+const REPO_URL = "https://github.com/ebootheee/palletballet";
+
+const failureFrames = [
+	{ src: "/palletballet/topple-1.png", caption: "t = 0.0s — wheels engage" },
+	{ src: "/palletballet/topple-2.png", caption: "t = 0.4s — top item shears" },
+	{ src: "/palletballet/topple-3.png", caption: "t = 0.7s — load shift" },
+	{ src: "/palletballet/topple-4.png", caption: "t = 1.1s — failed" },
+];
+
+const techStack = [
+	{ name: "Python 3.12", flavor: "rt" },
+	{ name: "MuJoCo 3.x", flavor: "rt" },
+	{ name: "FastAPI", flavor: "rt" },
+	{ name: "Pydantic v2", flavor: "rt" },
+	{ name: "uv", flavor: "build" },
+	{ name: "Docker", flavor: "ops" },
+	{ name: "Cloudflare Tunnel", flavor: "ops" },
+	{ name: "GitHub Actions → GHCR", flavor: "ops" },
+	{ name: "Watchtower", flavor: "ops" },
+];
+---
+
+<Base
+	title="PalletBallet"
+	description="Per-pallet physics inference for cold-storage conveyors. A pallet enters; a safe speed envelope falls out — built on MuJoCo, served from a home server through Cloudflare Tunnel."
+	type="website"
+>
+	<!-- ============== HERO ============== -->
+	<section class="pb-hero">
+		<div class="pb-hero-inner">
+			<p class="pb-status">
+				<span class="pb-status-dot"></span>
+				LIVE DEMO &nbsp;//&nbsp; <span id="pb-uptime">checking…</span>
+			</p>
+
+			<h1 class="pb-title">
+				Pallet<span class="pb-title-italic">Ballet</span>
+			</h1>
+
+			<p class="pb-tagline">
+				A pallet enters the conveyor zone. Geometry, mass, wrap, temperature, friction —
+				all of it shoved through MuJoCo. Out the other side: the speed it can actually
+				survive, the failure mode that would otherwise govern, and a replay of the moment
+				it would have toppled.
+			</p>
+
+			<div class="pb-cta-row">
+				<a href="#demo" class="pb-btn pb-btn-primary">
+					<span class="pb-btn-arrow">▾</span> Run the demo
+				</a>
+				<a href={REPO_URL} target="_blank" rel="noopener noreferrer" class="pb-btn">
+					Source on GitHub →
+				</a>
+				<a href="/posts/launching-palletballet" class="pb-btn pb-btn-ghost">
+					Read the launch post →
+				</a>
+			</div>
+
+			<div class="pb-hero-meta">
+				<span class="pb-meta-item"><span class="pb-meta-k">repo</span> ebootheee/palletballet</span>
+				<span class="pb-meta-sep">·</span>
+				<span class="pb-meta-item"><span class="pb-meta-k">api</span> palletballet-api.boothe.io</span>
+				<span class="pb-meta-sep">·</span>
+				<span class="pb-meta-item"><span class="pb-meta-k">stack</span> python · mujoco · fastapi</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============== INTERACTIVE DEMO ============== -->
+	<section class="pb-section" id="demo">
+		<div class="pb-section-inner">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the demo</span>
+				<h2 class="pb-section-title">Generate a pallet, see what it survives</h2>
+			</div>
+
+			<p class="pb-prose">
+				Each click randomly configures a pallet — items, weights, wrap, temperature — and
+				asks the live API to compute its safe operating envelope. The work is real: a
+				MuJoCo simulation runs <em>several times</em> behind a Brent's-method search to
+				find the failure boundary on each axis.
+			</p>
+
+			<div class="pb-terminal" id="pb-terminal">
+				<div class="pb-terminal-bar">
+					<span class="pb-tdot pb-tdot-r"></span>
+					<span class="pb-tdot pb-tdot-y"></span>
+					<span class="pb-tdot pb-tdot-g"></span>
+					<span class="pb-terminal-title">palletballet — analyze</span>
+					<span class="pb-terminal-hint" id="pb-hint">idle</span>
+				</div>
+				<pre class="pb-terminal-body" id="pb-out"><span class="pb-prompt">$</span> <span class="pb-faint">click "ANALYZE" to spawn a pallet and run the safety solver.</span>
+<span class="pb-faint">  the solver runs 5–8 MuJoCo simulations under a brentq search.</span>
+<span class="pb-faint">  expected wall time: ~400–800 ms.</span>
+</pre>
+				<div class="pb-terminal-controls">
+					<button id="pb-run" class="pb-run-btn" type="button">
+						<span class="pb-run-blink">▸</span> ANALYZE
+					</button>
+					<button id="pb-clear" class="pb-clear-btn" type="button">clear</button>
+					<span class="pb-runs"><span id="pb-run-count">0</span> runs this session</span>
+				</div>
+			</div>
+
+			<details class="pb-details">
+				<summary>Where the data flows when you click that button</summary>
+				<pre class="pb-flow">browser
+  └─ POST <span class="pb-hl">{API_BASE}/pallet/random</span>
+       └─ Cloudflare edge → Tunnel → home server → MockRandomAdapter → PalletConfig
+  └─ POST <span class="pb-hl">{API_BASE}/safety/analyze</span>
+       └─ ThresholdAnalyzer (brentq sweep on speed + accel)
+            └─ MuJoCo solver × N runs → (mu, phi, w, ω) trace per run
+                 └─ failure detector → FailureMode + tip angle
+       └─ SafetyResult&#123; max_speed_mps, max_accel_mps2, governing_failure, ... &#125;
+back to browser → rendered above
+</pre>
+			</details>
+		</div>
+	</section>
+
+	<!-- ============== WHAT IS IT ============== -->
+	<section class="pb-section pb-section-prose">
+		<div class="pb-section-inner pb-narrow">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the why</span>
+				<h2 class="pb-section-title">A static speed table is conservative on good pallets and blind to weird ones</h2>
+			</div>
+
+			<p class="pb-prose">
+				Cold-storage warehouses move pallets across long conveyors at speeds set once,
+				usually pessimistically, by a person guessing at the worst case. A perfectly
+				stacked dairy pallet gets the same 1.0 m/s as a top-heavy unwrapped tower of
+				frozen meat that <em>should</em> be capped at 0.4 m/s. The first is being throttled.
+				The second is being launched.
+			</p>
+
+			<p class="pb-prose">
+				PalletBallet skips the table. For each pallet — described by its actual geometry,
+				mass distribution, wrap, and thermal state — it runs a small batch of physics
+				simulations and answers a narrower question:
+			</p>
+
+			<blockquote class="pb-pullquote">
+				Given <em>this</em> pallet, in <em>this</em> thermal state, what conveyor motion
+				profile is safe right now?
+			</blockquote>
+
+			<p class="pb-prose">
+				The result is per-pallet decisioning: speed, acceleration, deceleration, lateral
+				g-tolerance, and the failure mode that would otherwise govern — slip, top-item
+				slide, load shift, or tip-over. A PLC can throttle the next conveyor zone with
+				it. A WMS can flag the pallet for re-wrap. A human can look at the replay and
+				agree.
+			</p>
+		</div>
+	</section>
+
+	<!-- ============== FAILURE GALLERY ============== -->
+	<section class="pb-section">
+		<div class="pb-section-inner">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the dance</span>
+				<h2 class="pb-section-title">Failures in slow motion</h2>
+			</div>
+
+			<p class="pb-prose">
+				Trust comes from watching things go wrong. The UI ships with a rogues' gallery of
+				known-bad scenarios; here's a top-heavy unwrapped pallet hitting an aggressive
+				start ramp. Every frame is from a real solver run, not a render — same physics,
+				same engine, same trace the API returns.
+			</p>
+
+			<div class="pb-gallery">
+				{failureFrames.map((f, i) => (
+					<figure class="pb-frame">
+						<img src={f.src} alt={f.caption} loading="lazy" width="800" height="500" />
+						<figcaption>
+							<span class="pb-frame-num">{String(i + 1).padStart(2, "0")}</span>
+							{f.caption}
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- ============== HOW IT WORKS ============== -->
+	<section class="pb-section">
+		<div class="pb-section-inner pb-narrow">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the how</span>
+				<h2 class="pb-section-title">Six stages, end to end</h2>
+			</div>
+
+			<ol class="pb-stages">
+				<li>
+					<span class="pb-stage-tag">01</span>
+					<div>
+						<h3>Inputs land in a single contract</h3>
+						<p>Scanner output, WMS export, a manual stack builder, or the random adapter all converge on the same <code>RawInputs</code> Pydantic schema. The configurator turns it into a <code>PalletConfig</code> — items with positions, masses, fragility, wrap, temperature.</p>
+					</div>
+				</li>
+				<li>
+					<span class="pb-stage-tag">02</span>
+					<div>
+						<h3>Friction is temperature-aware</h3>
+						<p>Cold-chain pallets move through frost-melt regimes where mu drops by half. The friction model interpolates a calibration table and applies a transition penalty when the pallet is near 0 °C with recent thermal motion — the regime that actually causes slips on real lines.</p>
+					</div>
+				</li>
+				<li>
+					<span class="pb-stage-tag">03</span>
+					<div>
+						<h3>The MJCF builder emits MuJoCo XML</h3>
+						<p>Each pallet becomes a 47-body MJCF: base, items, contact pairs with the right friction coefficients, a moving conveyor surface. No GUI, no rendering — pure physics.</p>
+					</div>
+				</li>
+				<li>
+					<span class="pb-stage-tag">04</span>
+					<div>
+						<h3>The solver runs the conveyor profile</h3>
+						<p>Acceleration ramp, target speed, dwell, deceleration. The trace records pallet pose, item poses, and contact forces every step. Failure detectors look for tip angle past threshold, pairwise distance drift between items, and pallet-vs-belt slip.</p>
+					</div>
+				</li>
+				<li>
+					<span class="pb-stage-tag">05</span>
+					<div>
+						<h3>The threshold analyzer searches the boundary</h3>
+						<p>A <code>brentq</code> root-finder walks the speed and acceleration axes. Five to eight simulations later, you have a tight upper bound on each — the line between "survives" and "fails." Results are cached by config fingerprint, so duplicates cost nothing.</p>
+					</div>
+				</li>
+				<li>
+					<span class="pb-stage-tag">06</span>
+					<div>
+						<h3>FastAPI hands back a SafetyResult</h3>
+						<p>Plus the sweep points, the dominant failure mode, the cache hit count, and a confidence score. Available at <a href={`${API_BASE}/docs`} target="_blank" rel="noopener">{API_BASE}/docs</a>. Cache hits return in ~1 ms.</p>
+					</div>
+				</li>
+			</ol>
+		</div>
+	</section>
+
+	<!-- ============== ARCHITECTURE ============== -->
+	<section class="pb-section">
+		<div class="pb-section-inner">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the wiring</span>
+				<h2 class="pb-section-title">How this page actually serves you a physics result</h2>
+			</div>
+
+			<pre class="pb-arch">
+ your browser
+       │
+       ▼
+ ┌─────────────────────┐         ┌───────────────────────────────┐
+ │ boothe.io/          │         │ palletballet-api.boothe.io    │
+ │ palletballet        │         │                               │
+ │  (Astro on          │ fetch   │  ┌─────────────────────────┐  │
+ │   Cloudflare        │────────►│  │ Cloudflare Tunnel       │  │
+ │   Workers)          │  CORS   │  └─────────────┬───────────┘  │
+ └─────────────────────┘         │                ▼              │
+                                 │  ┌─────────────────────────┐  │
+                                 │  │ home server (docker)    │  │
+                                 │  │  ├── palletballet:8000  │  │
+                                 │  │  ├── cloudflared        │  │
+                                 │  │  └── watchtower         │  │
+                                 │  └─────────────────────────┘  │
+                                 └───────────────────────────────┘
+                                            ▲
+                                            │ pull on every push to main
+                                            │
+                                  ghcr.io/ebootheee/palletballet
+                                            ▲
+                                            │ build &amp; push
+                                            │
+                                       GitHub Actions
+</pre>
+		</div>
+	</section>
+
+	<!-- ============== TECH STACK ============== -->
+	<section class="pb-section">
+		<div class="pb-section-inner">
+			<div class="pb-section-head">
+				<span class="pb-section-label">// the parts</span>
+				<h2 class="pb-section-title">Stack</h2>
+			</div>
+
+			<div class="pb-chips">
+				{techStack.map((t) => (
+					<span class={`pb-chip pb-chip-${t.flavor}`}>{t.name}</span>
+				))}
+			</div>
+
+			<p class="pb-prose pb-prose-small">
+				The whole runtime self-hosts on a Ryzen 1700X with 16 GB RAM. Cold start
+				(API + MuJoCo) is ~3 seconds; a single safety analysis lands in 400–800 ms;
+				cache hits return in ~1 ms. You're hitting that machine through a Cloudflare
+				Tunnel right now.
+			</p>
+		</div>
+	</section>
+
+	<!-- ============== CTA ============== -->
+	<section class="pb-section pb-cta-section">
+		<div class="pb-section-inner pb-narrow">
+			<div class="pb-cta-card">
+				<div class="pb-cta-corner-tl">+~</div>
+				<div class="pb-cta-corner-tr">~+</div>
+				<h3 class="pb-cta-title">
+					<span class="blink">&gt;</span> Read the source. Run your own.
+				</h3>
+				<p class="pb-cta-text">
+					The code is open. The Dockerfile and tunnel config are in
+					<code>infra/</code>. Cloning and running <code>docker compose up -d</code>
+					gets you a working copy of the same system this page is talking to.
+				</p>
+				<div class="pb-cta-row pb-cta-row-center">
+					<a href={REPO_URL} target="_blank" rel="noopener noreferrer" class="pb-btn pb-btn-primary">
+						github.com/ebootheee/palletballet →
+					</a>
+					<a href={`${API_BASE}/docs`} target="_blank" rel="noopener noreferrer" class="pb-btn">
+						Live API docs →
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<script is:inline define:vars={{ API_BASE }}>
+	// ---- Demo terminal driver ----------------------------------------------
+
+	const out = document.getElementById("pb-out");
+	const hint = document.getElementById("pb-hint");
+	const runBtn = document.getElementById("pb-run");
+	const clearBtn = document.getElementById("pb-clear");
+	const runCount = document.getElementById("pb-run-count");
+	const uptimeEl = document.getElementById("pb-uptime");
+
+	let runs = 0;
+	let busy = false;
+
+	const FAILURE_LABELS = {
+		no_failure: "NO FAILURE",
+		tip_over: "TIP-OVER",
+		top_item_slide: "TOP-ITEM SLIDE",
+		pallet_slip: "PALLET SLIP",
+		load_shift: "LOAD SHIFT",
+	};
+
+	function el(cls, text) {
+		const span = document.createElement("span");
+		if (cls) span.className = cls;
+		span.textContent = text;
+		return span;
+	}
+	function line(parts) {
+		const frag = document.createDocumentFragment();
+		parts.forEach((p) => frag.appendChild(p instanceof Node ? p : document.createTextNode(p)));
+		frag.appendChild(document.createTextNode("\n"));
+		out.appendChild(frag);
+		out.scrollTop = out.scrollHeight;
+	}
+	const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+	async function streamLine(parts, delay = 60) {
+		line(parts);
+		await sleep(delay);
+	}
+
+	function ts(seconds) {
+		return el("pb-ts", `[${seconds.toFixed(3)}s]`);
+	}
+
+	function clear() {
+		out.innerHTML = "";
+		line([el("pb-prompt", "$ "), el("pb-faint", 'click "ANALYZE" to run a fresh sim.')]);
+	}
+
+	clearBtn.addEventListener("click", () => {
+		if (busy) return;
+		clear();
+	});
+
+	runBtn.addEventListener("click", async () => {
+		if (busy) return;
+		busy = true;
+		hint.textContent = "running…";
+		runBtn.disabled = true;
+		out.innerHTML = "";
+
+		const start = performance.now();
+		const dt = () => (performance.now() - start) / 1000;
+
+		try {
+			await streamLine([el("pb-prompt", "$ "), "./palletballet --random-pallet --analyze"]);
+			await streamLine([ts(dt()), " spawning random pallet config…"]);
+
+			const seed = Math.floor(Math.random() * 100000);
+			const palletRes = await fetchWithTimeout(`${API_BASE}/pallet/random`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ seed, anomaly_rate: 0.25, min_layers: 2, max_layers: 5 }),
+			});
+			if (!palletRes.ok) throw new Error(`pallet/random ${palletRes.status}`);
+			const pallet = await palletRes.json();
+
+			await streamLine([
+				ts(dt()),
+				"   pallet_id  ",
+				el("pb-val", pallet.pallet_id),
+			]);
+			await streamLine([
+				ts(dt()),
+				`   ${pallet.items.length} items · `,
+				el("pb-val", `${pallet.total_mass_kg.toFixed(1)} kg`),
+				` · stack `,
+				el("pb-val", `${pallet.stack_height_m.toFixed(2)} m`),
+				` · `,
+				el("pb-val", `${pallet.body_temp_c.toFixed(1)}°C ${pallet.env}`),
+				` · wrap=${pallet.wrap}`,
+			]);
+
+			await streamLine([ts(dt()), " building MJCF + running brentq sweep…"]);
+			await streamLine([el("pb-faint", "             (5–8 mujoco sims, this is the real work)")]);
+
+			const safetyRes = await fetchWithTimeout(`${API_BASE}/safety/analyze`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify(pallet),
+			});
+			if (!safetyRes.ok) throw new Error(`safety/analyze ${safetyRes.status}`);
+			const safety = await safetyRes.json();
+			const r = safety.result;
+
+			await streamLine([ts(dt()), " ", el("pb-ok", "DONE")]);
+			await streamLine([""]);
+
+			const failureLabel = FAILURE_LABELS[r.dominant_failure_mode] ?? r.dominant_failure_mode;
+			const failureClass = r.dominant_failure_mode === "no_failure" ? "pb-ok" : "pb-warn";
+
+			line([el("pb-key", "  max_speed     "), el("pb-val", `${r.max_speed_mps.toFixed(2)} m/s`)]);
+			line([el("pb-key", "  max_accel     "), el("pb-val", `${r.max_accel_mps2.toFixed(2)} m/s²`)]);
+			line([el("pb-key", "  max_decel     "), el("pb-val", `${r.max_decel_mps2.toFixed(2)} m/s²`)]);
+			line([el("pb-key", "  max_lateral_g "), el("pb-val", `${r.max_lateral_g.toFixed(2)} g`)]);
+			line([el("pb-key", "  governing     "), el(failureClass, failureLabel)]);
+			line([el("pb-key", "  margin        "), el("pb-val", `${r.margin_pct.toFixed(0)}%`)]);
+			line([el("pb-key", "  confidence    "), el("pb-val", `${(r.confidence * 100).toFixed(0)}%`)]);
+			line([
+				el("pb-key", "  sims_run      "),
+				el("pb-val", `${safety.sims_run}`),
+				el("pb-faint", `   (cache hits: ${safety.cache_hits})`),
+			]);
+			line([el("pb-key", "  sim_runtime   "), el("pb-val", `${r.sim_runtime_ms.toFixed(0)} ms`)]);
+			line([el("pb-key", "  config_hash   "), el("pb-faint", r.config_hash)]);
+
+			runs += 1;
+			runCount.textContent = String(runs);
+			hint.textContent = `${(dt() * 1000).toFixed(0)} ms`;
+		} catch (err) {
+			await streamLine([el("pb-err", "ERROR: "), String(err.message ?? err)]);
+			await streamLine([
+				el("pb-faint", "the home server may be offline. showing a cached example…"),
+			]);
+			await sleep(400);
+			renderCachedExample();
+			hint.textContent = "offline → cached";
+		} finally {
+			busy = false;
+			runBtn.disabled = false;
+		}
+	});
+
+	function renderCachedExample() {
+		line([el("pb-key", "  max_speed     "), el("pb-val", "1.42 m/s")]);
+		line([el("pb-key", "  max_accel     "), el("pb-val", "5.80 m/s²")]);
+		line([el("pb-key", "  max_decel     "), el("pb-val", "4.10 m/s²")]);
+		line([el("pb-key", "  max_lateral_g "), el("pb-val", "0.32 g")]);
+		line([el("pb-key", "  governing     "), el("pb-warn", "TOP-ITEM SLIDE")]);
+		line([el("pb-key", "  margin        "), el("pb-val", "12%")]);
+		line([el("pb-key", "  confidence    "), el("pb-val", "84%")]);
+		line([el("pb-key", "  sims_run      "), el("pb-val", "7"), el("pb-faint", "   (cache hits: 0)")]);
+		line([el("pb-key", "  sim_runtime   "), el("pb-val", "612 ms")]);
+		line([el("pb-key", "  config_hash   "), el("pb-faint", "a4f1c3b2…")]);
+	}
+
+	function fetchWithTimeout(url, opts, ms = 15000) {
+		const controller = new AbortController();
+		const t = setTimeout(() => controller.abort(), ms);
+		return fetch(url, { ...opts, signal: controller.signal }).finally(() =>
+			clearTimeout(t),
+		);
+	}
+
+	// ---- Uptime probe (best-effort, fails quietly to "offline") -----------
+
+	(async () => {
+		try {
+			const t0 = performance.now();
+			const r = await fetchWithTimeout(`${API_BASE}/healthz`, {}, 4000);
+			const ms = Math.round(performance.now() - t0);
+			if (r.ok) {
+				uptimeEl.textContent = `online · ${ms}ms`;
+				uptimeEl.classList.add("pb-uptime-ok");
+			} else {
+				uptimeEl.textContent = `degraded · http ${r.status}`;
+				uptimeEl.classList.add("pb-uptime-warn");
+			}
+		} catch {
+			uptimeEl.textContent = "offline";
+			uptimeEl.classList.add("pb-uptime-off");
+		}
+	})();
+</script>
+
+<style>
+	/* =========================================================
+	   Page-scoped styles. Inherit theme.css tokens for fonts,
+	   palette, spacing. Page-specific tokens are pb-* .
+	   ========================================================= */
+
+	.pb-hero {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 5rem var(--spacing-6) 3rem;
+		position: relative;
+	}
+
+	.pb-hero-inner { max-width: 880px; }
+
+	.pb-status {
+		font-family: var(--font-pixel);
+		font-size: 0.875rem;
+		color: rgba(245, 158, 11, 0.7);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+		letter-spacing: 0.04em;
+	}
+	.pb-status-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--color-retro-green);
+		animation: glow-pulse 3s ease-in-out infinite;
+	}
+	#pb-uptime { color: rgba(245, 158, 11, 0.5); }
+	:global(.pb-uptime-ok) { color: var(--color-retro-green) !important; }
+	:global(.pb-uptime-warn) { color: var(--color-retro) !important; }
+	:global(.pb-uptime-off) { color: #f87171 !important; opacity: 0.8; }
+
+	.pb-title {
+		font-family: var(--font-serif) !important;
+		font-size: clamp(3.5rem, 9vw, 6rem);
+		font-weight: 400 !important;
+		line-height: 1;
+		color: var(--color-text);
+		margin-bottom: 1.5rem;
+		letter-spacing: -0.02em;
+	}
+	.pb-title-italic {
+		font-style: italic;
+		color: rgba(34, 211, 238, 0.85);
+	}
+
+	.pb-tagline {
+		font-family: var(--font-serif);
+		font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+		line-height: 1.55;
+		color: var(--color-text-secondary);
+		max-width: 720px;
+		margin-bottom: 2rem;
+	}
+	.pb-tagline em {
+		font-style: italic;
+		color: rgba(34, 211, 238, 0.85);
+	}
+
+	.pb-cta-row {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+	.pb-cta-row-center { justify-content: center; }
+
+	.pb-btn {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		padding: 0.65rem 1.1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		color: var(--color-text);
+		text-decoration: none;
+		background: rgba(12, 12, 16, 0.5);
+		transition:
+			border-color var(--transition-fast),
+			background var(--transition-fast),
+			color var(--transition-fast),
+			transform var(--transition-fast);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		letter-spacing: 0.01em;
+	}
+	.pb-btn:hover {
+		border-color: rgba(34, 211, 238, 0.4);
+		background: rgba(34, 211, 238, 0.05);
+		color: var(--color-accent-hover);
+		transform: translateY(-1px);
+	}
+	.pb-btn-primary {
+		background: var(--color-accent);
+		color: var(--color-on-accent) !important;
+		border-color: var(--color-accent);
+		font-weight: 500;
+	}
+	.pb-btn-primary:hover {
+		background: var(--color-accent-hover);
+		border-color: var(--color-accent-hover);
+		color: var(--color-on-accent) !important;
+	}
+	.pb-btn-ghost {
+		background: transparent;
+		color: var(--color-muted);
+	}
+	.pb-btn-ghost:hover {
+		color: var(--color-text);
+	}
+	.pb-btn-arrow {
+		display: inline-block;
+		font-size: 0.7rem;
+		opacity: 0.7;
+	}
+
+	.pb-hero-meta {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--color-muted);
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px dashed var(--color-border);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.pb-meta-k {
+		color: rgba(245, 158, 11, 0.6);
+		font-family: var(--font-pixel);
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		margin-right: 0.4rem;
+	}
+	.pb-meta-sep {
+		color: var(--color-border);
+		opacity: 0.6;
+	}
+
+	/* ---- Generic sections ------------------------------------------------ */
+
+	.pb-section {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 4rem var(--spacing-6) 3rem;
+	}
+	.pb-section-inner { max-width: 100%; }
+	.pb-narrow { max-width: 720px; margin: 0 auto; }
+
+	.pb-section-head { margin-bottom: 1.75rem; }
+	.pb-section-label {
+		display: block;
+		font-family: var(--font-pixel);
+		font-size: 0.7rem;
+		color: rgba(245, 158, 11, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.18em;
+		margin-bottom: 0.4rem;
+	}
+	.pb-section-title {
+		font-family: var(--font-serif) !important;
+		font-size: clamp(1.8rem, 3vw, 2.4rem);
+		font-weight: 400 !important;
+		color: var(--color-text);
+		line-height: 1.15;
+	}
+
+	.pb-prose {
+		font-family: var(--font-serif);
+		font-size: 1.05rem;
+		line-height: 1.75;
+		color: var(--color-text-secondary);
+		max-width: 680px;
+		margin-bottom: 1.25rem;
+	}
+	.pb-prose em {
+		font-style: italic;
+		color: var(--color-text);
+	}
+	.pb-prose code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		background: var(--color-surface);
+		color: var(--color-accent);
+		padding: 0.1em 0.35em;
+		border-radius: 3px;
+		border: 1px solid var(--color-border);
+	}
+	.pb-prose-small { font-size: 0.95rem; }
+
+	.pb-pullquote {
+		font-family: var(--font-serif);
+		font-size: 1.4rem;
+		font-style: italic;
+		line-height: 1.45;
+		color: var(--color-text);
+		border-left: 2px solid rgba(34, 211, 238, 0.5);
+		padding-left: 1.25rem;
+		margin: 2rem 0;
+		max-width: 640px;
+	}
+	.pb-pullquote em {
+		color: rgba(34, 211, 238, 0.95);
+	}
+
+	/* ---- Terminal -------------------------------------------------------- */
+
+	.pb-terminal {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: #06060a;
+		overflow: hidden;
+		margin: 2rem 0 1rem;
+		box-shadow:
+			0 0 0 1px rgba(34, 211, 238, 0.04),
+			0 20px 60px -20px rgba(0, 0, 0, 0.6);
+	}
+
+	.pb-terminal-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 0.9rem;
+		background: var(--color-bg-subtle);
+		border-bottom: 1px solid var(--color-border);
+	}
+	.pb-tdot {
+		width: 11px;
+		height: 11px;
+		border-radius: 50%;
+		display: block;
+	}
+	.pb-tdot-r { background: #f87171; }
+	.pb-tdot-y { background: #fbbf24; }
+	.pb-tdot-g { background: #4ade80; }
+	.pb-terminal-title {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--color-muted);
+		margin-left: 0.5rem;
+	}
+	.pb-terminal-hint {
+		margin-left: auto;
+		font-family: var(--font-pixel);
+		font-size: 0.85rem;
+		color: rgba(245, 158, 11, 0.6);
+		letter-spacing: 0.06em;
+	}
+
+	.pb-terminal-body {
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		line-height: 1.55;
+		color: var(--color-text);
+		padding: 1.25rem 1.4rem;
+		margin: 0;
+		min-height: 320px;
+		max-height: 440px;
+		overflow-y: auto;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.pb-terminal-body :global(.pb-prompt) {
+		color: var(--color-retro-green);
+	}
+	.pb-terminal-body :global(.pb-ts) {
+		color: rgba(245, 158, 11, 0.55);
+	}
+	.pb-terminal-body :global(.pb-faint) {
+		color: var(--color-muted);
+		opacity: 0.7;
+	}
+	.pb-terminal-body :global(.pb-key) {
+		color: var(--color-text-secondary);
+	}
+	.pb-terminal-body :global(.pb-val) {
+		color: var(--color-accent);
+	}
+	.pb-terminal-body :global(.pb-ok) {
+		color: var(--color-retro-green);
+		font-weight: 500;
+	}
+	.pb-terminal-body :global(.pb-warn) {
+		color: var(--color-retro);
+		font-weight: 500;
+	}
+	.pb-terminal-body :global(.pb-err) {
+		color: #f87171;
+		font-weight: 500;
+	}
+
+	.pb-terminal-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.85rem 1.4rem;
+		border-top: 1px solid var(--color-border);
+		background: var(--color-bg-subtle);
+	}
+
+	.pb-run-btn {
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		padding: 0.55rem 1.25rem;
+		background: var(--color-accent);
+		color: var(--color-on-accent);
+		border: none;
+		border-radius: var(--radius);
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		transition: background var(--transition-fast), transform var(--transition-fast);
+	}
+	.pb-run-btn:hover:not(:disabled) {
+		background: var(--color-accent-hover);
+		transform: translateY(-1px);
+	}
+	.pb-run-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.pb-run-blink {
+		animation: blink 1.2s step-end infinite;
+	}
+
+	.pb-clear-btn {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		padding: 0.4rem 0.8rem;
+		background: transparent;
+		color: var(--color-muted);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		cursor: pointer;
+		transition: color var(--transition-fast), border-color var(--transition-fast);
+	}
+	.pb-clear-btn:hover {
+		color: var(--color-text);
+		border-color: var(--color-text-secondary);
+	}
+
+	.pb-runs {
+		margin-left: auto;
+		font-family: var(--font-pixel);
+		font-size: 0.85rem;
+		color: var(--color-muted);
+		letter-spacing: 0.06em;
+	}
+
+	.pb-details {
+		margin-top: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--color-muted);
+	}
+	.pb-details summary {
+		cursor: pointer;
+		padding: 0.4rem 0;
+		color: var(--color-text-secondary);
+		transition: color var(--transition-fast);
+	}
+	.pb-details summary:hover { color: var(--color-accent); }
+	.pb-flow {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		line-height: 1.65;
+		color: var(--color-text-secondary);
+		padding: 1rem 1.2rem;
+		background: rgba(12, 12, 16, 0.5);
+		border: 1px dashed var(--color-border);
+		border-radius: var(--radius);
+		margin-top: 0.5rem;
+		overflow-x: auto;
+	}
+	.pb-flow :global(.pb-hl) { color: var(--color-accent); }
+
+	/* ---- Failure gallery ------------------------------------------------- */
+
+	.pb-gallery {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+		margin-top: 1.5rem;
+	}
+	.pb-frame {
+		margin: 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		background: var(--color-bg-subtle);
+		transition: border-color var(--transition-base);
+	}
+	.pb-frame:hover {
+		border-color: rgba(34, 211, 238, 0.3);
+	}
+	.pb-frame img {
+		width: 100%;
+		display: block;
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
+		background: #0a0a0e;
+	}
+	.pb-frame figcaption {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--color-text-secondary);
+		padding: 0.7rem 1rem;
+		border-top: 1px dashed var(--color-border);
+		background: rgba(12, 12, 16, 0.5);
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+	.pb-frame-num {
+		font-family: var(--font-pixel);
+		color: rgba(245, 158, 11, 0.6);
+		font-size: 0.95rem;
+		letter-spacing: 0.06em;
+	}
+
+	/* ---- Stages ---------------------------------------------------------- */
+
+	.pb-stages {
+		list-style: none;
+		padding: 0;
+		margin: 1.5rem 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		counter-reset: stage;
+	}
+	.pb-stages li {
+		display: grid;
+		grid-template-columns: 60px 1fr;
+		gap: 1.25rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px dashed var(--color-border);
+	}
+	.pb-stages li:last-child { border-bottom: none; }
+	.pb-stage-tag {
+		font-family: var(--font-pixel);
+		font-size: 1.2rem;
+		color: rgba(245, 158, 11, 0.7);
+		letter-spacing: 0.04em;
+		padding-top: 0.1rem;
+	}
+	.pb-stages h3 {
+		font-family: var(--font-serif) !important;
+		font-size: 1.25rem;
+		font-weight: 400 !important;
+		color: var(--color-text);
+		margin: 0 0 0.4rem;
+		line-height: 1.25;
+	}
+	.pb-stages p {
+		font-family: var(--font-serif);
+		font-size: 0.98rem;
+		line-height: 1.65;
+		color: var(--color-text-secondary);
+		margin: 0;
+	}
+	.pb-stages code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		background: var(--color-surface);
+		color: var(--color-accent);
+		padding: 0.1em 0.35em;
+		border-radius: 3px;
+	}
+
+	/* ---- Architecture diagram ------------------------------------------- */
+
+	.pb-arch {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		line-height: 1.5;
+		color: var(--color-text-secondary);
+		padding: 1.5rem;
+		background: rgba(12, 12, 16, 0.6);
+		border: 1px dashed var(--color-border);
+		border-radius: var(--radius-lg);
+		margin: 1.5rem 0 0;
+		overflow-x: auto;
+		white-space: pre;
+	}
+
+	/* ---- Tech stack chips ----------------------------------------------- */
+
+	.pb-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 1.5rem 0 1.5rem;
+	}
+	.pb-chip {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		padding: 0.35rem 0.75rem;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		background: var(--color-bg-subtle);
+		color: var(--color-text-secondary);
+		text-transform: lowercase;
+		letter-spacing: 0.02em;
+	}
+	.pb-chip-rt { border-color: rgba(34, 211, 238, 0.35); color: var(--color-accent); }
+	.pb-chip-ops { border-color: rgba(245, 158, 11, 0.35); color: rgba(245, 158, 11, 0.85); }
+	.pb-chip-build { border-color: rgba(74, 222, 128, 0.35); color: var(--color-retro-green); }
+
+	/* ---- Final CTA card -------------------------------------------------- */
+
+	.pb-cta-section {
+		padding-bottom: 6rem;
+	}
+	.pb-cta-card {
+		position: relative;
+		border: 1px dashed rgba(34, 211, 238, 0.4);
+		border-radius: var(--radius-lg);
+		background: rgba(34, 211, 238, 0.03);
+		padding: 2.5rem 2rem;
+		text-align: center;
+	}
+	.pb-cta-corner-tl,
+	.pb-cta-corner-tr {
+		position: absolute;
+		top: 0.55rem;
+		font-family: var(--font-pixel);
+		font-size: 0.85rem;
+		color: rgba(34, 211, 238, 0.4);
+	}
+	.pb-cta-corner-tl { left: 0.7rem; }
+	.pb-cta-corner-tr { right: 0.7rem; }
+	.pb-cta-title {
+		font-family: var(--font-serif) !important;
+		font-size: 1.75rem;
+		font-weight: 400 !important;
+		color: var(--color-text);
+		margin: 0 0 0.75rem;
+	}
+	.pb-cta-text {
+		font-family: var(--font-serif);
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--color-text-secondary);
+		max-width: 540px;
+		margin: 0 auto 1.5rem;
+	}
+	.pb-cta-text code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		color: var(--color-accent);
+	}
+
+	/* ---- Responsive ------------------------------------------------------ */
+
+	@media (max-width: 720px) {
+		.pb-hero { padding: 3rem var(--spacing-4) 2rem; }
+		.pb-section { padding: 2.5rem var(--spacing-4) 2rem; }
+		.pb-gallery { grid-template-columns: 1fr; }
+		.pb-stages li { grid-template-columns: 44px 1fr; gap: 0.85rem; }
+		.pb-arch { font-size: 0.65rem; }
+		.pb-cta-card { padding: 2rem 1.25rem; }
+	}
+</style>

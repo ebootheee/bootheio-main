@@ -269,6 +269,146 @@
 		],
 		"posts": [
 			{
+				"id": "post-palletballet",
+				"slug": "launching-palletballet",
+				"status": "published",
+				"data": {
+					"title": "Pallets, choreography, and the case for letting the demo fail",
+					"excerpt": "I built a physics simulator that decides how fast a conveyor can safely move a pallet. The hard part wasn't the math.",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "Cold-storage warehouses are full of conveyor belts that nobody outside the industry thinks about. Pallets travel kilometers a day across rollers and rubber, between freezers and trucks, sometimes at 1.5 m/s. The conveyor speeds are usually set once, by a person with reasonable instincts and incomplete information, and they don't change."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "There's an irony in this. The fastest-moving objects in the building are governed by the slowest-changing decision. A perfectly stacked pallet of canned goods gets the same speed limit as a top-heavy unwrapped tower of frozen meat. The first is being throttled. The second is being launched."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "The physics is the easy part" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "The math behind whether a pallet survives a conveyor profile is well-trodden. Friction at the pallet-belt interface, mass distribution, center-of-mass height, an acceleration ramp — these are first-week physics. MuJoCo handles the contact dynamics with no fuss. A small Python service can run the sim in around 70 milliseconds."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "I built the first version of this in Godot, because I wanted to see the pallets in 3D and Godot was already on my desktop. It worked. It was also wrong for the use case. I had built a sandbox where I could watch pallets fall over, and what I needed was a service that decides whether a real pallet should be allowed onto a conveyor zone right now. So I rebuilt it: Python, MuJoCo, FastAPI, Pydantic schemas, a threshold solver that does a Brent's-method search across the speed and acceleration axes. The Godot version is gone now. The Python version is faster, smaller, and doesn't pretend to be a video game."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "The trust problem" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "Here's what I didn't expect: the hard part wasn't the simulation. The hard part was the operator interface."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "When you tell a warehouse supervisor that your service can decide a safe speed for any pallet, the response is not \"great, plug it in.\" It's some version of \"okay, prove it.\" A black-box safety system is worse than no safety system at all — if it's wrong, nobody knows it's wrong until pallets start falling."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "So the demo had to topple. The Streamlit UI ships with a rogues' gallery of known-bad scenarios — frozen pallet jerk-start, top-heavy surprise, asymmetric load — and the operator can pick one, watch it fail, and compare the failure mode the solver predicted against the failure they just saw on screen. Trust is built by failing in public, slowly enough to follow."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Choosing the boring infrastructure" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "I deployed this on a closet server. Not because I couldn't afford Cloudflare Containers — Containers went GA in April; my Dockerfile would build there fine — but because the trade-offs are worse for a portfolio demo: cold starts measured in seconds, an open WebSocket-timeout bug, and a per-request cost that compounds across a month of passive visits."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "A 2017 Ryzen with 16 GB of RAM, sitting on my office floor, runs a simulation in the same 70 ms it would take in a managed container. The traffic comes through a Cloudflare Tunnel — outbound-only TLS connection from the box, no port forwarding, no public IP exposed. The page at /palletballet is talking to that machine right now."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "GitHub Actions builds the image and pushes it to GHCR; Watchtower on the server pulls and restarts within five minutes. Deploys are git push. The whole loop costs nothing. The server runs about 40 watts at idle. This is the cheapest, dumbest, most reliable infrastructure I've ever shipped, and the failure modes are obvious enough to fix at 11pm in a hoodie."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What it doesn't do yet" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "There are no real adapters. No scanner integration, no WMS feed, no PLC stub. The friction tables are seed data — calibrated against published cold-chain studies, not against any specific facility's conveyors. The lateral acceleration model is rudimentary; transfer-curve physics aren't simulated at all."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "A real deployment would calibrate against measured tip-and-slip tests in the actual building. It would log every decision and every override. It would have a manual-bypass mode for the operator who wants to push a pallet through anyway because they know better than the model. None of that is in scope yet."
+							}]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{
+								"_type": "span",
+								"text": "But the bones are there. The demo is live at /palletballet, the code is open at github.com/ebootheee/palletballet, and the API is documented. If someone wants to wire this into a real line, the contract is small enough to fit in a single Pydantic schema."
+							}]
+						}
+					]
+				},
+				"bylines": [{ "byline": "byline-editorial" }],
+				"taxonomies": {
+					"category": ["development"],
+					"tag": ["tools"]
+				}
+			},
+			{
 				"id": "post-1",
 				"slug": "building-for-the-long-term",
 				"status": "published",
