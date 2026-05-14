@@ -5,3 +5,6 @@ uploads
 data.db
 .wrangler
 tmp
+.env
+.env.*
+!.env.example
