@@ -96,7 +96,7 @@ const postsWithTags = await Promise.all(
 
 	.page-title {
 		font-family: var(--font-serif) !important;
-		font-size: clamp(2.5rem, 6vw, 3.5rem);
+		font-size: var(--font-size-4xl);
 		font-weight: 400 !important;
 		color: var(--color-text);
 	}
@@ -110,13 +110,13 @@ const postsWithTags = await Promise.all(
 	.page-divider {
 		margin-top: 1.5rem;
 		height: 1px;
-		background: linear-gradient(to right, rgba(34, 211, 238, 0.2), var(--color-border), transparent);
+		background: var(--gradient-rule);
 	}
 
 	.posts-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: 1rem;
+		gap: 1.25rem;
 	}
 
 	.empty {
@@ -130,6 +130,7 @@ const postsWithTags = await Promise.all(
 
 	@media (max-width: 600px) {
 		.posts-page { padding: 2.5rem var(--spacing-4); }
+		.page-title { font-size: var(--font-size-3xl); }
 		.posts-grid { grid-template-columns: 1fr; }
 	}
 </style>

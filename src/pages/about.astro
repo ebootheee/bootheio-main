@@ -195,7 +195,7 @@ const investments: Investment[] = [
 	.ab-status {
 		font-family: var(--font-pixel);
 		font-size: 0.875rem;
-		color: rgba(245, 158, 11, 0.7);
+		color: var(--color-retro-muted);
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -206,27 +206,27 @@ const investments: Investment[] = [
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background: var(--color-retro-green);
+		background: var(--color-success);
 		animation: glow-pulse 3s ease-in-out infinite;
 	}
 
 	.ab-title {
 		font-family: var(--font-serif) !important;
-		font-size: clamp(3rem, 8vw, 5rem);
+		font-size: 4.75rem;
 		font-weight: 400 !important;
 		line-height: 1.05;
 		color: var(--color-text);
 		margin-bottom: 1.5rem;
-		letter-spacing: -0.02em;
+		letter-spacing: 0;
 	}
 	.ab-title-italic {
 		font-style: italic;
-		color: rgba(34, 211, 238, 0.85);
+		color: var(--color-accent);
 	}
 
 	.ab-tagline {
 		font-family: var(--font-serif);
-		font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+		font-size: 1.15rem;
 		line-height: 1.6;
 		color: var(--color-text-secondary);
 		max-width: 720px;
@@ -248,7 +248,7 @@ const investments: Investment[] = [
 		border-radius: var(--radius);
 		color: var(--color-text);
 		text-decoration: none;
-		background: rgba(12, 12, 16, 0.5);
+		background: var(--color-panel);
 		transition:
 			border-color var(--transition-fast),
 			background var(--transition-fast),
@@ -260,8 +260,8 @@ const investments: Investment[] = [
 		letter-spacing: 0.01em;
 	}
 	.ab-btn:hover {
-		border-color: rgba(34, 211, 238, 0.4);
-		background: rgba(34, 211, 238, 0.05);
+		border-color: var(--color-accent-border);
+		background: var(--color-accent-soft);
 		color: var(--color-accent-hover);
 		transform: translateY(-1px);
 	}
@@ -302,14 +302,14 @@ const investments: Investment[] = [
 		display: block;
 		font-family: var(--font-pixel);
 		font-size: 0.7rem;
-		color: rgba(245, 158, 11, 0.5);
+		color: var(--color-retro-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.18em;
 		margin-bottom: 0.4rem;
 	}
 	.ab-section-title {
 		font-family: var(--font-serif) !important;
-		font-size: clamp(1.8rem, 3vw, 2.4rem);
+		font-size: 2.25rem;
 		font-weight: 400 !important;
 		color: var(--color-text);
 		line-height: 1.15;
@@ -334,7 +334,7 @@ const investments: Investment[] = [
 	.ab-prose a {
 		color: var(--color-accent);
 		text-decoration: none;
-		border-bottom: 1px solid rgba(34, 211, 238, 0.35);
+		border-bottom: 1px solid var(--color-accent-border);
 		transition: border-color var(--transition-fast), color var(--transition-fast);
 	}
 	.ab-prose a:hover {
@@ -356,7 +356,7 @@ const investments: Investment[] = [
 		margin: 0;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
-		background: rgba(12, 12, 16, 0.4);
+		background: var(--color-panel);
 		overflow: hidden;
 		transition:
 			border-color var(--transition-base),
@@ -364,8 +364,8 @@ const investments: Investment[] = [
 			transform var(--transition-base);
 	}
 	.ab-card:hover {
-		border-color: rgba(34, 211, 238, 0.4);
-		background: rgba(34, 211, 238, 0.04);
+		border-color: var(--color-accent-border);
+		background: var(--color-panel-hover);
 		transform: translateY(-2px);
 	}
 	.ab-card-link {
@@ -382,7 +382,7 @@ const investments: Investment[] = [
 		width: 96px;
 		height: 96px;
 		border-radius: var(--radius);
-		background: #050508;
+		background: var(--color-surface);
 		border: 1px solid var(--color-border);
 		display: flex;
 		align-items: center;
@@ -434,7 +434,7 @@ const investments: Investment[] = [
 		font-style: italic;
 		font-size: 0.92rem;
 		line-height: 1.4;
-		color: rgba(34, 211, 238, 0.85);
+		color: var(--color-accent);
 		margin: 0;
 	}
 	.ab-card-pitch {
@@ -447,7 +447,7 @@ const investments: Investment[] = [
 	.ab-card-industry {
 		font-family: var(--font-pixel);
 		font-size: 0.7rem;
-		color: rgba(245, 158, 11, 0.65);
+		color: var(--color-retro-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
 		margin-top: 0.25rem;
@@ -457,6 +457,9 @@ const investments: Investment[] = [
 
 	@media (max-width: 720px) {
 		.ab-hero { padding: 3rem var(--spacing-4) 2rem; }
+		.ab-title { font-size: 3rem; }
+		.ab-tagline { font-size: 1.05rem; }
+		.ab-section-title { font-size: var(--font-size-3xl); }
 		.ab-section { padding: 2.5rem var(--spacing-4) 2rem; }
 		.ab-grid { grid-template-columns: 1fr; }
 		.ab-card-link {
