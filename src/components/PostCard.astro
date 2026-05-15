@@ -1,6 +1,5 @@
 ---
 import type { MediaValue, ContentBylineCredit } from "emdash";
-import { Image } from "emdash/ui";
 
 interface Props {
 	title: string;
@@ -16,12 +15,10 @@ interface Props {
 const {
 	title,
 	excerpt,
-	featuredImage,
 	href,
 	date,
 	readingTime,
 	tags,
-	bylines,
 } = Astro.props;
 
 const formattedDate = date
@@ -33,7 +30,7 @@ const formattedDate = date
 	: null;
 ---
 
-<article class="card">
+<article class="card post-card">
 	<a href={href} class="card-link">
 		<!-- Hover glow -->
 		<div class="card-glow"></div>
@@ -72,29 +69,33 @@ const formattedDate = date
 		padding: 1.25rem;
 		border-radius: var(--radius-lg);
 		border: 1px solid var(--color-border);
-		background: rgba(12, 12, 16, 0.5);
+		background: var(--color-panel);
 		text-decoration: none;
 		color: inherit;
-		transition: border-color 0.3s ease, background 0.3s ease;
+		transition:
+			border-color 0.3s ease,
+			background 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 
 	.card-link:hover {
-		border-color: rgba(34, 211, 238, 0.3);
-		background: rgba(20, 20, 24, 0.5);
+		border-color: var(--color-accent-border);
+		background: var(--color-panel-hover);
+		box-shadow: var(--shadow-elevated);
 	}
 
 	.card-glow {
 		position: absolute;
 		inset: 0;
 		border-radius: var(--radius-lg);
-		background: rgba(34, 211, 238, 0.02);
+		background: var(--color-accent-soft);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		pointer-events: none;
 	}
 
 	.card-link:hover .card-glow {
-		opacity: 1;
+		opacity: 0.65;
 	}
 
 	.card-body {

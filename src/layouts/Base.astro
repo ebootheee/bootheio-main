@@ -7,7 +7,6 @@ import {
 	EmDashBodyEnd,
 } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import LiveSearch from "emdash/ui/search";
 import "../styles/theme.css";
 
 interface Props {
@@ -24,6 +23,12 @@ interface Props {
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
+type MenuItem = {
+	label: string;
+	url: string;
+	target?: string;
+};
+
 const {
 	title,
 	description,
@@ -38,17 +43,19 @@ const {
 } = Astro.props;
 const siteTitle = "boothe.io";
 // If title already includes site title (from getSeoMeta), use as-is
-const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
+const fullTitle = title.includes(siteTitle) ? title : `${title} - ${siteTitle}`;
 
 // Fetch primary menu defined in seed; fall back to hardcoded items if the
 // live DB has no menu (seeding only runs in dev, not on prod deploys).
 const menu = await getMenu("primary");
-const fallbackMenuItems = [
-	{ label: "Home", url: "/", target: undefined as string | undefined },
-	{ label: "About", url: "/about", target: undefined as string | undefined },
-	{ label: "Posts", url: "/posts", target: undefined as string | undefined },
+const fallbackMenuItems: MenuItem[] = [
+	{ label: "Home", url: "/" },
+	{ label: "About", url: "/about" },
+	{ label: "Posts", url: "/posts" },
 ];
-const menuItems = menu?.items?.length ? menu.items : fallbackMenuItems;
+const menuItems: MenuItem[] = menu?.items?.length
+	? (menu.items as MenuItem[])
+	: fallbackMenuItems;
 
 // Fetch pages for footer
 const { entries: pages } = await getEmDashCollection("pages");
@@ -81,25 +88,42 @@ const isLoggedIn = !!Astro.locals.user;
 		<link rel="icon" href="/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="theme-color" content="#f5f7f1" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=VT323&display=swap"
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=VT323&display=swap"
 			rel="stylesheet"
 		/>
 		<title>{fullTitle}</title>
 		<EmDashHead page={pageCtx} />
 		<script is:inline>
-			// Apply theme immediately to prevent flash
+			// Apply theme immediately to prevent flash.
 			(function () {
-				var c = document.cookie;
-				var i = c.indexOf("theme=");
-				var theme = i >= 0 ? c.slice(i + 6).split(";")[0] : null;
-				if (theme === "dark" || theme === "light") {
-					document.documentElement.classList.add(theme);
-				} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-					document.documentElement.classList.add("dark");
-				}
+				var cookieTheme = document.cookie
+					.split("; ")
+					.find(function (row) {
+						return row.indexOf("theme=") === 0;
+					});
+				var localTheme = null;
+				try {
+					localTheme = localStorage.getItem("theme");
+				} catch (e) {}
+				var storedTheme = cookieTheme
+					? decodeURIComponent(cookieTheme.split("=")[1])
+					: localTheme;
+				var theme =
+					storedTheme === "light" || storedTheme === "dark"
+						? storedTheme
+						: "system";
+				var prefersDark = window.matchMedia(
+					"(prefers-color-scheme: dark)"
+				).matches;
+				var resolvedTheme =
+					theme === "system" ? (prefersDark ? "dark" : "light") : theme;
+				document.documentElement.classList.add(resolvedTheme);
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.dataset.resolvedTheme = resolvedTheme;
 			})();
 		</script>
 	</head>
@@ -107,11 +131,11 @@ const isLoggedIn = !!Astro.locals.user;
 		<EmDashBodyStart page={pageCtx} />
 		<header class="site-header">
 			<nav class="nav">
-				<a href="/" class="site-title" style="font-family: var(--font-serif); font-style: italic; font-weight: 400; display: inline-flex; align-items: center; gap: 10px;">
-					<img src="/apple-touch-icon.png" alt="" width="28" height="28" style="border-radius: 50%; display: block;" />
+				<a href="/" class="site-title">
+					<img src="/apple-touch-icon.png" alt="" width="28" height="28" class="site-title-mark" />
 					{siteTitle}
-					<span style="display: inline-block; height: 16px; width: 1px; background: var(--color-border); margin: 0 12px; vertical-align: middle;" class="hide-mobile"></span>
-					<span style="font-family: var(--font-pixel); font-size: 0.7rem; color: var(--color-muted); font-style: normal;" class="hide-mobile">est. 2025</span>
+					<span class="site-title-divider hide-mobile"></span>
+					<span class="site-title-era hide-mobile">est. 2025</span>
 				</a>
 				<div class="nav-right">
 					<!-- search removed -->
@@ -127,6 +151,84 @@ const isLoggedIn = !!Astro.locals.user;
 					<a href="https://github.com/ebootheee" target="_blank" rel="noopener noreferrer" class="nav-github" aria-label="GitHub">
 						<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
 					</a>
+					<div class="theme-switcher" role="group" aria-label="Color theme">
+						<button
+							type="button"
+							class="theme-btn"
+							data-theme="light"
+							aria-label="Use light theme"
+							title="Light theme"
+						>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><circle cx="12" cy="12" r="5"></circle><line
+									x1="12"
+									y1="1"
+									x2="12"
+									y2="3"></line><line x1="12" y1="21" x2="12" y2="23"
+								></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"
+								></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"
+								></line><line x1="1" y1="12" x2="3" y2="12"></line><line
+									x1="21"
+									y1="12"
+									x2="23"
+									y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"
+								></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"
+								></line></svg
+							>
+						</button>
+						<button
+							type="button"
+							class="theme-btn"
+							data-theme="dark"
+							aria-label="Use dark theme"
+							title="Dark theme"
+						>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+								></path></svg
+							>
+						</button>
+						<button
+							type="button"
+							class="theme-btn"
+							data-theme="system"
+							aria-label="Use system theme"
+							title="System theme"
+						>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><rect x="2" y="3" width="20" height="14" rx="2" ry="2"
+								></rect><line x1="8" y1="21" x2="16" y2="21"></line><line
+									x1="12"
+									y1="17"
+									x2="12"
+									y2="21"></line></svg
+							>
+						</button>
+					</div>
 					{
 						isLoggedIn && (
 							<a href="/_emdash/admin" class="nav-admin">
@@ -144,22 +246,22 @@ const isLoggedIn = !!Astro.locals.user;
 
 		<footer class="site-footer">
 			<!-- Webring -->
-			<div style="border-bottom: 1px dashed rgba(245, 158, 11, 0.2); text-align: center; padding: 10px 0; font-family: var(--font-pixel); font-size: 0.75rem; color: rgba(245, 158, 11, 0.6);">
-				<a href="#" style="color: inherit; text-decoration: none;">&lt;&lt; prev</a>
-				<span style="margin: 0 8px; opacity: 0.3;">|</span>
-				<span style="opacity: 0.8;">~ indie web ring ~</span>
-				<span style="margin: 0 8px; opacity: 0.3;">|</span>
-				<a href="#" style="color: inherit; text-decoration: none;">next &gt;&gt;</a>
+			<div class="webring">
+				<a href="#">&lt;&lt; prev</a>
+				<span class="webring-sep">|</span>
+				<span class="webring-label">~ indie web ring ~</span>
+				<span class="webring-sep">|</span>
+				<a href="#">next &gt;&gt;</a>
 			</div>
 			<div class="footer-inner">
 				<div class="footer-grid">
 					<div class="footer-brand">
-						<a href="/" class="footer-logo" style="font-family: var(--font-serif); font-style: italic; font-weight: 400;">{siteTitle}</a>
+						<a href="/" class="footer-logo">{siteTitle}</a>
 						<p class="footer-tagline">Technical writing, engineering projects, and 3D prints.</p>
 						<!-- Visitor counter -->
-						<div style="margin-top: 16px; display: flex; align-items: center; gap: 8px;">
-							<span style="font-family: var(--font-pixel); font-size: 0.7rem; color: var(--color-retro-green); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em;">Visitors</span>
-							<span id="visitor-counter" style="display: flex; gap: 2px;"></span>
+						<div class="visitor-counter">
+							<span class="visitor-counter-label">Visitors</span>
+							<span id="visitor-counter" class="visitor-counter-digits"></span>
 						</div>
 					</div>
 					<div class="footer-nav">
@@ -210,158 +312,126 @@ const isLoggedIn = !!Astro.locals.user;
 					<p class="footer-copyright">
 						Powered by <a href="https://emdashcms.com">EmDash</a>
 					</p>
-					<div style="display: flex; gap: 8px; align-items: center;">
-						<span style="border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 4px; padding: 4px 10px; font-family: var(--font-pixel); font-size: 0.6rem; color: rgba(245, 158, 11, 0.6); text-align: center; line-height: 1.4;">
-							best viewed in<br/><span style="color: rgba(245, 158, 11, 0.9);">Netscape Navigator 4.0</span>
+					<div class="footer-badges">
+						<span class="footer-badge footer-badge-retro">
+							best viewed in<br/><span>Netscape Navigator 4.0</span>
 						</span>
-						<span style="border: 1px dashed rgba(74, 222, 128, 0.3); border-radius: 4px; padding: 4px 10px; font-family: var(--font-pixel); font-size: 0.6rem; color: rgba(74, 222, 128, 0.6); display: flex; align-items: center; gap: 6px;">
-							<span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(74, 222, 128, 0.8);" class="glow-pulse"></span>
+						<span class="footer-badge footer-badge-valid">
+							<span class="footer-badge-dot glow-pulse"></span>
 							HTML 5.0 valid
 						</span>
-					</div>
-					<div class="theme-switcher">
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="light"
-							aria-label="Light mode"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="12" cy="12" r="5"></circle><line
-									x1="12"
-									y1="1"
-									x2="12"
-									y2="3"></line><line x1="12" y1="21" x2="12" y2="23"
-								></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"
-								></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"
-								></line><line x1="1" y1="12" x2="3" y2="12"></line><line
-									x1="21"
-									y1="12"
-									x2="23"
-									y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"
-								></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"
-								></line></svg
-							>
-						</button>
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="dark"
-							aria-label="Dark mode"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-								></path></svg
-							>
-						</button>
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="system"
-							aria-label="System theme"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="2" y="3" width="20" height="14" rx="2" ry="2"
-								></rect><line x1="8" y1="21" x2="16" y2="21"></line><line
-									x1="12"
-									y1="17"
-									x2="12"
-									y2="21"></line></svg
-							>
-						</button>
 					</div>
 				</div>
 			</div>
 		</footer>
 
 		<script>
-			// Theme switcher
-			const THEME_REGEX = /theme=([^;]+)/;
 			const themeBtns =
 				document.querySelectorAll<HTMLButtonElement>(".theme-btn");
 			const root = document.documentElement;
+			const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+			const themeColorMeta = document.querySelector<HTMLMetaElement>(
+				'meta[name="theme-color"]'
+			);
 
-			function setCookie(
-				name: string,
-				value: string,
-				maxAge: number = 31536000
-			) {
+			type ThemeChoice = "light" | "dark" | "system";
+
+			function readCookie(name: string): string | null {
+				return (
+					document.cookie
+						.split("; ")
+						.find((row) => row.startsWith(`${name}=`))
+						?.split("=")[1] ?? null
+				);
+			}
+
+			function setThemeCookie(value: ThemeChoice | "") {
 				const secure = location.protocol === "https:" ? "; Secure" : "";
-				if (value === "") {
-					document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax${secure}`;
-				} else {
-					document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax${secure}`;
+				if (!value) {
+					document.cookie = `theme=; path=/; max-age=0; SameSite=Lax${secure}`;
+					return;
 				}
+				document.cookie = `theme=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax${secure}`;
 			}
 
-			function setTheme(theme: string) {
-				if (theme === "system") {
-					setCookie("theme", "");
-					root.classList.remove("light", "dark");
-					if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-						root.classList.add("dark");
-					}
-				} else {
-					setCookie("theme", theme);
-					root.classList.remove("light", "dark");
-					root.classList.add(theme);
-				}
-				updateActiveBtn(theme);
+			function normalizeTheme(value: string | null | undefined): ThemeChoice {
+				return value === "light" || value === "dark" ? value : "system";
 			}
 
-			function updateActiveBtn(theme: string) {
+			function getStoredTheme(): ThemeChoice {
+				let localTheme: string | null = null;
+				try {
+					localTheme = localStorage.getItem("theme");
+				} catch {
+					localTheme = null;
+				}
+				return normalizeTheme(
+					readCookie("theme")
+						? decodeURIComponent(readCookie("theme") as string)
+						: localTheme
+				);
+			}
+
+			function resolveTheme(theme: ThemeChoice): "light" | "dark" {
+				return theme === "system"
+					? colorSchemeQuery.matches
+						? "dark"
+						: "light"
+					: theme;
+			}
+
+			function updateActiveBtn(theme: ThemeChoice, resolved: "light" | "dark") {
 				themeBtns.forEach((btn) => {
-					btn.classList.toggle("active", btn.dataset.theme === theme);
+					const isActive = btn.dataset.theme === theme;
+					btn.classList.toggle("active", isActive);
+					btn.setAttribute("aria-pressed", String(isActive));
+					btn.dataset.resolvedTheme = resolved;
 				});
 			}
 
-			function getStoredTheme(): string {
-				const match = document.cookie.match(THEME_REGEX);
-				return match ? match[1] : "system";
+			function applyTheme(theme: ThemeChoice, persist = true) {
+				const resolved = resolveTheme(theme);
+
+				root.classList.remove("light", "dark");
+				root.classList.add(resolved);
+				root.dataset.theme = theme;
+				root.dataset.resolvedTheme = resolved;
+
+				if (themeColorMeta) {
+					themeColorMeta.content = resolved === "dark" ? "#050508" : "#f5f7f1";
+				}
+
+				if (persist) {
+					if (theme === "system") {
+						try {
+							localStorage.removeItem("theme");
+						} catch {}
+						setThemeCookie("");
+					} else {
+						try {
+							localStorage.setItem("theme", theme);
+						} catch {}
+						setThemeCookie(theme);
+					}
+				}
+
+				updateActiveBtn(theme, resolved);
 			}
 
-			// Initialize
-			const storedTheme = getStoredTheme();
-			setTheme(storedTheme);
+			applyTheme(getStoredTheme(), false);
+			requestAnimationFrame(() => root.classList.add("theme-ready"));
 
 			themeBtns.forEach((btn) => {
 				btn.addEventListener("click", () => {
-					setTheme(btn.dataset.theme || "system");
+					applyTheme(normalizeTheme(btn.dataset.theme), true);
 				});
 			});
 
-			// Listen for system preference changes
-			window
-				.matchMedia("(prefers-color-scheme: dark)")
-				.addEventListener("change", (e) => {
-					if (getStoredTheme() === "system") {
-						root.classList.toggle("dark", e.matches);
-					}
-				});
+			colorSchemeQuery.addEventListener("change", () => {
+				if (getStoredTheme() === "system") {
+					applyTheme("system", false);
+				}
+			});
 		</script>
 
 		<style is:global>
@@ -392,190 +462,6 @@ const isLoggedIn = !!Astro.locals.user;
 			ol {
 				padding: 0;
 			}
-
-			:root {
-				/* Colors - always dark */
-				--color-bg: #050508;
-				--color-bg-subtle: #0c0c10;
-				--color-text: #d4d4d8;
-				--color-text-secondary: #a1a1aa;
-				--color-muted: #71717a;
-				--color-border: #1e1e24;
-				--color-border-subtle: #141418;
-				--color-surface: #0c0c10;
-				--color-accent: #22d3ee;
-				--color-accent-hover: #67e8f9;
-				--color-on-accent: #050508;
-				--color-accent-ring: color-mix(
-					in srgb,
-					var(--color-accent) 25%,
-					transparent
-				);
-
-				/* EmDash search theming */
-				--emdash-search-bg: var(--color-bg);
-				--emdash-search-text: var(--color-text);
-				--emdash-search-muted: var(--color-muted);
-				--emdash-search-border: var(--color-border);
-				--emdash-search-hover: var(--color-surface);
-				--emdash-search-highlight: var(--color-text);
-
-				/* Typography */
-				--font-sans:
-					"Instrument Serif", Georgia, serif;
-				--font-mono:
-					"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-				--font-serif: "Instrument Serif", Georgia, serif;
-				--font-pixel: "VT323", monospace;
-				--color-retro: #f59e0b;
-				--color-retro-green: #4ade80;
-
-				/* Type scale - more refined */
-				--font-size-xs: 0.8125rem;
-				--font-size-sm: 0.875rem;
-				--font-size-base: 1rem;
-				--font-size-lg: 1.125rem;
-				--font-size-xl: 1.25rem;
-				--font-size-2xl: 1.5rem;
-				--font-size-3xl: 2rem;
-				--font-size-4xl: 2.5rem;
-				--font-size-5xl: 3.5rem;
-
-				/* Line heights */
-				--leading-tight: 1.15;
-				--leading-snug: 1.3;
-				--leading-normal: 1.5;
-				--leading-relaxed: 1.7;
-
-				/* Spacing - more generous */
-				--spacing-1: 0.25rem;
-				--spacing-2: 0.5rem;
-				--spacing-3: 0.75rem;
-				--spacing-4: 1rem;
-				--spacing-5: 1.25rem;
-				--spacing-6: 1.5rem;
-				--spacing-8: 2rem;
-				--spacing-10: 2.5rem;
-				--spacing-12: 3rem;
-				--spacing-16: 4rem;
-				--spacing-20: 5rem;
-				--spacing-24: 6rem;
-
-				/* Legacy spacing aliases */
-				--spacing-xs: var(--spacing-1);
-				--spacing-sm: var(--spacing-2);
-				--spacing-md: var(--spacing-4);
-				--spacing-lg: var(--spacing-6);
-				--spacing-xl: var(--spacing-8);
-				--spacing-2xl: var(--spacing-12);
-				--spacing-3xl: var(--spacing-16);
-
-				/* Layout - wider for three-column */
-				--content-width: 680px;
-				--wide-width: 1200px;
-				--max-width: var(--content-width);
-				--gutter-width: 200px;
-				--radius: 4px;
-				--radius-lg: 8px;
-
-				/* Transitions */
-				--transition-fast: 120ms ease;
-				--transition-base: 180ms ease;
-
-				/* Nav */
-				--nav-height: 64px;
-
-				/* Search */
-				--search-input-width: 180px;
-
-				/* Article layout */
-				--meta-col-width: 180px;
-
-				/* Avatar sizes */
-				--avatar-size-xs: 18px;
-				--avatar-size-sm: 20px;
-				--avatar-size-md: 24px;
-				--avatar-size-lg: 32px;
-
-				/* Letter spacing */
-				--tracking-tight: -0.03em;
-				--tracking-snug: -0.02em;
-				--tracking-wide: 0.06em;
-				--tracking-wider: 0.08em;
-
-				/* Tag pill */
-				--tag-padding-y: 2px;
-
-				/* Shadows */
-				--shadow-dropdown: 0 8px 30px rgba(0, 0, 0, 0.12);
-				--shadow-btn-active: 0 1px 2px rgba(0, 0, 0, 0.05);
-			}
-
-			/* Dark mode — same as root (always dark) */
-			@media (prefers-color-scheme: dark) {
-				:root:not(.light) {
-					--color-bg: #050508;
-					--color-bg-subtle: #0c0c10;
-					--color-text: #d4d4d8;
-					--color-text-secondary: #a1a1aa;
-					--color-muted: #71717a;
-					--color-border: #1e1e24;
-					--color-border-subtle: #141418;
-					--color-surface: #0c0c10;
-					--color-accent: #22d3ee;
-					--color-accent-hover: #67e8f9;
-				}
-			}
-
-			/* Explicit dark mode — same as root */
-			:root.dark {
-				--color-bg: #050508;
-				--color-bg-subtle: #0c0c10;
-				--color-text: #d4d4d8;
-				--color-text-secondary: #a1a1aa;
-				--color-muted: #71717a;
-				--color-border: #1e1e24;
-				--color-border-subtle: #141418;
-				--color-surface: #0c0c10;
-				--color-accent: #22d3ee;
-				--color-accent-hover: #67e8f9;
-			}
-
-			html {
-				scroll-behavior: smooth;
-			}
-
-			body {
-				font-family: var(--font-sans);
-				font-size: var(--font-size-base);
-				line-height: var(--leading-relaxed);
-				color: var(--color-text);
-				background: var(--color-bg);
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-				min-height: 100vh;
-			}
-
-			/* Headings use serif */
-			h1, h2, h3 {
-				font-family: var(--font-serif) !important;
-				font-weight: 400 !important;
-			}
-
-			/* Selection */
-			::selection {
-				background: rgba(34, 211, 238, 0.25) !important;
-				color: #f4f4f5 !important;
-			}
-
-			/* Scrollbar */
-			::-webkit-scrollbar { width: 6px; }
-			::-webkit-scrollbar-track { background: #050508; }
-			::-webkit-scrollbar-thumb { background: #1e1e24; border-radius: 3px; }
-			::-webkit-scrollbar-thumb:hover { background: #2a2a32; }
-
-			/* Hide theme switcher — always dark */
-			.theme-switcher { display: none !important; }
 
 			a:where(:not([class*="emdash"]):not([class*="ec-"])) {
 				color: var(--color-accent);
@@ -611,8 +497,8 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			::selection {
-				background: var(--color-accent);
-				color: white;
+				background: var(--color-accent-ring);
+				color: var(--color-text);
 			}
 		</style>
 
@@ -621,7 +507,7 @@ const isLoggedIn = !!Astro.locals.user;
 				position: sticky;
 				top: 0;
 				z-index: 100;
-				background: color-mix(in srgb, var(--color-bg) 65%, transparent);
+				background: color-mix(in srgb, var(--color-bg) 82%, transparent);
 				backdrop-filter: blur(12px);
 				-webkit-backdrop-filter: blur(12px);
 				border-bottom: 1px solid var(--color-border-subtle);
@@ -638,21 +524,48 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			.site-title {
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				font-family: var(--font-brand);
+				font-style: italic;
 				font-size: var(--font-size-lg);
-				font-weight: 600;
+				font-weight: 400;
 				color: var(--color-text);
 				text-decoration: none;
-				letter-spacing: var(--tracking-snug);
+				letter-spacing: 0;
 			}
 
 			.site-title:hover {
 				color: var(--color-accent);
 			}
 
+			.site-title-mark {
+				display: block;
+				border-radius: 50%;
+				box-shadow: 0 0 0 1px var(--color-border);
+			}
+
+			.site-title-divider {
+				display: inline-block;
+				width: 1px;
+				height: 16px;
+				margin: 0 12px;
+				background: var(--color-border);
+				vertical-align: middle;
+			}
+
+			.site-title-era {
+				color: var(--color-muted);
+				font-family: var(--font-pixel);
+				font-size: 0.7rem;
+				font-style: normal;
+			}
+
 			.nav-right {
 				display: flex;
 				align-items: center;
-				gap: var(--spacing-6);
+				gap: var(--spacing-4);
 			}
 
 			.nav-links {
@@ -689,6 +602,9 @@ const isLoggedIn = !!Astro.locals.user;
 				transition: color 0.2s ease;
 				display: flex;
 				align-items: center;
+				justify-content: center;
+				width: 32px;
+				height: 32px;
 			}
 
 			.nav-github:hover {
@@ -718,11 +634,11 @@ const isLoggedIn = !!Astro.locals.user;
 			:global(.site-search-input) {
 				width: var(--search-input-width);
 				padding: var(--spacing-2) var(--spacing-3);
-				font-family: var(--font-sans);
+				font-family: var(--font-mono);
 				font-size: var(--font-size-sm);
 				border: 1px solid var(--color-border);
 				border-radius: var(--radius);
-				background: var(--color-bg);
+				background: var(--color-surface);
 				color: var(--color-text);
 				transition:
 					border-color var(--transition-fast),
@@ -746,7 +662,7 @@ const isLoggedIn = !!Astro.locals.user;
 				left: 0;
 				right: 0;
 				margin-top: var(--spacing-2);
-				background: var(--color-bg);
+				background: var(--color-surface);
 				border: 1px solid var(--color-border);
 				border-radius: var(--radius-lg);
 				box-shadow: var(--shadow-dropdown);
@@ -821,6 +737,33 @@ const isLoggedIn = !!Astro.locals.user;
 				border-top: 1px solid var(--color-border-subtle);
 			}
 
+			.webring {
+				border-bottom: 1px dashed var(--color-retro-border);
+				color: var(--color-retro-muted);
+				font-family: var(--font-pixel);
+				font-size: 0.75rem;
+				padding: 10px 0;
+				text-align: center;
+			}
+
+			.webring a {
+				color: inherit;
+				text-decoration: none;
+			}
+
+			.webring a:hover {
+				color: var(--color-retro);
+			}
+
+			.webring-sep {
+				margin: 0 8px;
+				opacity: 0.35;
+			}
+
+			.webring-label {
+				opacity: 0.85;
+			}
+
 			.footer-inner {
 				max-width: var(--wide-width);
 				margin: 0 auto;
@@ -839,11 +782,13 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			.footer-logo {
+				font-family: var(--font-brand);
+				font-style: italic;
 				font-size: var(--font-size-lg);
-				font-weight: 600;
+				font-weight: 400;
 				color: var(--color-text);
 				text-decoration: none;
-				letter-spacing: var(--tracking-snug);
+				letter-spacing: 0;
 			}
 
 			.footer-tagline {
@@ -851,6 +796,26 @@ const isLoggedIn = !!Astro.locals.user;
 				font-size: var(--font-size-sm);
 				color: var(--color-muted);
 				line-height: var(--leading-relaxed);
+			}
+
+			.visitor-counter {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-top: 16px;
+			}
+
+			.visitor-counter-label {
+				color: var(--color-success-muted);
+				font-family: var(--font-pixel);
+				font-size: 0.7rem;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+			}
+
+			.visitor-counter-digits {
+				display: flex;
+				gap: 2px;
 			}
 
 			.footer-nav {
@@ -913,6 +878,7 @@ const isLoggedIn = !!Astro.locals.user;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+				gap: var(--spacing-4);
 				padding-top: var(--spacing-6);
 				border-top: 1px solid var(--color-border);
 			}
@@ -926,13 +892,53 @@ const isLoggedIn = !!Astro.locals.user;
 				color: var(--color-text-secondary);
 			}
 
+			.footer-badges {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.footer-badge {
+				border-radius: var(--radius);
+				font-family: var(--font-pixel);
+				font-size: 0.6rem;
+				line-height: 1.4;
+				padding: 4px 10px;
+			}
+
+			.footer-badge-retro {
+				border: 1px dashed var(--color-retro-border);
+				color: var(--color-retro-muted);
+				text-align: center;
+			}
+
+			.footer-badge-retro span {
+				color: var(--color-retro);
+			}
+
+			.footer-badge-valid {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				border: 1px dashed var(--color-success-border);
+				color: var(--color-success-muted);
+			}
+
+			.footer-badge-dot {
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: var(--color-success);
+			}
+
 			/* Theme switcher */
 			.theme-switcher {
 				display: flex;
 				gap: var(--spacing-1);
 				padding: var(--spacing-1);
-				background: var(--color-surface);
-				border-radius: var(--radius);
+				background: var(--color-panel);
+				border: 1px solid var(--color-border);
+				border-radius: var(--radius-lg);
 			}
 
 			.theme-btn {
@@ -946,17 +952,26 @@ const isLoggedIn = !!Astro.locals.user;
 				color: var(--color-muted);
 				border-radius: var(--radius);
 				cursor: pointer;
-				transition: all var(--transition-fast);
+				transition:
+					background var(--transition-fast),
+					color var(--transition-fast),
+					box-shadow var(--transition-fast);
 			}
 
 			.theme-btn:hover {
-				color: var(--color-text-secondary);
+				color: var(--color-text);
+				background: var(--color-accent-soft);
 			}
 
 			.theme-btn.active {
-				background: var(--color-bg);
+				background: var(--color-surface);
 				color: var(--color-text);
 				box-shadow: var(--shadow-btn-active);
+			}
+
+			.theme-btn:focus-visible {
+				outline: 2px solid var(--color-accent);
+				outline-offset: 2px;
 			}
 
 			.theme-btn svg {
@@ -1021,6 +1036,15 @@ const isLoggedIn = !!Astro.locals.user;
 					justify-content: flex-start;
 				}
 
+				.nav-github {
+					order: 0;
+				}
+
+				.theme-switcher {
+					order: 0;
+					margin-left: auto;
+				}
+
 				.nav-admin {
 					order: 2;
 					position: absolute;
@@ -1043,7 +1067,7 @@ const isLoggedIn = !!Astro.locals.user;
 					text-align: center;
 				}
 
-				.footer-controls {
+				.footer-badges {
 					flex-wrap: wrap;
 					justify-content: center;
 				}
@@ -1078,7 +1102,7 @@ const isLoggedIn = !!Astro.locals.user;
 				counter.innerHTML = digits.map(d => `<span class="visitor-counter-digit">${d}</span>`).join('');
 			}
 
-			// ⌘K / Ctrl+K to focus search
+			// Cmd+K / Ctrl+K to focus search
 			document.addEventListener("keydown", (e) => {
 				if ((e.metaKey || e.ctrlKey) && e.key === "k") {
 					e.preventDefault();

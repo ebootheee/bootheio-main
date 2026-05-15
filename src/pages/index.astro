@@ -1,6 +1,5 @@
 ---
 import { getEmDashCollection, getEntryTerms } from "emdash";
-import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import { getReadingTime } from "../utils/reading-time";
@@ -152,7 +151,7 @@ const guestbookEntries = [
 	.hero-status {
 		font-family: var(--font-pixel);
 		font-size: 0.875rem;
-		color: rgba(245, 158, 11, 0.6);
+		color: var(--color-retro-muted);
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -163,13 +162,13 @@ const guestbookEntries = [
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background: var(--color-retro-green);
+		background: var(--color-success);
 		animation: glow-pulse 3s ease-in-out infinite;
 	}
 
 	.hero-title {
 		font-family: var(--font-serif) !important;
-		font-size: clamp(3rem, 8vw, 4.5rem);
+		font-size: var(--font-size-5xl);
 		font-weight: 400 !important;
 		line-height: 1.1;
 		color: var(--color-text);
@@ -178,20 +177,20 @@ const guestbookEntries = [
 
 	.hero-title-accent {
 		font-style: italic;
-		color: rgba(34, 211, 238, 0.8);
+		color: var(--color-accent);
 	}
 
 	.hero-description {
-		font-size: 0.875rem;
+		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--color-muted);
+		color: var(--color-text-secondary);
 		max-width: 540px;
 	}
 
 	.hero-divider {
 		margin-top: 4rem;
 		height: 1px;
-		background: linear-gradient(to right, rgba(34, 211, 238, 0.2), var(--color-border), transparent);
+		background: var(--gradient-rule);
 	}
 
 	/* Sections */
@@ -215,7 +214,7 @@ const guestbookEntries = [
 	.section-label {
 		font-family: var(--font-pixel);
 		font-size: 0.625rem;
-		color: rgba(245, 158, 11, 0.4);
+		color: var(--color-retro-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.15em;
 	}
@@ -253,15 +252,15 @@ const guestbookEntries = [
 	.posts-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: 1rem;
+		gap: 1.25rem;
 	}
 
 	/* Guestbook */
 	.guestbook {
 		max-width: 420px;
-		border: 1px dashed rgba(245, 158, 11, 0.3);
+		border: 1px dashed var(--color-retro-border);
 		border-radius: var(--radius-lg);
-		background: rgba(245, 158, 11, 0.02);
+		background: var(--color-retro-soft);
 		padding: 1.5rem;
 		position: relative;
 		overflow: hidden;
@@ -273,7 +272,7 @@ const guestbookEntries = [
 		top: 0.5rem;
 		font-family: var(--font-pixel);
 		font-size: 0.75rem;
-		color: rgba(245, 158, 11, 0.2);
+		color: var(--color-retro-border);
 	}
 	.guestbook-corner-tl { left: 0.5rem; }
 	.guestbook-corner-tr { right: 0.5rem; }
@@ -296,7 +295,7 @@ const guestbookEntries = [
 	}
 
 	.guestbook-entry {
-		border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+		border-bottom: 1px solid var(--color-retro-border);
 		padding-bottom: 0.75rem;
 	}
 
@@ -314,7 +313,7 @@ const guestbookEntries = [
 
 	.guestbook-name {
 		font-family: var(--font-pixel);
-		color: var(--color-retro-green);
+		color: var(--color-success);
 	}
 
 	.guestbook-date {
@@ -386,6 +385,9 @@ const guestbookEntries = [
 	@media (max-width: 600px) {
 		.hero {
 			padding: 3rem var(--spacing-4) 2.5rem;
+		}
+		.hero-title {
+			font-size: 3rem;
 		}
 		.section {
 			padding: 0 var(--spacing-4) 3rem;

@@ -45,9 +45,15 @@ Astro.cache.set(cacheHint);
 	}
 
 	.page-title {
-		font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
+		font-size: var(--font-size-4xl);
 		font-weight: 700;
 		line-height: var(--leading-tight);
+	}
+
+	@media (max-width: 600px) {
+		.page-title {
+			font-size: var(--font-size-3xl);
+		}
 	}
 
 	.page-content :global(p) {
