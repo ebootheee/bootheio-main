@@ -1,0 +1,493 @@
+---
+/**
+ * STL Viewer — Portable Text block component.
+ *
+ * Server-renders a placeholder card; client-side script dynamically imports
+ * three.js on viewport entry and renders an interactive 3D preview.
+ *
+ * Props.node fields (from sandbox-entry.ts):
+ *   id          STL file URL
+ *   title       optional title shown in header
+ *   caption     optional caption shown beneath
+ *   material    matte | glossy | metal | normal | clay
+ *   color       hex color (used by matte/glossy/metal)
+ *   height      compact | standard | tall
+ *   autoRotate  boolean
+ *   showGrid    boolean
+ */
+
+interface Props {
+	node: {
+		id?: string;
+		title?: string;
+		caption?: string;
+		material?: string;
+		color?: string;
+		height?: string;
+		autoRotate?: boolean | string;
+		showGrid?: boolean | string;
+	};
+}
+
+const { node } = Astro.props;
+const url = (node.id ?? "").trim();
+const title = (node.title ?? "").trim();
+const caption = (node.caption ?? "").trim();
+const material = node.material || "matte";
+const color = node.color || "#cfd1d4";
+const heightToken = node.height || "standard";
+const heightPx =
+	heightToken === "compact" ? 320 : heightToken === "tall" ? 560 : 440;
+
+// Tolerate string-encoded toggle values from the editor
+function toBool(v: unknown, dflt: boolean) {
+	if (typeof v === "boolean") return v;
+	if (typeof v === "string") return v === "true" || v === "1";
+	return dflt;
+}
+const autoRotate = toBool(node.autoRotate, true);
+const showGrid = toBool(node.showGrid, true);
+
+// Derive a friendly filename for the placeholder
+let filename = "";
+try {
+	if (url) filename = new URL(url, "http://x").pathname.split("/").pop() ?? "";
+} catch {
+	filename = url.split("/").pop() ?? "";
+}
+
+const config = {
+	url,
+	material,
+	color,
+	autoRotate,
+	showGrid,
+};
+---
+
+<figure
+	class="stl-viewer"
+	data-stl-viewer
+	data-config={JSON.stringify(config)}
+	style={`--stl-height: ${heightPx}px;`}
+>
+	<div class="stl-viewer__frame" role="group" aria-label={title || "3D model preview"}>
+		<div class="stl-viewer__header">
+			<span class="stl-viewer__badge">
+				<svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+					<path
+						d="M6 1L1 3.5v5L6 11l5-2.5v-5L6 1zM6 1v5m0 0L1 3.5M6 6l5-2.5"
+						stroke="currentColor"
+						stroke-width="1"
+						stroke-linejoin="round"
+					></path>
+				</svg>
+				STL
+			</span>
+			{title && <span class="stl-viewer__title">{title}</span>}
+			<div class="stl-viewer__actions">
+				<button
+					type="button"
+					class="stl-viewer__button"
+					data-action="reset"
+					hidden
+					title="Reset view"
+					aria-label="Reset view"
+				>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M3 12a9 9 0 1 0 9-9"></path>
+						<polyline points="3 4 3 10 9 10"></polyline>
+					</svg>
+				</button>
+				<button
+					type="button"
+					class="stl-viewer__button"
+					data-action="rotate"
+					hidden
+					title="Toggle auto-rotate"
+					aria-label="Toggle auto-rotate"
+					aria-pressed={autoRotate ? "true" : "false"}
+				>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M21 12a9 9 0 1 1-3.51-7.11"></path>
+						<polyline points="21 3 21 9 15 9"></polyline>
+					</svg>
+				</button>
+				<a
+					class="stl-viewer__button"
+					href={url}
+					download
+					title="Download STL"
+					aria-label="Download STL"
+				>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="7 10 12 15 17 10"></polyline>
+						<line x1="12" y1="15" x2="12" y2="3"></line>
+					</svg>
+				</a>
+			</div>
+		</div>
+		<div class="stl-viewer__stage" data-stage>
+			<div class="stl-viewer__placeholder" data-placeholder>
+				<div class="stl-viewer__phantom" aria-hidden="true">
+					<div class="stl-viewer__phantom-cube">
+						<span></span><span></span><span></span>
+						<span></span><span></span><span></span>
+					</div>
+				</div>
+				<div class="stl-viewer__placeholder-meta">
+					<span class="stl-viewer__placeholder-filename">{filename || "3D model"}</span>
+					<button type="button" class="stl-viewer__load" data-load>Load 3D viewer</button>
+				</div>
+			</div>
+			<div class="stl-viewer__progress" data-progress hidden>
+				<div class="stl-viewer__progress-track">
+					<div class="stl-viewer__progress-bar" data-progress-bar></div>
+				</div>
+				<span class="stl-viewer__progress-label" data-progress-label>Loading…</span>
+			</div>
+			<div class="stl-viewer__error" data-error hidden></div>
+		</div>
+	</div>
+	{caption && <figcaption class="stl-viewer__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+	.stl-viewer {
+		--stl-bg: color-mix(in srgb, var(--color-bg-subtle, #0c0c10) 88%, transparent);
+		--stl-border: var(--color-border, #1e1e24);
+		--stl-text: var(--color-text, #d4d4d8);
+		--stl-muted: var(--color-muted, #71717a);
+		--stl-accent: var(--color-accent, #22d3ee);
+		--stl-radius: var(--radius-lg, 8px);
+		--stl-grid-color: rgba(255, 255, 255, 0.04);
+
+		margin: 2em 0;
+		display: block;
+		max-width: 100%;
+	}
+
+	.stl-viewer__frame {
+		border: 1px solid var(--stl-border);
+		border-radius: var(--stl-radius);
+		background: var(--stl-bg);
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.stl-viewer__header {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 8px 12px;
+		border-bottom: 1px solid var(--stl-border);
+		background:
+			linear-gradient(180deg,
+				color-mix(in srgb, var(--stl-bg) 60%, transparent),
+				transparent);
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+	}
+
+	.stl-viewer__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 2px 7px;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--stl-accent);
+		background: color-mix(in srgb, var(--stl-accent) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--stl-accent) 25%, transparent);
+		border-radius: 3px;
+		line-height: 1.2;
+	}
+
+	.stl-viewer__title {
+		flex: 1 1 auto;
+		min-width: 0;
+		font-family: var(--font-serif, Georgia, serif);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--stl-text);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.stl-viewer__actions {
+		display: inline-flex;
+		gap: 4px;
+		margin-left: auto;
+		align-items: center;
+	}
+
+	.stl-viewer__button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 26px;
+		height: 26px;
+		border: 1px solid transparent;
+		background: transparent;
+		color: var(--stl-muted);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
+		padding: 0;
+		text-decoration: none;
+	}
+
+	.stl-viewer__button:hover {
+		color: var(--stl-text);
+		background: color-mix(in srgb, var(--stl-text) 8%, transparent);
+		border-color: var(--stl-border);
+	}
+
+	.stl-viewer__button[aria-pressed="true"] {
+		color: var(--stl-accent);
+		border-color: color-mix(in srgb, var(--stl-accent) 30%, transparent);
+		background: color-mix(in srgb, var(--stl-accent) 10%, transparent);
+	}
+
+	.stl-viewer__stage {
+		position: relative;
+		width: 100%;
+		height: var(--stl-height, 440px);
+		background:
+			radial-gradient(ellipse at center bottom,
+				color-mix(in srgb, var(--stl-accent) 6%, transparent),
+				transparent 70%),
+			linear-gradient(180deg,
+				color-mix(in srgb, var(--stl-bg) 90%, #000 10%),
+				color-mix(in srgb, var(--stl-bg) 100%, #000 0%));
+		overflow: hidden;
+		touch-action: none;
+	}
+
+	.stl-viewer.is-ready .stl-viewer__stage {
+		cursor: grab;
+	}
+
+	.stl-viewer.is-ready .stl-viewer__stage:active {
+		cursor: grabbing;
+	}
+
+	.stl-viewer__stage::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(var(--stl-grid-color) 1px, transparent 1px),
+			linear-gradient(90deg, var(--stl-grid-color) 1px, transparent 1px);
+		background-size: 24px 24px;
+		background-position: center center;
+		mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
+		-webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
+		pointer-events: none;
+		opacity: 0.7;
+	}
+
+	/* `:global(canvas)` escapes Astro's scoped-CSS rewrite. The canvas is
+	 * appended at runtime by three.js and lacks the data-astro-cid-* attribute,
+	 * so a plain `.stl-viewer__stage canvas` rule would never match it and the
+	 * element would render with zero size, breaking OrbitControls input. */
+	.stl-viewer__stage :global(canvas) {
+		position: absolute;
+		inset: 0;
+		width: 100% !important;
+		height: 100% !important;
+		display: block;
+		opacity: 0;
+		transition: opacity 240ms ease;
+		touch-action: none;
+	}
+
+	.stl-viewer.is-ready .stl-viewer__stage :global(canvas) {
+		opacity: 1;
+	}
+
+	.stl-viewer.is-ready .stl-viewer__placeholder {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.stl-viewer__placeholder {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+		transition: opacity 240ms ease;
+		text-align: center;
+		padding: 24px;
+	}
+
+	.stl-viewer__phantom {
+		width: 72px;
+		height: 72px;
+		perspective: 220px;
+	}
+
+	.stl-viewer__phantom-cube {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		animation: stl-phantom-spin 14s linear infinite;
+	}
+
+	.stl-viewer__phantom-cube span {
+		position: absolute;
+		inset: 0;
+		border: 1px solid color-mix(in srgb, var(--stl-accent) 25%, transparent);
+		background: color-mix(in srgb, var(--stl-accent) 8%, transparent);
+	}
+
+	.stl-viewer__phantom-cube span:nth-child(1) { transform: translateZ(36px); }
+	.stl-viewer__phantom-cube span:nth-child(2) { transform: rotateY(180deg) translateZ(36px); }
+	.stl-viewer__phantom-cube span:nth-child(3) { transform: rotateY(90deg) translateZ(36px); }
+	.stl-viewer__phantom-cube span:nth-child(4) { transform: rotateY(-90deg) translateZ(36px); }
+	.stl-viewer__phantom-cube span:nth-child(5) { transform: rotateX(90deg) translateZ(36px); }
+	.stl-viewer__phantom-cube span:nth-child(6) { transform: rotateX(-90deg) translateZ(36px); }
+
+	@keyframes stl-phantom-spin {
+		from { transform: rotateX(-18deg) rotateY(0deg); }
+		to   { transform: rotateX(-18deg) rotateY(360deg); }
+	}
+
+	.stl-viewer__placeholder-meta {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.stl-viewer__placeholder-filename {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+		color: var(--stl-muted);
+		max-width: 320px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stl-viewer__load {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+		padding: 7px 14px;
+		border-radius: 4px;
+		border: 1px solid color-mix(in srgb, var(--stl-accent) 40%, transparent);
+		background: color-mix(in srgb, var(--stl-accent) 10%, transparent);
+		color: var(--stl-accent);
+		cursor: pointer;
+		transition: background 140ms ease, transform 140ms ease;
+	}
+
+	.stl-viewer__load:hover {
+		background: color-mix(in srgb, var(--stl-accent) 20%, transparent);
+	}
+
+	.stl-viewer__load:active {
+		transform: scale(0.97);
+	}
+
+	.stl-viewer__progress {
+		position: absolute;
+		left: 50%;
+		bottom: 18px;
+		transform: translateX(-50%);
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		align-items: center;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.7rem;
+		color: var(--stl-muted);
+		pointer-events: none;
+	}
+
+	.stl-viewer__progress-track {
+		width: 180px;
+		height: 2px;
+		background: color-mix(in srgb, var(--stl-text) 12%, transparent);
+		border-radius: 2px;
+		overflow: hidden;
+	}
+
+	.stl-viewer__progress-bar {
+		height: 100%;
+		width: 0%;
+		background: var(--stl-accent);
+		transition: width 120ms linear;
+	}
+
+	.stl-viewer__progress.is-indeterminate .stl-viewer__progress-bar {
+		width: 35%;
+		animation: stl-progress-indeterminate 1.3s ease-in-out infinite;
+	}
+
+	@keyframes stl-progress-indeterminate {
+		0%   { margin-left: -35%; }
+		100% { margin-left: 100%; }
+	}
+
+	.stl-viewer__error {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 16px;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+		color: #fda4af;
+		text-align: center;
+		line-height: 1.5;
+	}
+
+	.stl-viewer__caption {
+		margin-top: 10px;
+		font-family: var(--font-serif, Georgia, serif);
+		font-size: 0.875rem;
+		font-style: italic;
+		color: var(--stl-muted);
+		text-align: center;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 640px) {
+		.stl-viewer__stage {
+			height: min(var(--stl-height, 440px), 70vh);
+		}
+		.stl-viewer__title {
+			font-size: 0.875rem;
+		}
+		.stl-viewer__header {
+			padding: 7px 10px;
+			gap: 8px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stl-viewer__phantom-cube,
+		.stl-viewer__progress.is-indeterminate .stl-viewer__progress-bar {
+			animation: none;
+		}
+		.stl-viewer__stage canvas {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { initStlViewers } from "./viewer-client";
+	initStlViewers();
+</script>

@@ -1,0 +1,325 @@
+---
+/**
+ * Local test harness for the STL viewer plugin.
+ *
+ * Not linked from any nav — visit /stl-test directly.
+ *
+ * Validates:
+ *   - Multiple viewers on one page (only first should auto-load on view).
+ *   - All material variants.
+ *   - All height tokens.
+ *   - Responsive grid collapse at narrow widths.
+ *   - In-content placement matching real article layout.
+ *   - Lazy loading — viewers below the fold stay as placeholders until scrolled.
+ */
+import StlViewer from "@bootheio/plugin-stl-viewer/astro/StlViewer.astro";
+import Base from "../layouts/Base.astro";
+
+const fixtures = {
+	cube: "/stls/cube.stl",
+	icos: "/stls/icosahedron.stl",
+	torus: "/stls/torus.stl",
+	knurled: "/stls/knurled.stl",
+};
+---
+
+<Base title="STL Viewer Test" description="Local test harness for the STL plugin">
+	<div class="page">
+		<header class="page-head">
+			<span class="page-eyebrow">internal · test</span>
+			<h1>STL Viewer test bench</h1>
+			<p class="page-lede">
+				Each viewer below initializes its 3D scene only when scrolled near, so
+				the page itself stays light. Three.js is shared across viewers — the
+				library loads once.
+			</p>
+		</header>
+
+		<section class="block">
+			<h2>1. Article-width placement</h2>
+			<p>
+				This mirrors how a viewer looks embedded in a blog post. Same column
+				width as <code>/posts/*</code>, with surrounding prose for context.
+			</p>
+			<div class="article-like">
+				<p>
+					When I designed this part, I went through several iterations to get
+					the wall thickness right. The first version flexed too much under
+					load, the second was too heavy to print quickly.
+				</p>
+				<StlViewer
+					node={{
+						id: fixtures.knurled,
+						title: "Knurled grip — v3",
+						caption: "Final revision. 96-segment ridges, 2mm draft.",
+						material: "matte",
+						color: "#cfd1d4",
+						height: "standard",
+						autoRotate: true,
+						showGrid: true,
+					}}
+				/>
+				<p>
+					Drag to orbit, scroll to zoom. The auto-rotation pauses while you're
+					interacting and resumes after a few seconds of idle.
+				</p>
+			</div>
+		</section>
+
+		<section class="block">
+			<h2>2. Material variants</h2>
+			<p>All five materials, same geometry, rendered side-by-side.</p>
+			<div class="grid grid-3">
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "Matte",
+						material: "matte",
+						color: "#cfd1d4",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "Glossy",
+						material: "glossy",
+						color: "#22d3ee",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "Metal",
+						material: "metal",
+						color: "#d4d4d8",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "Clay (unlit)",
+						material: "clay",
+						color: "#e7c89c",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "Normal map",
+						material: "normal",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos,
+						title: "No grid",
+						material: "matte",
+						color: "#f59e0b",
+						height: "compact",
+						showGrid: false,
+						autoRotate: false,
+					}}
+				/>
+			</div>
+		</section>
+
+		<section class="block">
+			<h2>3. Heights</h2>
+			<div class="grid grid-3">
+				<StlViewer
+					node={{
+						id: fixtures.cube,
+						title: "Compact (320px)",
+						material: "matte",
+						color: "#22d3ee",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.cube,
+						title: "Standard (440px)",
+						material: "matte",
+						color: "#22d3ee",
+						height: "standard",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.cube,
+						title: "Tall (560px)",
+						material: "matte",
+						color: "#22d3ee",
+						height: "tall",
+					}}
+				/>
+			</div>
+		</section>
+
+		<section class="block">
+			<h2>4. Complex mesh (3,072 triangles)</h2>
+			<p>
+				A torus with finer tessellation, to check normals and rotation handling
+				on a non-trivial mesh.
+			</p>
+			<StlViewer
+				node={{
+					id: fixtures.torus,
+					title: "Torus",
+					material: "glossy",
+					color: "#22d3ee",
+					height: "tall",
+					showGrid: true,
+				}}
+			/>
+		</section>
+
+		<section class="block">
+			<h2>5. Broken URL (error state)</h2>
+			<StlViewer
+				node={{
+					id: "/stls/does-not-exist.stl",
+					title: "404 model",
+					material: "matte",
+					color: "#cfd1d4",
+					height: "compact",
+				}}
+			/>
+		</section>
+
+		<section class="block">
+			<h2>6. Lazy load check (far below)</h2>
+			<p style="min-height: 1400px; padding-top: 32px; color: var(--color-muted);">
+				The viewer below should remain a placeholder until you scroll to it,
+				then load on its own. Three.js does not download until the first viewer
+				on the page is loaded.
+			</p>
+			<StlViewer
+				node={{
+					id: fixtures.cube,
+					title: "Loaded only on demand",
+					material: "metal",
+					color: "#22d3ee",
+					height: "standard",
+				}}
+			/>
+		</section>
+	</div>
+</Base>
+
+<style>
+	.page {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: var(--spacing-10) var(--spacing-6) var(--spacing-16);
+	}
+
+	.page-head {
+		margin-bottom: var(--spacing-12);
+		padding-bottom: var(--spacing-8);
+		border-bottom: 1px solid var(--color-border-subtle);
+	}
+
+	.page-eyebrow {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-muted);
+		margin-bottom: var(--spacing-3);
+	}
+
+	.page-head h1 {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-4xl);
+		font-weight: 400;
+		font-style: italic;
+		letter-spacing: -0.01em;
+		margin-bottom: var(--spacing-3);
+	}
+
+	.page-lede {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		line-height: var(--leading-relaxed);
+		color: var(--color-text-secondary);
+		max-width: 60ch;
+	}
+
+	.block {
+		margin: var(--spacing-12) 0;
+	}
+
+	.block h2 {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-2xl);
+		font-weight: 400;
+		margin-bottom: var(--spacing-3);
+	}
+
+	.block p {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		color: var(--color-text-secondary);
+		line-height: var(--leading-relaxed);
+		max-width: 70ch;
+		margin-bottom: var(--spacing-4);
+	}
+
+	.block code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		background: var(--color-surface);
+		padding: 0.15em 0.35em;
+		border-radius: var(--radius);
+	}
+
+	.article-like {
+		max-width: var(--content-width);
+		margin: 0 auto;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		line-height: 1.8;
+		color: var(--color-text);
+	}
+
+	.article-like p {
+		font-size: var(--font-size-lg);
+		color: var(--color-text);
+		margin-bottom: 1.5em;
+		max-width: none;
+	}
+
+	.grid {
+		display: grid;
+		gap: var(--spacing-6);
+	}
+
+	.grid-3 {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	@media (max-width: 1024px) {
+		.grid-3 {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 640px) {
+		.grid-3 {
+			grid-template-columns: 1fr;
+		}
+		.page {
+			padding: var(--spacing-6) var(--spacing-4);
+		}
+		.page-head h1 {
+			font-size: var(--font-size-3xl);
+		}
+	}
+</style>
