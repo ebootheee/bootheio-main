@@ -45,17 +45,8 @@ const siteTitle = "boothe.io";
 // If title already includes site title (from getSeoMeta), use as-is
 const fullTitle = title.includes(siteTitle) ? title : `${title} - ${siteTitle}`;
 
-// Fetch primary menu defined in seed; fall back to hardcoded items if the
-// live DB has no menu (seeding only runs in dev, not on prod deploys).
 const menu = await getMenu("primary");
-const fallbackMenuItems: MenuItem[] = [
-	{ label: "Home", url: "/" },
-	{ label: "About", url: "/about" },
-	{ label: "Posts", url: "/posts" },
-];
-const menuItems: MenuItem[] = menu?.items?.length
-	? (menu.items as MenuItem[])
-	: fallbackMenuItems;
+const menuItems: MenuItem[] = (menu?.items as MenuItem[]) ?? [];
 
 // Fetch pages for footer
 const { entries: pages } = await getEmDashCollection("pages");

@@ -25,6 +25,11 @@
 			"id": "3aa5e1fd60b740b5a7aced572b31a3da"
 		}
 	],
+	"send_email": [
+		{
+			"name": "SEND_EMAIL"
+		}
+	],
 	"observability": {
 		"enabled": true,
 	},

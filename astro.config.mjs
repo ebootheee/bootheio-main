@@ -6,6 +6,7 @@ import { formsPlugin } from "@emdash-cms/plugin-forms";
 import { webhookNotifierPlugin } from "@emdash-cms/plugin-webhook-notifier";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
+import { cloudflareEmailPlugin } from "./src/plugins/email-cloudflare/index.ts";
 
 export default defineConfig({
 	output: "server",
@@ -17,9 +18,14 @@ export default defineConfig({
 	integrations: [
 		react(),
 		emdash({
+			siteUrl: "https://boothe.io",
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),
-			plugins: [formsPlugin(), stlViewerPlugin()],
+			plugins: [
+				formsPlugin(),
+				stlViewerPlugin(),
+				cloudflareEmailPlugin({ from: "noreply@boothe.io" }),
+			],
 			sandboxed: [webhookNotifierPlugin()],
 			sandboxRunner: sandbox(),
 			marketplace: "https://marketplace.emdashcms.com",
