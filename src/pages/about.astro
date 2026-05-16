@@ -1,80 +1,11 @@
 ---
+import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
 
-type Investment = {
-	name: string;
-	url: string;
-	logo: string;
-	tagline: string;
-	pitch: string;
-	industry: string;
-};
-
-const investments: Investment[] = [
-	{
-		name: "Roebling",
-		url: "https://roebling.com/",
-		logo: "/portfolio/roebling.png",
-		tagline: "AI-native capital project planning.",
-		pitch:
-			"Techno-economic modeling that fuses process design, equipment sizing, cost estimation, and project economics. Feasibility studies in days instead of months.",
-		industry: "industrial software",
-	},
-	{
-		name: "Ernest",
-		url: "https://www.joinernest.com/",
-		logo: "/portfolio/ernest.png",
-		tagline: "AI-powered construction.",
-		pitch:
-			"Full-stack platform for owners, architects, GCs, and subs. Custom software stitched to actual project-execution services rather than sold as a standalone tool.",
-		industry: "construction tech",
-	},
-	{
-		name: "Flipturn",
-		url: "https://www.getflipturn.com/",
-		logo: "/portfolio/flipturn.jpg",
-		tagline: "Modern charging software, built for how you charge.",
-		pitch:
-			"EV charging management for fleets, multifamily, and commercial sites — monitoring, energy management, billing, and an AI ops agent watching the network 24/7.",
-		industry: "EV charging",
-	},
-	{
-		name: "Power Neutron",
-		url: "https://www.powerneutron.com/",
-		logo: "/portfolio/powerneutron.png",
-		tagline: "Battery-powered savings. Zero upfront cost.",
-		pitch:
-			"Zero-capex battery storage for hospitality properties. Up to 20% lower energy bills, immediate NOI lift, backup power included — they handle install and optimization.",
-		industry: "energy storage",
-	},
-	{
-		name: "Mason",
-		url: "https://usemason.ai/",
-		logo: "/portfolio/mason.png",
-		tagline: "An autonomous AI workforce for real estate development.",
-		pitch:
-			"Pulls project data, zoning, market insights, and third-party systems into one workspace; ships audit-ready outputs in the formats developers actually use (Excel, PDF).",
-		industry: "real estate tech",
-	},
-	{
-		name: "Beam",
-		url: "https://www.trybeam.com/",
-		logo: "/portfolio/beam.png",
-		tagline: "Estimating, project management, and payments for contractors.",
-		pitch:
-			"AI-assisted estimating plus invoicing, job costing, expense tracking, and compliance. Built for residential and commercial contractors who'd otherwise live in spreadsheets.",
-		industry: "contech fintech",
-	},
-	{
-		name: "Stake",
-		url: "https://getyourstake.com/",
-		logo: "/portfolio/stake.png",
-		tagline: "The cash back network for renters.",
-		pitch:
-			"Earn cash back on rent, build credit through on-time payments, get banking and rewards stacked on top. Aligns landlord, renter, and merchant incentives around the rent check.",
-		industry: "fintech / proptech",
-	},
-];
+const { entries: investments, cacheHint } = await getEmDashCollection("investments", {
+	orderBy: { sort_order: "asc" },
+});
+Astro.cache.set(cacheHint);
 ---
 
 <Base
@@ -128,13 +59,13 @@ const investments: Investment[] = [
 			</div>
 
 			<ul class="ab-grid">
-				{investments.map((inv) => (
+				{investments.map((entry) => (
 					<li class="ab-card">
-						<a class="ab-card-link" href={inv.url} target="_blank" rel="noopener noreferrer">
+						<a class="ab-card-link" href={entry.data.url} target="_blank" rel="noopener noreferrer">
 							<div class="ab-logo-frame">
 								<img
-									src={inv.logo}
-									alt={`${inv.name} logo`}
+									src={entry.data.logo}
+									alt={`${entry.data.name} logo`}
 									loading="lazy"
 									width="80"
 									height="80"
@@ -142,12 +73,12 @@ const investments: Investment[] = [
 							</div>
 							<div class="ab-card-body">
 								<div class="ab-card-head">
-									<h3 class="ab-card-name">{inv.name}</h3>
+									<h3 class="ab-card-name">{entry.data.name}</h3>
 									<span class="ab-card-arrow" aria-hidden="true">↗</span>
 								</div>
-								<p class="ab-card-tagline">{inv.tagline}</p>
-								<p class="ab-card-pitch">{inv.pitch}</p>
-								<span class="ab-card-industry">{inv.industry}</span>
+								<p class="ab-card-tagline">{entry.data.tagline}</p>
+								<p class="ab-card-pitch">{entry.data.pitch}</p>
+								<span class="ab-card-industry">{entry.data.industry}</span>
 							</div>
 						</a>
 					</li>
