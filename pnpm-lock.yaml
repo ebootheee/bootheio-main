@@ -15,23 +15,23 @@ importers:
         specifier: ^5.0.0
         version: 5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3)
       '@emdash-cms/cloudflare':
-        specifier: ^0.6.0
-        version: 0.6.0(a46f617ad1e5249766653c96143ac732)
+        specifier: ^0.12.0
+        version: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@cloudflare/workers-types@4.20260405.1)(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(kysely@0.27.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@emdash-cms/plugin-forms':
-        specifier: ^0.1.1
-        version: 0.1.1(@cloudflare/kumo@1.17.0(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6))(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))(react@19.2.4)
+        specifier: ^0.2.2
+        version: 0.2.2(7fd997bbbde9482a73ee97c5e7f6dd31)
       '@emdash-cms/plugin-webhook-notifier':
-        specifier: ^0.1.2
-        version: 0.1.2(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))
+        specifier: ^0.1.3
+        version: 0.1.3(emdash@0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       astro:
         specifier: ^6.1.2
         version: 6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3)
       emdash:
-        specifier: ^0.6.0
-        version: 0.6.0(19f868403ed19e6ee1345442523ee791)
+        specifier: ^0.12.0
+        version: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       emdash-plugin-stl-viewer:
         specifier: ^0.1.0
-        version: 0.1.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))(three@0.171.0)
+        version: 0.1.0(9191f551fef6d21296f176ddca5feee5)
       mimetext:
         specifier: ^3.0.28
         version: 3.0.28
@@ -335,14 +335,14 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  '@emdash-cms/admin@0.6.0':
-    resolution: {integrity: sha512-RH3HQ8ZovTrKA6l3GvGhp1xifdNxINOUV2ohsVa43dbSLRL+h5ojExCOCQ/g7YoUAYg11F3jjzdDOZxnlOcxcA==}
+  '@emdash-cms/admin@0.12.0':
+    resolution: {integrity: sha512-ms1hkEpCmo2hedgq10mnGGTTMoTT/2dp8aY+Sa789zPVhqGZfKL3gMERmFqECzYG0CdG/iDOlUNtVtHZBwBASw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@emdash-cms/auth@0.6.0':
-    resolution: {integrity: sha512-1ikvF2jYifAMvAIn5ulS8ljnl5eDy3qNKZoVIfGaqtTKQqxtpXcVBH4AY6W7ssebrei7Kpyz/IfRRsxLQZRSOw==}
+  '@emdash-cms/auth@0.12.0':
+    resolution: {integrity: sha512-HR5OTQo51KKBshHQcPHbSOypVfjroMtOjm5nxLlQcONQ8eG4lfq90N5ptZV0iICWTofNDnmc3ur4Bq1pgDDQwQ==}
     peerDependencies:
       astro: '>=6.0.0-beta.0'
       kysely: ^0.27.0
@@ -350,35 +350,38 @@ packages:
       kysely:
         optional: true
 
-  '@emdash-cms/blocks@0.6.0':
-    resolution: {integrity: sha512-Sh9Iy180+wexCkoyz12EEQMfdae3U8+sLY/Kgqvi54ZpplSibsWbwQ/ASnI/ONZ10uo4Vxy0zY1Hj/PEJ/09ww==}
+  '@emdash-cms/blocks@0.12.0':
+    resolution: {integrity: sha512-JEJ2mcAwf9fHjuXKVxRxi0lvAXEGCq1D2KSBWMR1FENnLz0CjHhR48qL8QzcDOLn75H4ixTkjeN+twKBqT+fDw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@emdash-cms/cloudflare@0.6.0':
-    resolution: {integrity: sha512-UWIyaQ4pkDZHhakkxIEFqK0JkeBNoIEhExs1hGtXMoqbd2qd4IIvmNxLOUFZZRewc7yLF6TUCla3BppJGzVP8A==}
+  '@emdash-cms/cloudflare@0.12.0':
+    resolution: {integrity: sha512-C0iDUG2+vfnoYvTM0Do0AsSh5t1vqN4GJ+DxzVl7XILDyjbMTntFd1IwrroWnzGxXL6meeNlbSDQ7xPWNV/SmA==}
     peerDependencies:
       '@cloudflare/workers-types': '>=4.0.0'
       astro: '>=6.0.0-beta.0'
       kysely: '>=0.27.0'
 
-  '@emdash-cms/gutenberg-to-portable-text@0.6.0':
-    resolution: {integrity: sha512-8Mp4+0joY59Jd8U5pzyapRiGZaSYPy1z+7JIeJX3t2a6pcP6cJMPfbSHx5ObChP0pDYWR68DcdPnWGrOcUsRNw==}
+  '@emdash-cms/gutenberg-to-portable-text@0.12.0':
+    resolution: {integrity: sha512-n3EX4QurfxDPEZ9RDxEtj543pYIv+kydYdicgzoxMUFjdZVQdZ6IHBKt898ZfqO0cmrKauSTVWhZ0pkYELwxrg==}
 
-  '@emdash-cms/plugin-forms@0.1.1':
-    resolution: {integrity: sha512-rgwhfjdXmeEi6upLYyPdycKn2DCg9Z7MTWS+PYoz6S9rns1sslJUqMD44MzUERnWX3PjLAP3ATloaLw+VJwWbw==}
+  '@emdash-cms/plugin-forms@0.2.2':
+    resolution: {integrity: sha512-efXAngRQIVzjRXSyG70wJyFRpbYNdXq4cIgRI7HJITgHJDzMYBD2I90DrB+Rsae88qa5O/8V0PIqdP/1DRtTdA==}
     peerDependencies:
       '@cloudflare/kumo': ^1.0.0
       '@phosphor-icons/react': ^2.1.10
       astro: '>=6.0.0-beta.0'
-      emdash: 0.1.1
+      emdash: '>=0.11.0'
       react: ^18.0.0 || ^19.0.0
 
-  '@emdash-cms/plugin-webhook-notifier@0.1.2':
-    resolution: {integrity: sha512-GUGzgFCawOusnh/oSTVo6lxzu483j69VWeg5wGNEazEQaQgJ/MTCRsryfbmOxA/uOP/0IhW1lVb1zhxQayiRCQ==}
+  '@emdash-cms/plugin-types@0.0.1':
+    resolution: {integrity: sha512-0fEQBhD8iB4p6Zd4RsigoSDpZd06z9kHitT3k3AJk29K/A+MhpXapscYg+dgS91cMRrrO0kB/pV8xC7VTQ6jXQ==}
+
+  '@emdash-cms/plugin-webhook-notifier@0.1.3':
+    resolution: {integrity: sha512-sIVHN5NkQI3GNHK2La4fecni02A8+bFhoe56qYSfKwYxwschB8fy3X4UVq887K2Px7sylMsoVkiBEdUBPkiHCQ==}
     peerDependencies:
-      emdash: '>=0.2.0'
+      emdash: '>=0.10.0'
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -1474,6 +1477,27 @@ packages:
     peerDependencies:
       '@tiptap/core': ^3.22.2
 
+  '@tiptap/extension-table-cell@3.23.4':
+    resolution: {integrity: sha512-GmLLF9w7ExXhieshDnwC2U4kE8EM3TliDnHYX7uXOnSptWqASku6hOFw0f1AT5MDJog9NPzRo+adGVRHS9kjTQ==}
+    peerDependencies:
+      '@tiptap/extension-table': 3.23.4
+
+  '@tiptap/extension-table-header@3.23.4':
+    resolution: {integrity: sha512-5IXIHjpCpuZ06SmOoVsnK4VoOhd/G6yLiDtP3Azcf+KUI5539ryWE9I9EAqgalV2HcJMMYX9MQpl5WReHRGETw==}
+    peerDependencies:
+      '@tiptap/extension-table': 3.23.4
+
+  '@tiptap/extension-table-row@3.23.4':
+    resolution: {integrity: sha512-kqQt0I4cm2E+NNLpZ5rtox53Vgzyy19ZczvJ66Ao6BZkXXKqYXSRJc4q0jGNPX8hHhvHBpHmffcz5hdT/1XtNQ==}
+    peerDependencies:
+      '@tiptap/extension-table': 3.23.4
+
+  '@tiptap/extension-table@3.23.4':
+    resolution: {integrity: sha512-TRh6JMTRYXCWpwavGt3aAHH2f51ZzkhurfW3XvrURG3It8MvfuuY1xB1xba1ss5c0QLWlrKx6GVaSXrUCdFLlg==}
+    peerDependencies:
+      '@tiptap/core': 3.23.4
+      '@tiptap/pm': 3.23.4
+
   '@tiptap/extension-text-align@3.22.2':
     resolution: {integrity: sha512-pgqyXzVHo4WmDhK26rDwhK2lxQwnjl/9DP816C2k3To/fZRK1eW7q0pSAYteHWmKkaYAxwj/0UvCU0nXKlPujw==}
     peerDependencies:
@@ -2015,16 +2039,18 @@ packages:
       emdash: '>=0.6.0'
       three: ^0.171.0
 
-  emdash@0.6.0:
-    resolution: {integrity: sha512-lc9AinEPoJ9xD1dCN5TuyKL3PtMLDL1jUTncwfFQNoRlUvq5UGo5djrrWWpqav8iEwVucH+GkgHqVB4Tk13s8A==}
+  emdash@0.12.0:
+    resolution: {integrity: sha512-LsCq7HeR8xHJ6CLJh/NSOKWgP8N+HXR6VRz+TmLdgbOtA/thnXstHw95BCvF3wiDrcwjbL9FQPJIB/fjLFFY0Q==}
     hasBin: true
     peerDependencies:
       '@astrojs/react': '>=5.0.0-beta.0'
-      '@tanstack/react-query': '>=5.0.0'
-      '@tanstack/react-router': '>=1.100.0'
+      '@emdash-cms/auth-atproto': '>=0.2.5'
       astro: '>=6.0.0-beta.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
+    peerDependenciesMeta:
+      '@emdash-cms/auth-atproto':
+        optional: true
 
   emmet@2.4.11:
     resolution: {integrity: sha512-23QPJB3moh/U9sT4rQzGgeyyGIrcM+GH5uVYg2C6wZIxAIJq7Ng3QLT79tl8FUwDXhyq9SusfknOrofAKqvgyQ==}
@@ -4162,13 +4188,13 @@ snapshots:
       react: 19.2.4
       tslib: 2.8.1
 
-  '@emdash-cms/admin@0.6.0(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)':
+  '@emdash-cms/admin@0.12.0(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)':
     dependencies:
       '@cloudflare/kumo': 1.17.0(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
       '@dnd-kit/core': 6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       '@dnd-kit/utilities': 3.2.2(react@19.2.4)
-      '@emdash-cms/blocks': 0.6.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
+      '@emdash-cms/blocks': 0.12.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
       '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@lingui/core': 5.9.5
       '@lingui/react': 5.9.5(react@19.2.4)
@@ -4184,6 +4210,10 @@ snapshots:
       '@tiptap/extension-link': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
       '@tiptap/extension-node-range': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
       '@tiptap/extension-placeholder': 3.22.2(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))
+      '@tiptap/extension-table': 3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
+      '@tiptap/extension-table-cell': 3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))
+      '@tiptap/extension-table-header': 3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))
+      '@tiptap/extension-table-row': 3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))
       '@tiptap/extension-text-align': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))
       '@tiptap/extension-typography': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))
       '@tiptap/extension-underline': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))
@@ -4211,7 +4241,7 @@ snapshots:
       - echarts
       - zod
 
-  '@emdash-cms/auth@0.6.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(kysely@0.27.6)':
+  '@emdash-cms/auth@0.12.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(kysely@0.27.6)':
     dependencies:
       '@oslojs/crypto': 1.0.1
       '@oslojs/encoding': 1.1.0
@@ -4222,7 +4252,7 @@ snapshots:
     optionalDependencies:
       kysely: 0.27.6
 
-  '@emdash-cms/blocks@0.6.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)':
+  '@emdash-cms/blocks@0.12.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)':
     dependencies:
       '@cloudflare/kumo': 1.17.0(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
       '@phosphor-icons/react': 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -4236,11 +4266,11 @@ snapshots:
       - '@types/react'
       - zod
 
-  '@emdash-cms/cloudflare@0.6.0(a46f617ad1e5249766653c96143ac732)':
+  '@emdash-cms/cloudflare@0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@cloudflare/workers-types@4.20260405.1)(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(kysely@0.27.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@cloudflare/workers-types': 4.20260405.1
       astro: 6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3)
-      emdash: 0.6.0(19f868403ed19e6ee1345442523ee791)
+      emdash: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       jose: 6.2.2
       kysely: 0.27.6
       kysely-d1: 0.4.0(kysely@0.27.6)
@@ -4248,11 +4278,10 @@ snapshots:
     transitivePeerDependencies:
       - '@astrojs/react'
       - '@cfworker/json-schema'
+      - '@emdash-cms/auth-atproto'
       - '@emotion/is-prop-valid'
       - '@floating-ui/dom'
       - '@lingui/babel-plugin-lingui-macro'
-      - '@tanstack/react-query'
-      - '@tanstack/react-router'
       - '@tiptap/extension-collaboration'
       - '@tiptap/extensions'
       - '@tiptap/pm'
@@ -4268,23 +4297,25 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@emdash-cms/gutenberg-to-portable-text@0.6.0':
+  '@emdash-cms/gutenberg-to-portable-text@0.12.0':
     dependencies:
       '@wordpress/block-serialization-default-parser': 5.43.0
       parse5: 7.3.0
 
-  '@emdash-cms/plugin-forms@0.1.1(@cloudflare/kumo@1.17.0(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6))(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))(react@19.2.4)':
+  '@emdash-cms/plugin-forms@0.2.2(7fd997bbbde9482a73ee97c5e7f6dd31)':
     dependencies:
       '@cloudflare/kumo': 1.17.0(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
       '@phosphor-icons/react': 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       astro: 6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3)
-      emdash: 0.6.0(19f868403ed19e6ee1345442523ee791)
+      emdash: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       ulidx: 2.4.1
 
-  '@emdash-cms/plugin-webhook-notifier@0.1.2(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))':
+  '@emdash-cms/plugin-types@0.0.1': {}
+
+  '@emdash-cms/plugin-webhook-notifier@0.1.3(emdash@0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
-      emdash: 0.6.0(19f868403ed19e6ee1345442523ee791)
+      emdash: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:
@@ -5117,6 +5148,23 @@ snapshots:
     dependencies:
       '@tiptap/core': 3.22.2(@tiptap/pm@3.22.2)
 
+  '@tiptap/extension-table-cell@3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))':
+    dependencies:
+      '@tiptap/extension-table': 3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
+
+  '@tiptap/extension-table-header@3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))':
+    dependencies:
+      '@tiptap/extension-table': 3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
+
+  '@tiptap/extension-table-row@3.23.4(@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))':
+    dependencies:
+      '@tiptap/extension-table': 3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)
+
+  '@tiptap/extension-table@3.23.4(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)':
+    dependencies:
+      '@tiptap/core': 3.22.2(@tiptap/pm@3.22.2)
+      '@tiptap/pm': 3.22.2
+
   '@tiptap/extension-text-align@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))':
     dependencies:
       '@tiptap/core': 3.22.2(@tiptap/pm@3.22.2)
@@ -5790,23 +5838,24 @@ snapshots:
 
   electron-to-chromium@1.5.331: {}
 
-  emdash-plugin-stl-viewer@0.1.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(emdash@0.6.0(19f868403ed19e6ee1345442523ee791))(three@0.171.0):
+  emdash-plugin-stl-viewer@0.1.0(9191f551fef6d21296f176ddca5feee5):
     dependencies:
       astro: 6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3)
-      emdash: 0.6.0(19f868403ed19e6ee1345442523ee791)
+      emdash: 0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       three: 0.171.0
 
-  emdash@0.6.0(19f868403ed19e6ee1345442523ee791):
+  emdash@0.12.0(@astrojs/react@5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3))(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@astrojs/react': 5.0.2(@types/node@25.5.2)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.8.3)
-      '@emdash-cms/admin': 0.6.0(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
-      '@emdash-cms/auth': 0.6.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(kysely@0.27.6)
-      '@emdash-cms/gutenberg-to-portable-text': 0.6.0
+      '@emdash-cms/admin': 0.12.0(@floating-ui/dom@1.7.6)(@tiptap/extension-collaboration@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2)(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(yjs@13.6.30))(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(echarts@6.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
+      '@emdash-cms/auth': 0.12.0(astro@6.1.3(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3))(kysely@0.27.6)
+      '@emdash-cms/gutenberg-to-portable-text': 0.12.0
+      '@emdash-cms/plugin-types': 0.0.1
       '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@modelcontextprotocol/sdk': 1.29.0(zod@4.3.6)
+      '@oslojs/crypto': 1.0.1
+      '@oslojs/encoding': 1.1.0
       '@portabletext/toolkit': 5.0.2
-      '@tanstack/react-query': 5.90.21(react@19.2.4)
-      '@tanstack/react-router': 1.163.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tiptap/core': 3.22.2(@tiptap/pm@3.22.2)
       '@tiptap/extension-focus': 3.22.2(@tiptap/extensions@3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))(@tiptap/pm@3.22.2))
       '@tiptap/extension-image': 3.22.2(@tiptap/core@3.22.2(@tiptap/pm@3.22.2))
