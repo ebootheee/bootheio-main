@@ -20,6 +20,9 @@ const fixtures = {
 	icos: "/stls/icosahedron.stl",
 	torus: "/stls/torus.stl",
 	knurled: "/stls/knurled.stl",
+	cube3mf: "/stls/cube.3mf",
+	icos3mf: "/stls/icosahedron.3mf",
+	torus3mf: "/stls/torus.3mf",
 };
 ---
 
@@ -193,7 +196,63 @@ const fixtures = {
 		</section>
 
 		<section class="block">
-			<h2>6. Lazy load check (far below)</h2>
+			<h2>6. 3MF format (auto-detected by extension)</h2>
+			<p>
+				Same primitives as the STL grid above, but stored as zipped 3MF.
+				The 3MF loader downloads lazily on first 3MF viewer (adds ~50 KB
+				including fflate; STL-only pages don't pay for it).
+			</p>
+			<div class="grid grid-3">
+				<StlViewer
+					node={{
+						id: fixtures.cube3mf,
+						title: "Cube — 3MF",
+						material: "matte",
+						color: "#22d3ee",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.icos3mf,
+						title: "Icosahedron — 3MF",
+						material: "glossy",
+						color: "#fbbf24",
+						height: "compact",
+					}}
+				/>
+				<StlViewer
+					node={{
+						id: fixtures.torus3mf,
+						title: "Torus — 3MF",
+						material: "metal",
+						color: "#d4d4d8",
+						height: "compact",
+					}}
+				/>
+			</div>
+		</section>
+
+		<section class="block">
+			<h2>7. 3MF with explicit format override</h2>
+			<p>
+				URL without extension — `format: "3mf"` tells the viewer which loader
+				to use.
+			</p>
+			<StlViewer
+				node={{
+					id: "/stls/cube.3mf",
+					title: "Forced 3MF",
+					material: "clay",
+					color: "#e7c89c",
+					height: "standard",
+					format: "3mf",
+				}}
+			/>
+		</section>
+
+		<section class="block">
+			<h2>8. Lazy load check (far below)</h2>
 			<p style="min-height: 1400px; padding-top: 32px; color: var(--color-muted);">
 				The viewer below should remain a placeholder until you scroll to it,
 				then load on its own. Three.js does not download until the first viewer
