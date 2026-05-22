@@ -5,5 +5,3 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
-patchedDependencies:
-  emdash@0.12.0: patches/emdash@0.12.0.patch
