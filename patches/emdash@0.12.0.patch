@@ -14,19 +14,20 @@ index ca5cd4894669f0f4bec62032f036c399bd17379a..419a85daf48d0b38688a6c7beef636fa
  
  /**
 diff --git a/src/astro/routes/api/media/upload-url.ts b/src/astro/routes/api/media/upload-url.ts
-index da690a3702bdbc7791826a6eb49c8a0e432cbd30..02f1e655eb284b375fd002cc4928de03b2554a56 100644
+index da690a3702bdbc7791826a6eb49c8a0e432cbd30..48690b11a5d3df4069f97be8d8f3297deaf95ae4 100644
 --- a/src/astro/routes/api/media/upload-url.ts
 +++ b/src/astro/routes/api/media/upload-url.ts	
-@@ -69,7 +69,44 @@ export const POST: APIRoute = async ({ request, locals }) => {
+@@ -69,7 +69,41 @@ export const POST: APIRoute = async ({ request, locals }) => {
  				500,
  			);
  		}
 -		const body = await parseBody(request, mediaUploadUrlBody(maxSize));
-+		// boothe.io patch: sniff contentType from filename extension when the
-+		// browser hands us an empty string or application/octet-stream. STL/3MF
-+		// uploads frequently arrive without a usable MIME, which fails the
-+		// schema's required+regex check before the allowlist gets a chance.
-+		// Remove when upstream EmDash adds extension-based MIME fallback.
++		// boothe.io patch: always normalize STL/3MF contentType from filename
++		// extension. Browsers report inconsistent MIMEs for these files — Chrome
++		// on Windows sends `application/sla` for .stl, Firefox sends empty for
++		// .3mf, etc. The schema and allowlist both reject those, so rewrite to
++		// the canonical model/stl or model/3mf based on extension alone.
++		// Remove when upstream EmDash adds extension-based MIME normalization.
 +		const EXT_TO_MIME: Record<string, string> = {
 +			".stl": "model/stl",
 +			".3mf": "model/3mf",
@@ -37,13 +38,9 @@ index da690a3702bdbc7791826a6eb49c8a0e432cbd30..02f1e655eb284b375fd002cc4928de03
 +			const parsed: unknown = JSON.parse(rawText);
 +			if (parsed && typeof parsed === "object") {
 +				const rawBody = parsed as Record<string, unknown>;
-+				const declared =
-+					typeof rawBody.contentType === "string" ? rawBody.contentType.trim() : "";
-+				const declaredMime = declared.toLowerCase().split(";")[0]?.trim() ?? "";
-+				const mimeUseless = !declared || declaredMime === "application/octet-stream";
 +				const filenameForSniff =
 +					typeof rawBody.filename === "string" ? rawBody.filename : "";
-+				if (mimeUseless && filenameForSniff) {
++				if (filenameForSniff) {
 +					const sniffed = EXT_TO_MIME[path.extname(filenameForSniff).toLowerCase()];
 +					if (sniffed) {
 +						rawBody.contentType = sniffed;
