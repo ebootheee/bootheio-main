@@ -60,3 +60,46 @@ index da690a3702bdbc7791826a6eb49c8a0e432cbd30..48690b11a5d3df4069f97be8d8f3297d
  		if (isParseError(body)) return body;
  
  		// Validate content type (field-aware widening)
+diff --git a/src/astro/routes/api/media.ts b/src/astro/routes/api/media.ts
+index 4ed579e4e5940d5066d368f02c88d0ffe490a878..81095196cf4bfe8778e2c8b92909bc1946b0682f 100644
+--- a/src/astro/routes/api/media.ts
++++ b/src/astro/routes/api/media.ts	
+@@ -116,7 +116,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
+ 		const fieldAllowlist = fieldId ? await resolveFieldAllowlist(emdash.db, fieldId) : null;
+ 		const allowlist = fieldAllowlist ?? [...GLOBAL_UPLOAD_ALLOWLIST];
+ 
+-		if (!matchesMimeAllowlist(file.type, allowlist)) {
++		// boothe.io patch: normalize STL/3MF MIME from filename extension.
++		// Browsers report inconsistent MIMEs (`application/sla`, empty string,
++		// etc.) and File.type is read-only, so we maintain an effective MIME
++		// alongside it and use it everywhere file.type was used below. Remove
++		// when upstream EmDash handles this.
++		const EXT_TO_MIME_OVERRIDE: Record<string, string> = {
++			".stl": "model/stl",
++			".3mf": "model/3mf",
++		};
++		const sniffedMime = EXT_TO_MIME_OVERRIDE[path.extname(file.name).toLowerCase()];
++		const effectiveMime = sniffedMime ?? file.type;
++
++		if (!matchesMimeAllowlist(effectiveMime, allowlist)) {
+ 			return apiError("INVALID_TYPE", "File type not allowed", 400);
+ 		}
+ 
+@@ -151,7 +163,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
+ 		await emdash.storage.upload({
+ 			key: storageKey,
+ 			body: buffer,
+-			contentType: file.type,
++			contentType: effectiveMime,
+ 		});
+ 
+ 		// Get image dimensions from form data (sent by client)
+@@ -182,7 +194,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
+ 		// Create media record
+ 		const result = await emdash.handleMediaCreate({
+ 			filename: file.name,
+-			mimeType: normalizeMime(file.type),
++			mimeType: normalizeMime(effectiveMime),
+ 			size: file.size,
+ 			width,
+ 			height,
