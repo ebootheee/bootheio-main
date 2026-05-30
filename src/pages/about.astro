@@ -74,11 +74,19 @@ Astro.cache.set(cacheHint);
 							<div class="ab-card-body">
 								<div class="ab-card-head">
 									<h3 class="ab-card-name">{entry.data.name}</h3>
-									<span class="ab-card-arrow" aria-hidden="true">↗</span>
+									{entry.data.acquired_by
+										? <span class="ab-card-exit">acq. {entry.data.acquired_by}</span>
+										: <span class="ab-card-arrow" aria-hidden="true">↗</span>
+									}
 								</div>
 								<p class="ab-card-tagline">{entry.data.tagline}</p>
 								<p class="ab-card-pitch">{entry.data.pitch}</p>
-								<span class="ab-card-industry">{entry.data.industry}</span>
+								<div class="ab-card-footer">
+									<span class="ab-card-industry">{entry.data.industry}</span>
+									{entry.data.co_investors && (
+										<span class="ab-card-coinvestors">w/ {entry.data.co_investors}</span>
+									)}
+								</div>
 							</div>
 						</a>
 					</li>
@@ -375,13 +383,37 @@ Astro.cache.set(cacheHint);
 		color: var(--color-text-secondary);
 		margin: 0;
 	}
+	.ab-card-footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin-top: 0.25rem;
+	}
 	.ab-card-industry {
 		font-family: var(--font-pixel);
 		font-size: 0.7rem;
 		color: var(--color-retro-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
-		margin-top: 0.25rem;
+	}
+	.ab-card-coinvestors {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: var(--color-muted);
+		letter-spacing: 0.01em;
+	}
+	.ab-card-exit {
+		font-family: var(--font-pixel);
+		font-size: 0.65rem;
+		color: var(--color-success);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		border: 1px solid var(--color-success);
+		border-radius: var(--radius);
+		padding: 0.15em 0.45em;
+		line-height: 1.4;
+		opacity: 0.85;
 	}
 
 	/* ---- Responsive ------------------------------------------------------ */
