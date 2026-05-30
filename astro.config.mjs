@@ -8,6 +8,11 @@ import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
 import { cloudflareEmailPlugin } from "./src/plugins/email-cloudflare/index.ts";
 
+// Leave siteUrl undefined in dev so the WebAuthn RP ID matches the request
+// origin (localhost). When set, EmDash uses it as both the rpId and canonical
+// origin, which breaks passkey registration on localhost.
+const isProd = process.env.NODE_ENV === "production";
+
 export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
@@ -18,7 +23,7 @@ export default defineConfig({
 	integrations: [
 		react(),
 		emdash({
-			siteUrl: "https://boothe.io",
+			siteUrl: isProd ? "https://boothe.io" : undefined,
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),
 			plugins: [

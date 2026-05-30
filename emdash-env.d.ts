@@ -5,6 +5,27 @@
 
 import type { ContentBylineCredit, PortableTextBlock } from "emdash";
 
+export interface Model {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  model_file?: { id: string; src?: string; filename?: string; mimeType?: string; size?: number; provider?: string; meta?: Record<string, unknown> };
+  model_url?: string;
+  description?: PortableTextBlock[];
+  preview_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  material?: string;
+  color?: string;
+  height?: string;
+  auto_rotate?: boolean;
+  show_grid?: boolean;
+  related_posts?: unknown;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
 export interface Page {
   id: string;
   slug: string | null;
@@ -33,6 +54,7 @@ export interface Post {
 
 declare module "emdash" {
   interface EmDashCollections {
+    models: Model;
     pages: Page;
     posts: Post;
   }

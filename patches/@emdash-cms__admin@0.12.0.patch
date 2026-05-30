@@ -1,0 +1,40 @@
+diff --git a/dist/index.js b/dist/index.js
+index 8dc163fc9819f1a4328768a4dd88c9c7495f1df8..54024b9f94e84ac5d90f369d71f6ad50d6a16ddd 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1393,7 +1393,7 @@ async function getUploadUrl(file, opts) {
+ 			headers: { "Content-Type": "application/json" },
+ 			body: JSON.stringify({
+ 				filename: file.name,
+-				contentType: file.type,
++				contentType: file.type || "application/octet-stream",
+ 				size: file.size,
+ 				...opts?.fieldId ? { fieldId: opts.fieldId } : {}
+ 			})
+@@ -1459,7 +1459,7 @@ async function getImageDimensions(file) {
+ async function uploadMediaDirect(file, opts) {
+ 	const dimensions = await getImageDimensions(file);
+ 	const formData = new FormData();
+-	formData.append("file", file);
++	formData.append("file", file.type ? file : new globalThis.File([file], file.name, { type: "application/octet-stream" }));
+ 	if (dimensions?.width) formData.append("width", String(dimensions.width));
+ 	if (dimensions?.height) formData.append("height", String(dimensions.height));
+ 	if (opts?.fieldId) formData.append("fieldId", opts.fieldId);
+@@ -1530,7 +1530,7 @@ async function fetchProviderMedia(providerId, options) {
+ */
+ async function uploadToProvider(providerId, file, alt) {
+ 	const formData = new FormData();
+-	formData.append("file", file);
++	formData.append("file", file.type ? file : new globalThis.File([file], file.name, { type: "application/octet-stream" }));
+ 	if (alt) formData.append("alt", alt);
+ 	return (await parseApiResponse(await apiFetch(`${API_BASE}/media/providers/${providerId}`, {
+ 		method: "POST",
+@@ -3570,7 +3570,7 @@ function MediaPickerModal({ open, onOpenChange, onSelect, mimeTypeFilter = "imag
+ 					}), /* @__PURE__ */ jsx("input", {
+ 						ref: fileInputRef,
+ 						type: "file",
+-						accept: filters ? filters.map((f) => f.endsWith("/") ? f + "*" : f).join(",") : void 0,
++						accept: filters ? filters.flatMap((f) => f === "model/" ? [".stl", ".3mf"] : f === "application/octet-stream" ? [] : [f.endsWith("/") ? f + "*" : f]).join(",") || void 0 : void 0,
+ 						className: "sr-only",
+ 						onChange: handleFileSelect,
+ 						"aria-label": _t({

@@ -14,6 +14,32 @@
 
 	"collections": [
 		{
+			"slug": "models",
+			"label": "Models",
+			"labelSingular": "Model",
+			"supports": ["drafts", "revisions", "seo"],
+			"fields": [
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{
+					"slug": "model_file",
+					"label": "Model File (upload)",
+					"type": "file",
+					"validation": {
+						"allowedMimeTypes": ["model/", "application/octet-stream"]
+					}
+				},
+				{ "slug": "model_url", "label": "Or external URL", "type": "string" },
+				{ "slug": "description", "label": "Description", "type": "portableText", "searchable": true },
+				{ "slug": "preview_image", "label": "Preview Image", "type": "image" },
+				{ "slug": "material", "label": "Material", "type": "string" },
+				{ "slug": "color", "label": "Color (hex)", "type": "string" },
+				{ "slug": "height", "label": "Viewer Height", "type": "string" },
+				{ "slug": "auto_rotate", "label": "Auto Rotate", "type": "boolean" },
+				{ "slug": "show_grid", "label": "Show Grid", "type": "boolean" },
+				{ "slug": "related_posts", "label": "Related Posts (slugs)", "type": "json" }
+			]
+		},
+		{
 			"slug": "posts",
 			"label": "Posts",
 			"labelSingular": "Post",
@@ -117,7 +143,8 @@
 			"items": [
 				{ "type": "custom", "label": "Home", "url": "/" },
 				{ "type": "custom", "label": "About", "url": "/about" },
-				{ "type": "custom", "label": "Posts", "url": "/posts" }
+				{ "type": "custom", "label": "Posts", "url": "/posts" },
+				{ "type": "custom", "label": "Models", "url": "/models" }
 			]
 		}
 	],
@@ -235,6 +262,50 @@
 	],
 
 	"content": {
+		"models": [
+			{
+				"id": "model-knurled-grip",
+				"slug": "knurled-grip",
+				"status": "published",
+				"data": {
+					"title": "Knurled Grip v3",
+					"model_url": "/stls/knurled.stl",
+					"material": "matte",
+					"color": "#cfd1d4",
+					"height": "tall",
+					"auto_rotate": true,
+					"show_grid": true,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{ "_type": "span", "text": "A parametric knurled grip with 96-segment ridges and 2mm draft angle. Third revision — the first two had wall thickness issues under axial load. Printed in PLA at 20% infill with 3 perimeters." }]
+						}
+					]
+				}
+			},
+			{
+				"id": "model-icosahedron",
+				"slug": "icosahedron",
+				"status": "published",
+				"data": {
+					"title": "Icosahedron",
+					"model_url": "/stls/icosahedron.stl",
+					"material": "glossy",
+					"color": "#22d3ee",
+					"height": "standard",
+					"auto_rotate": true,
+					"show_grid": false,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [{ "_type": "span", "text": "A 20-faced regular solid. Used as a calibration reference — each face should print identically, so any deviation in surface quality shows up clearly." }]
+						}
+					]
+				}
+			}
+		],
 		"pages": [
 			{
 				"id": "about",

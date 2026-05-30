@@ -1,0 +1,269 @@
+---
+import { getEmDashEntry, getEmDashCollection, getSeoMeta } from "emdash";
+import { PortableText } from "emdash/ui";
+import StlViewer from "emdash-plugin-stl-viewer/astro/StlViewer.astro";
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getReadingTime } from "../../utils/reading-time";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const { entry: model, cacheHint } = await getEmDashEntry("models", slug);
+if (!model) return Astro.redirect("/404");
+
+Astro.cache.set(cacheHint);
+
+const d = model.data as any;
+const edit = model.edit as any;
+
+// A `file` field value has no `.url` for local storage — build it from the
+// storageKey (meta.storageKey, falling back to id). External providers use src.
+function fileFieldUrl(f: any): string {
+	if (!f || typeof f !== "object") return "";
+	if (typeof f.src === "string" && f.src) return f.src;
+	const key = (typeof f.meta?.storageKey === "string" && f.meta.storageKey) || f.id;
+	return key ? `/_emdash/api/media/file/${encodeURIComponent(key)}` : "";
+}
+
+const modelUrl = fileFieldUrl(d.model_file) || (d.model_url as string) || "";
+const material = (d.material as string) || "matte";
+const color = (d.color as string) || "#cfd1d4";
+const height = (d.height as string) || "tall";
+const autoRotate = d.auto_rotate !== false;
+const showGrid = d.show_grid !== false;
+const description = d.description;
+const relatedPostSlugs: string[] = Array.isArray(d.related_posts) ? (d.related_posts as string[]) : [];
+
+// Resolve related post entries
+const relatedPosts = (
+	await Promise.all(
+		relatedPostSlugs.map(async (postSlug) => {
+			const { entry } = await getEmDashEntry("posts", postSlug);
+			return entry;
+		})
+	)
+).filter(Boolean);
+
+const seo = getSeoMeta(model, {
+	siteTitle: "boothe.io",
+	siteUrl: Astro.url.origin,
+	path: `/models/${slug}`,
+});
+
+const publishDate =
+	model.data.publishedAt?.toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	}) ?? null;
+---
+
+<Base
+	title={seo.title}
+	description={seo.description}
+	canonical={seo.canonical}
+	robots={seo.robots}
+>
+	<article class="model-page">
+		<header class="model-header">
+			<div class="breadcrumb">
+				<a href="/">home</a>
+				<span>/</span>
+				<a href="/models">models</a>
+				<span>/</span>
+				<span class="current">{slug}</span>
+			</div>
+			<h1 class="model-title" {...model.edit.title}>{model.data.title}</h1>
+			<div class="model-meta">
+				<span class="meta-chip" style={`--chip-color: ${color}`}>
+					<span class="chip-dot"></span>
+					{material}
+				</span>
+				{publishDate && <time class="meta-date">{publishDate}</time>}
+			</div>
+		</header>
+
+		{modelUrl && (
+			<div class="model-viewer" {...edit.model_url}>
+				<StlViewer
+					node={{
+						id: modelUrl,
+						material: material as any,
+						color,
+						height: height as any,
+						autoRotate,
+						showGrid,
+					}}
+				/>
+			</div>
+		)}
+
+		{description && Array.isArray(description) && description.length > 0 && (
+			<div class="model-description" {...edit.description}>
+				<PortableText value={description as any} />
+			</div>
+		)}
+
+		{relatedPosts.length > 0 && (
+			<section class="related-posts">
+				<h2 class="related-title">Featured in</h2>
+				<div class="related-grid">
+					{relatedPosts.map((post) => post && (
+						<PostCard
+							title={post.data.title}
+							excerpt={post.data.excerpt}
+							featuredImage={post.data.featured_image}
+							href={`/posts/${post.id}`}
+							date={post.data.publishedAt ?? undefined}
+							readingTime={getReadingTime(post.data.content)}
+						/>
+					))}
+				</div>
+			</section>
+		)}
+	</article>
+</Base>
+
+<style>
+	.model-page {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 3rem var(--spacing-6) var(--spacing-16);
+	}
+
+	.model-header {
+		max-width: var(--content-width);
+		margin: 0 auto var(--spacing-8);
+	}
+
+	.breadcrumb {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--color-muted);
+		margin-bottom: var(--spacing-4);
+	}
+
+	.breadcrumb a {
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.breadcrumb a:hover {
+		color: var(--color-accent);
+	}
+
+	.breadcrumb .current {
+		color: var(--color-text-secondary);
+	}
+
+	.model-title {
+		font-family: var(--font-serif) !important;
+		font-size: var(--font-size-4xl);
+		font-weight: 400 !important;
+		line-height: var(--leading-tight);
+		letter-spacing: var(--tracking-tight);
+		margin-bottom: var(--spacing-3);
+	}
+
+	.model-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-4);
+	}
+
+	.meta-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-text-secondary);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		padding: 3px 10px 3px 7px;
+		border-radius: 999px;
+	}
+
+	.chip-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background-color: var(--chip-color, #cfd1d4);
+		flex-shrink: 0;
+	}
+
+	.meta-date {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--color-muted);
+	}
+
+	.model-viewer {
+		margin: 0 auto var(--spacing-10);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+	}
+
+	.model-description {
+		max-width: var(--content-width);
+		margin: 0 auto var(--spacing-12);
+		font-family: var(--font-serif), Georgia, serif;
+		font-size: var(--font-size-lg);
+		line-height: 1.8;
+		color: var(--color-text);
+	}
+
+	.model-description :global(p) {
+		margin-bottom: 1.5em;
+	}
+
+	.model-description :global(h2) {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-2xl);
+		font-weight: 400;
+		margin-top: 2.5em;
+		margin-bottom: 0.75em;
+	}
+
+	.model-description :global(a) {
+		color: var(--color-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.related-posts {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--spacing-10);
+	}
+
+	.related-title {
+		font-family: var(--font-serif) !important;
+		font-size: var(--font-size-2xl);
+		font-weight: 400 !important;
+		margin-bottom: var(--spacing-6);
+	}
+
+	.related-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.25rem;
+	}
+
+	@media (max-width: 900px) {
+		.related-grid { grid-template-columns: repeat(2, 1fr); }
+	}
+
+	@media (max-width: 600px) {
+		.model-page { padding: 2rem var(--spacing-4) var(--spacing-12); }
+		.model-title { font-size: var(--font-size-3xl); }
+		.related-grid { grid-template-columns: 1fr; }
+	}
+</style>
