@@ -6,4 +6,4 @@ onlyBuiltDependencies:
   - sharp
   - workerd
 patchedDependencies:
-  '@emdash-cms/admin@0.12.0': patches/@emdash-cms__admin@0.12.0.patch
+  '@emdash-cms/admin@0.17.2': patches/@emdash-cms__admin@0.17.2.patch
