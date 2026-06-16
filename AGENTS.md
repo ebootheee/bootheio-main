@@ -1,46 +1,40 @@
-This is an EmDash site -- a CMS built on Astro with a full admin UI.
+boothe.io is a plain **Astro** site (git-based Markdown/MDX content) deployed to Cloudflare Workers. It was migrated off the EmDash CMS in June 2026 — there is no longer a database, admin UI, or CMS runtime.
 
 ## Commands
 
 ```bash
-npx emdash dev        # Start dev server (runs migrations, seeds, generates types)
-npx emdash types      # Regenerate TypeScript types from schema
-npx emdash seed seed/seed.json --validate  # Validate seed file
-npm run build && npm run deploy            # Build and ship to Cloudflare (wrangler). git push does NOT redeploy.
+npm run dev      # astro dev (local at http://localhost:4321)
+npm run build    # astro build -> dist/ (static client + tiny SSR worker)
+npm run deploy   # wrangler deploy -c dist/server/wrangler.json. git push does NOT redeploy.
+npm run typecheck # astro check
 ```
 
-Local admin UI: `http://localhost:4321/_emdash/admin`. **Prod admin: `https://boothe.io/_emdash/admin`** — the workers.dev URL now 302s here.
+Deploy targets the `bootheio-main` Worker, which serves **boothe.io** (and `bootheio-main.ericboothe.workers.dev`). Always `npm run build` before `npm run deploy`. Verify the live site after deploying.
+
+## Content
+
+- Posts live in `src/content/posts/*.{md,mdx}` — the filename is the slug. Frontmatter: `title`, `excerpt?`, `publishedAt?`, `updatedAt?`, `draft`, `tags[]`, `categories[]` (schema in `src/content.config.ts`). Drafts are excluded from listings/RSS and are not built (404 on direct hit).
+- To embed a 3D model or app demo in a post, use `.mdx` and import a component (e.g. `import StlViewer from "../../components/StlViewer.astro"`). This is the whole point of the migration — any post can embed arbitrary components.
+- Investments (the `/about` portfolio grid) are in `src/data/investments.ts`.
+- Media: commit files to `public/` (e.g. `public/media/`, `public/stls/`) and reference by path. No upload pipeline.
 
 ## Key Files
 
-| File                     | Purpose                                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, database, and storage                  |
-| `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                         |
-| `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
-| `seed/seed.prod.json`    | Prod-safe subset (menus/widgets/terms/bylines only — no content, no settings)    |
-| `emdash-env.d.ts`      | Generated types for collections (auto-regenerated on dev server start)             |
-| `src/layouts/Base.astro` | Base layout with EmDash wiring (menus, search, page contributions)               |
-| `src/plugins/email-cloudflare/` | Inline native plugin: routes magic-link emails through CF `SEND_EMAIL`     |
-| `src/pages/`             | Astro pages -- all server-rendered                                                 |
-| `wrangler.jsonc`         | Cloudflare bindings: D1, R2, KV, IMAGES, SEND_EMAIL                              |
-| `tmp/*.mjs`, `tmp/*.sql` | Gitignored. Remote appliers and SQL templates kept as reference patterns         |
-
-## Skills
-
-Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
-
-- **building-emdash-site** -- Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
-- **creating-plugins** -- Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
-- **emdash-cli** -- CLI commands for content management, seeding, type generation, and visual editing flow.
+| File | Purpose |
+| --- | --- |
+| `astro.config.mjs` | Astro config: cloudflare adapter, `output: "static"`, `trailingSlash: "never"`, `build.format: "file"`, mdx, `syntaxHighlight: false` |
+| `src/content.config.ts` | Content collections (`posts`, `models`) via the glob loader |
+| `src/layouts/Base.astro` | Layout: static nav, SEO/OG meta, theme switcher, footer |
+| `src/components/StlViewer.astro` + `stl-viewer-client.ts` | Vendored three.js STL/3MF viewer (no CMS dependency) |
+| `src/pages/` | Routes. All prerendered except `src/pages/search.astro` (SSR, `prerender = false`) |
+| `wrangler.jsonc` | Worker name + `nodejs_compat` + SESSION KV (Astro sessions). The adapter writes the real deploy config to `dist/server/wrangler.json` |
+| `tmp/*` | Gitignored. Migration scripts + verification probes kept as reference |
 
 ## Rules
 
-- All content pages must be server-rendered (`output: "server"`). No `getStaticPaths()` for CMS content.
-- Image fields are objects (`{ src, alt }`), not strings. Use `<Image image={...} />` from `"emdash/ui"`.
-- `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
-- Always call `Astro.cache.set(cacheHint)` on pages that query content.
-- Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
-- **Magic-link URLs use `options.emdash:site_url` from the DB**, not `astro.config.mjs siteUrl` or `EMDASH_SITE_URL` env var. To change: `UPDATE options SET value='"https://newurl"' WHERE name='emdash:site_url';` via `wrangler d1 execute --remote`.
-- `npx emdash seed` works on a **local SQLite file only**. To populate prod, POST to the REST API (`/_emdash/api/menus`, `/widget-areas`, `/taxonomies/<name>/terms`, `/admin/bylines`, `/sections`). See `tmp/apply-prod-seed.mjs` for the pattern.
-- `POST /_emdash/api/content/<collection>` creates entries as **drafts** by default. To publish: `POST /_emdash/api/content/<collection>/<id>/publish`. The create body's schema only accepts `status: "draft"` (passing `"published"` returns VALIDATION_ERROR).
+- Content pages are static: use `getCollection`/`getEntry` + `render()` and `<Content />`, with `getStaticPaths` for dynamic routes. Filter `(p) => !p.data.draft`.
+- `entry.id` is the slug. Use it for URLs (`/posts/${entry.id}`).
+- Code blocks are intentionally **not** syntax-highlighted and render on a dark terminal background (`#1e1e1e` / `#e0e0e0`) — see `.article-content pre` in `src/pages/posts/[slug].astro`.
+- The Powell demo iframe is a hardcoded slug special-case in `posts/[slug].astro`; the palletballet sim is a standalone page. Custom apps belong in plain `.astro`/`.mdx`, not a CMS.
+- Bambu/Orca/Prusa-exported 3MFs use the production extension and **fail** in three.js's 3MFLoader (viewer shows the parse error inline). Use STL for slicer exports.
+- Rollback a bad deploy with `wrangler rollback`. The old EmDash D1/R2/KV resources still exist in the account but are unused.
