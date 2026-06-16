@@ -1,0 +1,57 @@
+---
+title: "A 3D model viewer for Astro"
+excerpt: "The lazy-loaded three.js STL/3MF viewer that powers the 3D prints on this site — now a standalone Astro component you can drop into your own."
+publishedAt: "2026-06-16"
+updatedAt: "2026-06-16"
+draft: false
+tags: []
+---
+
+import StlViewer from "../../components/StlViewer.astro";
+
+A few posts here embed 3D prints you can spin around in the browser instead of staring at a flat render. The thing doing that is small enough that I pulled it out into a standalone Astro component — here's how it works, and how to drop it into your own site.
+
+<StlViewer node={{"id":"/media/01KS6WWTTXZ63EZF44TWSW5EN9.stl","format":"stl","height":"standard","autoRotate":true,"showGrid":true}} />
+
+That clamp is a real print (a 1-inch tube mount). Drag to orbit, scroll to zoom, and there's a download button if you want the file.
+
+## What it does
+
+It's one Astro component plus a client script, and the only dependency is three.js:
+
+- **Lazy.** three.js is dynamically imported the first time a viewer scrolls into view — and only once per page, no matter how many viewers are on it. A post with no 3D models ships none of the 3D code.
+- **Interactive.** Orbit / zoom / pan, optional auto-rotate that pauses while you're dragging and resumes when you stop, plus reset and download buttons.
+- **Themeable.** Colors and fonts read from your site's CSS custom properties (`--color-accent`, `--font-mono`, and friends), so it adopts your design instead of fighting it.
+- **Polite.** It server-renders a placeholder, pauses the render loop when it's offscreen or the tab is hidden, and disposes the GPU resources when it goes away.
+
+## The 3MF catch (and the fix)
+
+STL renders with zero fuss. **3MF is where it gets interesting.** Simple, single-mesh 3MFs are fine — but slicer exports are not. Bambu Studio, OrcaSlicer, and PrusaSlicer all use the 3MF *production extension*, which splits the mesh across separate `3D/Objects/*.model` files referenced by path. three.js's `3MFLoader` doesn't follow those references, so it falls over with `Could not parse 3MF: Cannot read properties of undefined (reading 'mesh')`.
+
+The clamp above started life as exactly that kind of file, and showed exactly that error. The fix was to convert it offline rather than fight the loader at runtime: unzip the 3MF, read the two part meshes out of `3D/Objects/object_1.model` and `object_2.model`, apply each part's `<build><item>` transform (a 3MF affine matrix), merge everything, and write a single binary STL. ~50 lines, runs once, and now it's just an STL the viewer renders without complaint.
+
+So the rule of thumb: for slicer exports, **use STL** (right-click the object → Export as STL) or convert offline. The viewer surfaces parse errors inline, so when a model can't load you see why instead of getting a blank box.
+
+## Use it on your own site
+
+It's MIT-licensed and lives here: **[github.com/ebootheee/astro-stl-viewer](https://github.com/ebootheee/astro-stl-viewer)**.
+
+Copy the two files into your project (or `npm install github:ebootheee/astro-stl-viewer three`), drop a model in `public/`, and point the component at it:
+
+```astro
+---
+import StlViewer from "../components/StlViewer.astro";
+---
+
+<StlViewer src="/models/part.stl" />
+
+<StlViewer
+  src="/models/bracket.stl"
+  title="Mounting bracket"
+  material="metal"
+  color="#9aa0aa"
+  height="tall"
+/>
+```
+
+It works inside `.mdx` content too — same `import` at the top of the file. The README has the full prop list. If you build something with it, I'd love to see it.
