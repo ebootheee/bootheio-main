@@ -1,11 +1,14 @@
 ---
-import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
+import { investments as investmentData } from "../data/investments";
 
-const { entries: investments, cacheHint } = await getEmDashCollection("investments", {
-	orderBy: { sort_order: "asc" },
-});
-Astro.cache.set(cacheHint);
+export const prerender = true;
+
+// Wrap each record as { data } so the existing template (entry.data.*) is unchanged.
+const investments = investmentData
+	.slice()
+	.sort((a, b) => a.sort_order - b.sort_order)
+	.map((data) => ({ data }));
 ---
 
 <Base

@@ -1,12 +1,4 @@
 ---
-import { getMenu, getEmDashCollection } from "emdash";
-import {
-	WidgetArea,
-	EmDashHead,
-	EmDashBodyStart,
-	EmDashBodyEnd,
-} from "emdash/ui";
-import { createPublicPageContext } from "emdash/page";
 import "../styles/theme.css";
 
 interface Props {
@@ -19,8 +11,6 @@ interface Props {
 	publishedTime?: string | null;
 	modifiedTime?: string | null;
 	author?: string | null;
-	/** Pass content reference for plugin page contributions on content pages */
-	content?: { collection: string; id: string; slug?: string | null };
 }
 
 type MenuItem = {
@@ -39,36 +29,26 @@ const {
 	publishedTime,
 	modifiedTime,
 	author,
-	content,
 } = Astro.props;
 const siteTitle = "boothe.io";
-// If title already includes site title (from getSeoMeta), use as-is
+// If title already includes site title, use as-is
 const fullTitle = title.includes(siteTitle) ? title : `${title} - ${siteTitle}`;
 
-const menu = await getMenu("primary");
-const menuItems: MenuItem[] = (menu?.items as MenuItem[]) ?? [];
+// Static primary navigation (was the EmDash "primary" menu in the DB).
+const menuItems: MenuItem[] = [
+	{ label: "Home", url: "/" },
+	{ label: "About", url: "/about" },
+	{ label: "Posts", url: "/posts" },
+	{ label: "Models", url: "/models" },
+];
 
-// Fetch pages for footer
-const { entries: pages } = await getEmDashCollection("pages");
-
-// Build public page context for plugin contributions
-// SEO data is passed here and rendered securely by EmDashHead
-const pageCtx = createPublicPageContext({
-	Astro,
-	kind: content ? "content" : "custom",
-	pageType: type,
-	title: fullTitle,
-	description,
-	canonical,
-	image,
-	content,
-	seo: { ogImage: image, robots },
-	articleMeta: { publishedTime, modifiedTime, author },
-	siteName: siteTitle,
-});
-
-// Check if user is logged in (for showing admin link)
-const isLoggedIn = !!Astro.locals.user;
+// Canonical/OG URL for this page.
+const canonicalHref =
+	canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
+const ogImageAbs =
+	image && !image.startsWith("http")
+		? new URL(image, Astro.site ?? Astro.url.origin).href
+		: image;
 ---
 
 <!doctype html>
@@ -87,7 +67,26 @@ const isLoggedIn = !!Astro.locals.user;
 			rel="stylesheet"
 		/>
 		<title>{fullTitle}</title>
-		<EmDashHead page={pageCtx} />
+		{description && <meta name="description" content={description} />}
+		{author && <meta name="author" content={author} />}
+		{robots && <meta name="robots" content={robots} />}
+		<link rel="canonical" href={canonicalHref} />
+		<meta property="og:title" content={fullTitle} />
+		{description && <meta property="og:description" content={description} />}
+		<meta property="og:type" content={type} />
+		<meta property="og:url" content={canonicalHref} />
+		<meta property="og:site_name" content={siteTitle} />
+		{ogImageAbs && <meta property="og:image" content={ogImageAbs} />}
+		<meta name="twitter:card" content={ogImageAbs ? "summary_large_image" : "summary"} />
+		<meta name="twitter:title" content={fullTitle} />
+		{description && <meta name="twitter:description" content={description} />}
+		{ogImageAbs && <meta name="twitter:image" content={ogImageAbs} />}
+		{type === "article" && publishedTime && (
+			<meta property="article:published_time" content={publishedTime} />
+		)}
+		{type === "article" && modifiedTime && (
+			<meta property="article:modified_time" content={modifiedTime} />
+		)}
 		<script is:inline>
 			// Apply theme immediately to prevent flash.
 			(function () {
@@ -119,7 +118,6 @@ const isLoggedIn = !!Astro.locals.user;
 		</script>
 	</head>
 	<body>
-		<EmDashBodyStart page={pageCtx} />
 		<header class="site-header">
 			<nav class="nav">
 				<a href="/" class="site-title">
@@ -220,13 +218,6 @@ const isLoggedIn = !!Astro.locals.user;
 							>
 						</button>
 					</div>
-					{
-						isLoggedIn && (
-							<a href="/_emdash/admin" class="nav-admin">
-								Admin
-							</a>
-						)
-					}
 				</div>
 			</nav>
 		</header>
@@ -260,15 +251,6 @@ const isLoggedIn = !!Astro.locals.user;
 						<ul class="footer-links">
 							<li><a href="/">Home</a></li>
 							<li><a href="/posts">All Posts</a></li>
-							{
-								pages.slice(0, 3).map((page) => (
-									<li>
-										<a href={`/pages/${page.data.slug || page.id}`}>
-											{page.data.title}
-										</a>
-									</li>
-								))
-							}
 						</ul>
 					</div>
 					<div class="footer-nav">
@@ -295,13 +277,18 @@ const isLoggedIn = !!Astro.locals.user;
 							<li><a href="/rss.xml">RSS Feed</a></li>
 						</ul>
 					</div>
-					<div class="footer-widgets-section">
-						<WidgetArea name="footer" />
-					</div>
+						<div class="footer-widgets-section">
+							<div class="widget">
+								<h3 class="widget__title">About</h3>
+								<div class="widget__content">
+									<p>Technical writing, engineering projects, and 3D prints.</p>
+								</div>
+							</div>
+						</div>
 				</div>
 				<div class="footer-bottom">
 					<p class="footer-copyright">
-						Powered by <a href="https://emdashcms.com">EmDash</a>
+						Built with <a href="https://astro.build">Astro</a>
 					</p>
 					<div class="footer-badges">
 						<span class="footer-badge footer-badge-retro">
@@ -1106,6 +1093,5 @@ const isLoggedIn = !!Astro.locals.user;
 				}
 			});
 		</script>
-		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>

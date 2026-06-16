@@ -1,44 +1,32 @@
-import type { PortableTextBlock } from "emdash";
-
 const WORDS_PER_MINUTE = 200;
-const WHITESPACE_REGEX = /\s+/;
 
 /**
- * Extract plain text from Portable Text blocks
+ * Strip Markdown/MDX syntax down to readable words. Drops fenced code blocks,
+ * inline code, image/link syntax, JSX tags, and Markdown punctuation so the
+ * word count reflects prose, not markup.
  */
-export function extractText(blocks: PortableTextBlock[] | undefined): string {
-	if (!blocks || !Array.isArray(blocks)) return "";
-
-	return blocks
-		.filter(
-			(
-				block,
-			): block is PortableTextBlock & {
-				children: Array<{ _type: string; text?: string }>;
-			} => block._type === "block" && Array.isArray(block.children),
-		)
-		.map((block) =>
-			block.children
-				.filter((child) => child._type === "span" && typeof child.text === "string")
-				.map((span) => span.text)
-				.join(""),
-		)
-		.join(" ");
+export function extractText(markdown: string | undefined): string {
+	if (!markdown || typeof markdown !== "string") return "";
+	return markdown
+		.replace(/```[\s\S]*?```/g, " ") // fenced code
+		.replace(/`[^`]*`/g, " ") // inline code
+		.replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
+		.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links -> link text
+		.replace(/<[^>]+>/g, " ") // html/jsx tags
+		.replace(/[#>*_~`-]/g, " ") // md punctuation
+		.replace(/\s+/g, " ")
+		.trim();
 }
 
 /**
- * Calculate reading time in minutes from Portable Text content
+ * Calculate reading time in minutes from a Markdown/MDX body string.
  */
-export function getReadingTime(content: PortableTextBlock[] | undefined): number {
-	const text = extractText(content);
-	const wordCount = text.split(WHITESPACE_REGEX).filter(Boolean).length;
-	const minutes = Math.ceil(wordCount / WORDS_PER_MINUTE);
-	return Math.max(1, minutes);
+export function getReadingTime(markdown: string | undefined): number {
+	const text = extractText(markdown);
+	const wordCount = text.split(/\s+/).filter(Boolean).length;
+	return Math.max(1, Math.ceil(wordCount / WORDS_PER_MINUTE));
 }
 
-/**
- * Format reading time for display
- */
 export function formatReadingTime(minutes: number): string {
 	return `${minutes} min read`;
 }

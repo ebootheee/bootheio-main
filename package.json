@@ -7,21 +7,13 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"deploy": "wrangler deploy",
+		"deploy": "wrangler deploy -c dist/server/wrangler.json",
 		"typecheck": "astro check"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^13.6.0",
-		"@astrojs/react": "^5.0.6",
-		"@emdash-cms/cloudflare": "^0.17.2",
-		"@emdash-cms/plugin-forms": "^0.2.3",
-		"@emdash-cms/plugin-webhook-notifier": "^0.2.0",
+		"@astrojs/mdx": "^6.0.3",
 		"astro": "^6.4.2",
-		"emdash": "^0.17.2",
-		"emdash-plugin-stl-viewer": "^0.3.0",
-		"mimetext": "^3.0.28",
-		"react": "^19.2.6",
-		"react-dom": "^19.2.6",
 		"three": "^0.171.0"
 	},
 	"devDependencies": {

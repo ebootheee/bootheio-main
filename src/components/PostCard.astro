@@ -1,15 +1,12 @@
 ---
-import type { MediaValue, ContentBylineCredit } from "emdash";
-
 interface Props {
 	title: string;
 	excerpt?: string;
-	featuredImage?: MediaValue | string;
 	href: string;
 	date?: Date;
 	readingTime?: number;
 	tags?: Array<{ slug: string; label: string }>;
-	bylines?: ContentBylineCredit[];
+	bylines?: unknown[];
 }
 
 const {

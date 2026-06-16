@@ -1,9 +1,6 @@
 packages:
   - "."
 onlyBuiltDependencies:
-  - better-sqlite3
   - esbuild
   - sharp
   - workerd
-patchedDependencies:
-  '@emdash-cms/admin@0.17.2': patches/@emdash-cms__admin@0.17.2.patch

@@ -1,16 +1,16 @@
 import type { APIRoute } from "astro";
-import { getEmDashCollection } from "emdash";
+import { getCollection } from "astro:content";
 
-const siteTitle = "My Blog";
-const siteDescription = "A blog about software, design, and the occasional stray thought.";
+const siteTitle = "boothe.io";
+const siteDescription = "Technical writing, engineering projects, and 3D prints.";
 
 export const GET: APIRoute = async ({ site, url }) => {
-	const siteUrl = site?.toString() || url.origin;
+	const siteUrl = (site?.toString() || url.origin).replace(/\/$/, "");
 
-	const { entries: posts } = await getEmDashCollection("posts", {
-		orderBy: { published_at: "desc" },
-		limit: 20,
-	});
+	const posts = (await getCollection("posts", (p) => !p.data.draft)).sort(
+		(a, b) =>
+			(b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0),
+	);
 
 	const items = posts
 		.map((post) => {

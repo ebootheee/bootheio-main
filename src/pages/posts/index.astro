@@ -1,12 +1,12 @@
 ---
-import { getEmDashCollection, getEntryTerms } from "emdash";
+import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import PostCard from "../../components/PostCard.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts");
+export const prerender = true;
 
-Astro.cache.set(cacheHint);
+const posts = await getCollection("posts", (p) => !p.data.draft);
 
 const sortedPosts = posts.toSorted((a, b) => {
 	const dateA = a.data.publishedAt?.getTime() ?? 0;
@@ -14,13 +14,11 @@ const sortedPosts = posts.toSorted((a, b) => {
 	return dateB - dateA;
 });
 
-const postsWithTags = await Promise.all(
-	sortedPosts.map(async (post) => {
-		const tags = await getEntryTerms("posts", post.data.id, "tag");
-		const bylines = post.data.bylines ?? [];
-		return { post, tags: tags.map((t) => ({ slug: t.slug, label: t.label })), bylines };
-	})
-);
+const postsWithTags = sortedPosts.map((post) => ({
+	post,
+	tags: (post.data.tags ?? []).map((t) => ({ slug: t, label: t })),
+	bylines: [] as any[],
+}));
 ---
 
 <Base title="Blog" description="All blog posts">
@@ -46,10 +44,9 @@ const postsWithTags = await Promise.all(
 					<PostCard
 						title={post.data.title ?? "Untitled"}
 						excerpt={post.data.excerpt}
-						featuredImage={post.data.featured_image}
 						href={`/posts/${post.id}`}
 						date={post.data.publishedAt ?? undefined}
-						readingTime={getReadingTime(post.data.content)}
+						readingTime={getReadingTime(post.body)}
 						tags={tags}
 						bylines={bylines}
 					/>

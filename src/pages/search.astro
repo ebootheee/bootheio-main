@@ -1,23 +1,22 @@
 ---
 export const prerender = false;
 
-import { getEmDashCollection } from "emdash";
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import { getReadingTime, extractText } from "../utils/reading-time";
 
 const query = Astro.url.searchParams.get("q")?.trim() || "";
 
-const { entries: allPosts } = await getEmDashCollection("posts");
+const allPosts = await getCollection("posts", (p) => !p.data.draft);
 
-// Simple search: match query against title, excerpt, and content
-function matchesQuery(post: (typeof allPosts)[0], q: string): boolean {
+// Simple search: match query against title, excerpt, and body text.
+function matchesQuery(post: (typeof allPosts)[number], q: string): boolean {
 	if (!q) return false;
 	const lower = q.toLowerCase();
 	const title = (post.data.title || "").toLowerCase();
 	const excerpt = (post.data.excerpt || "").toLowerCase();
-	// Extract plain text from portable text blocks (avoids matching on _type, _key, etc.)
-	const content = extractText(post.data.content).toLowerCase();
+	const content = extractText(post.body).toLowerCase();
 	return (
 		title.includes(lower) || excerpt.includes(lower) || content.includes(lower)
 	);
@@ -62,10 +61,9 @@ const results = query ? allPosts.filter((p) => matchesQuery(p, query)) : [];
 						<PostCard
 							title={post.data.title}
 							excerpt={post.data.excerpt}
-							featuredImage={post.data.featured_image}
 							href={`/posts/${post.id}`}
 							date={post.data.publishedAt ?? undefined}
-							readingTime={getReadingTime(post.data.content)}
+							readingTime={getReadingTime(post.body)}
 						/>
 					))}
 				</div>

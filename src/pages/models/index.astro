@@ -1,32 +1,24 @@
 ---
-import { getEmDashCollection } from "emdash";
+import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 
-const { entries: models, cacheHint } = await getEmDashCollection("models", {
-	status: "published",
-	orderBy: { published_at: "desc" },
-});
+export const prerender = true;
 
-Astro.cache.set(cacheHint);
+const models = await getCollection("models");
 
-function getDescriptionExcerpt(description: unknown): string {
-	if (!Array.isArray(description)) return "";
-	const firstBlock = description.find((b: any) => b?._type === "block");
-	if (!firstBlock) return "";
-	const children = (firstBlock.children ?? []) as Array<{ text: string }>;
-	return children.map((c) => c.text).join("").slice(0, 130);
-}
-
-const cards = models.map((model) => {
-	const data = model.data as any;
-	return {
+const cards = models
+	.slice()
+	.sort(
+		(a, b) =>
+			(b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0),
+	)
+	.map((model) => ({
 		id: model.id,
 		title: model.data.title,
-		color: (data.color as string) || "#cfd1d4",
-		material: (data.material as string) || "matte",
-		excerpt: getDescriptionExcerpt(data.description),
-	};
-});
+		color: model.data.color || "#cfd1d4",
+		material: model.data.material || "matte",
+		excerpt: "",
+	}));
 ---
 
 <Base title="Models" description="3D models and prints">

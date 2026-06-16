@@ -1,41 +1,15 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "bootheio-main",
-	"main": "./src/worker.ts",
 	"compatibility_date": "2026-03-29",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "bootheio-main","database_id": "298af29f-f60e-4e55-bf70-0241c2a2dea1",
-			// Run `wrangler d1 create my-emdash-site` and paste the ID here
-		},
-	],
-	"r2_buckets": [
-		{
-			"binding": "MEDIA",
-			"bucket_name": "bootheio-main","preview_bucket_name": "bootheio-main",
-		},
-	],
+	"compatibility_flags": ["nodejs_compat"],
+	// Astro's sessions feature (auto-enabled by @astrojs/cloudflare) binds a KV
+	// namespace named SESSION. Reusing the existing namespace; unused by the site
+	// today but keeps the deploy config valid.
 	"kv_namespaces": [
-		{
-			"binding": "SESSION",
-			"id": "3aa5e1fd60b740b5a7aced572b31a3da"
-		}
-	],
-	"send_email": [
-		{
-			"name": "SEND_EMAIL"
-		}
+		{ "binding": "SESSION", "id": "3aa5e1fd60b740b5a7aced572b31a3da" }
 	],
 	"observability": {
-		"enabled": true,
-	},
-	"worker_loaders": [
-		{
-			"binding": "LOADER",
-		},
-	],
+		"enabled": true
+	}
 }

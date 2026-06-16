@@ -1,12 +1,12 @@
 ---
-import { getEmDashCollection, getEntryTerms } from "emdash";
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PostCard from "../components/PostCard.astro";
 import { getReadingTime } from "../utils/reading-time";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts");
+export const prerender = true;
 
-Astro.cache.set(cacheHint);
+const posts = await getCollection("posts", (p) => !p.data.draft);
 
 const sortedPosts = posts.toSorted((a, b) => {
 	const dateA = a.data.publishedAt?.getTime() ?? 0;
@@ -17,17 +17,11 @@ const sortedPosts = posts.toSorted((a, b) => {
 const recentPosts = sortedPosts.slice(0, 6);
 const hasMorePosts = sortedPosts.length > 6;
 
-const postsWithTags = await Promise.all(
-	recentPosts.map(async (post) => {
-		const tags = await getEntryTerms("posts", post.data.id, "tag");
-		const bylines = post.data.bylines ?? [];
-		return {
-			post,
-			tags: tags.map((t) => ({ slug: t.slug, label: t.label })),
-			bylines,
-		};
-	})
-);
+const postsWithTags = recentPosts.map((post) => ({
+	post,
+	tags: (post.data.tags ?? []).map((t) => ({ slug: t, label: t })),
+	bylines: [] as any[],
+}));
 
 // Guestbook entries (placeholder)
 const guestbookEntries = [
@@ -79,8 +73,7 @@ const guestbookEntries = [
 			{recentPosts.length === 0 ? (
 				<div class="empty-state">
 					<h3>No posts yet</h3>
-					<p>Create your first post in the admin panel.</p>
-					<a href="/_emdash/admin/content/posts/new" class="btn">Create a post</a>
+					<p>Check back soon.</p>
 				</div>
 			) : (
 				<div class="posts-grid">
@@ -88,10 +81,9 @@ const guestbookEntries = [
 						<PostCard
 							title={post.data.title ?? "Untitled"}
 							excerpt={post.data.excerpt}
-							featuredImage={post.data.featured_image}
 							href={`/posts/${post.id}`}
 							date={post.data.publishedAt ?? undefined}
-							readingTime={getReadingTime(post.data.content)}
+							readingTime={getReadingTime(post.body)}
 							tags={tags}
 							bylines={bylines}
 						/>

@@ -1,58 +1,37 @@
 ---
-import { getEmDashEntry, getEmDashCollection, getSeoMeta } from "emdash";
-import { PortableText } from "emdash/ui";
-import StlViewer from "emdash-plugin-stl-viewer/astro/StlViewer.astro";
+import { getCollection, render } from "astro:content";
+import StlViewer from "../../components/StlViewer.astro";
 import Base from "../../layouts/Base.astro";
 import PostCard from "../../components/PostCard.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
-const { slug } = Astro.params;
-if (!slug) return Astro.redirect("/404");
+export const prerender = true;
 
-const { entry: model, cacheHint } = await getEmDashEntry("models", slug);
-if (!model) return Astro.redirect("/404");
-
-Astro.cache.set(cacheHint);
-
-const d = model.data as any;
-const edit = model.edit as any;
-
-// A `file` field value has no `.url` for local storage — build it from the
-// storageKey (meta.storageKey, falling back to id). External providers use src.
-function fileFieldUrl(f: any): string {
-	if (!f || typeof f !== "object") return "";
-	if (typeof f.src === "string" && f.src) return f.src;
-	const key = (typeof f.meta?.storageKey === "string" && f.meta.storageKey) || f.id;
-	return key ? `/_emdash/api/media/file/${encodeURIComponent(key)}` : "";
+export async function getStaticPaths() {
+	const models = await getCollection("models");
+	return models.map((model) => ({ params: { slug: model.id }, props: { model } }));
 }
 
-const modelUrl = fileFieldUrl(d.model_file) || (d.model_url as string) || "";
-const material = (d.material as string) || "matte";
-const color = (d.color as string) || "#cfd1d4";
-const height = (d.height as string) || "tall";
+const { model } = Astro.props;
+const { Content } = await render(model);
+const d = model.data;
+
+const modelUrl = d.model_url || "";
+const material = d.material || "matte";
+const color = d.color || "#cfd1d4";
+const height = d.height || "tall";
 const autoRotate = d.auto_rotate !== false;
 const showGrid = d.show_grid !== false;
-const description = d.description;
-const relatedPostSlugs: string[] = Array.isArray(d.related_posts) ? (d.related_posts as string[]) : [];
 
-// Resolve related post entries
-const relatedPosts = (
-	await Promise.all(
-		relatedPostSlugs.map(async (postSlug) => {
-			const { entry } = await getEmDashEntry("posts", postSlug);
-			return entry;
-		})
-	)
-).filter(Boolean);
+const allPosts = await getCollection("posts", (p) => !p.data.draft);
+const relatedPosts = (d.related_posts ?? [])
+	.map((s) => allPosts.find((p) => p.id === s))
+	.filter((p): p is (typeof allPosts)[number] => Boolean(p));
 
-const seo = getSeoMeta(model, {
-	siteTitle: "boothe.io",
-	siteUrl: Astro.url.origin,
-	path: `/models/${slug}`,
-});
+const siteUrl = Astro.site?.origin ?? Astro.url.origin;
 
 const publishDate =
-	model.data.publishedAt?.toLocaleDateString("en-US", {
+	d.publishedAt?.toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "long",
 		day: "numeric",
@@ -60,10 +39,9 @@ const publishDate =
 ---
 
 <Base
-	title={seo.title}
-	description={seo.description}
-	canonical={seo.canonical}
-	robots={seo.robots}
+	title={d.title}
+	description={d.title}
+	canonical={`${siteUrl}/models/${model.id}`}
 >
 	<article class="model-page">
 		<header class="model-header">
@@ -72,9 +50,9 @@ const publishDate =
 				<span>/</span>
 				<a href="/models">models</a>
 				<span>/</span>
-				<span class="current">{slug}</span>
+				<span class="current">{model.id}</span>
 			</div>
-			<h1 class="model-title" {...model.edit.title}>{model.data.title}</h1>
+			<h1 class="model-title">{d.title}</h1>
 			<div class="model-meta">
 				<span class="meta-chip" style={`--chip-color: ${color}`}>
 					<span class="chip-dot"></span>
@@ -85,13 +63,13 @@ const publishDate =
 		</header>
 
 		{modelUrl && (
-			<div class="model-viewer" {...edit.model_url}>
+			<div class="model-viewer">
 				<StlViewer
 					node={{
 						id: modelUrl,
-						material: material as any,
+						material,
 						color,
-						height: height as any,
+						height,
 						autoRotate,
 						showGrid,
 					}}
@@ -99,24 +77,21 @@ const publishDate =
 			</div>
 		)}
 
-		{description && Array.isArray(description) && description.length > 0 && (
-			<div class="model-description" {...edit.description}>
-				<PortableText value={description as any} />
-			</div>
-		)}
+		<div class="model-description">
+			<Content />
+		</div>
 
 		{relatedPosts.length > 0 && (
 			<section class="related-posts">
 				<h2 class="related-title">Featured in</h2>
 				<div class="related-grid">
-					{relatedPosts.map((post) => post && (
+					{relatedPosts.map((post) => (
 						<PostCard
 							title={post.data.title}
 							excerpt={post.data.excerpt}
-							featuredImage={post.data.featured_image}
 							href={`/posts/${post.id}`}
 							date={post.data.publishedAt ?? undefined}
-							readingTime={getReadingTime(post.data.content)}
+							readingTime={getReadingTime(post.body)}
 						/>
 					))}
 				</div>
