@@ -8,6 +8,10 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
 	site: "https://boothe.io",
 	output: "static",
+	// Serve /posts/slug directly (no trailing-slash redirect), matching the
+	// pre-migration SSR URLs that all internal links + canonicals use.
+	trailingSlash: "never",
+	build: { format: "file" },
 	// No Astro <Image> usage on the site, so skip Cloudflare Images (avoids the
 	// IMAGES binding); markdown images are served as plain files from /public.
 	adapter: cloudflare({ imageService: "passthrough" }),
