@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" role="img" aria-label="Governing failure mode across 400 random pallets">
+<rect width="760" height="320" rx="10" fill="#0b0f12"/>
+<text x="150" y="28" font-size="15" fill="#e6e9ec" text-anchor="start" font-weight="600">What governs, across 400 random pallets</text>
+<text x="150" y="46" font-size="11" fill="#6d7680" text-anchor="start" font-weight="400">1254 MuJoCo sims · 53.4 s wall · 14 cores</text>
+<text x="140" y="85.0" font-size="12" fill="#a9b1b9" text-anchor="end" font-weight="400">no failure</text>
+<path d="M150,64 h536.0 a4,4 0 0 1 4,4 v26 a4,4 0 0 1 -4,4 h-536.0 z" fill="#0891b2"/>
+<text x="700.0" y="85.0" font-size="12" fill="#e6e9ec" text-anchor="start" font-weight="400">239 <tspan fill='#6d7680'>(60%)</tspan></text>
+<text x="140" y="133.0" font-size="12" fill="#a9b1b9" text-anchor="end" font-weight="400">load shift</text>
+<path d="M150,112 h233.23849372384936 a4,4 0 0 1 4,4 v26 a4,4 0 0 1 -4,4 h-233.23849372384936 z" fill="#0891b2"/>
+<text x="397.2384937238494" y="133.0" font-size="12" fill="#e6e9ec" text-anchor="start" font-weight="400">105 <tspan fill='#6d7680'>(26%)</tspan></text>
+<text x="140" y="181.0" font-size="12" fill="#a9b1b9" text-anchor="end" font-weight="400">top-item slide</text>
+<path d="M150,160 h77.33891213389121 a4,4 0 0 1 4,4 v26 a4,4 0 0 1 -4,4 h-77.33891213389121 z" fill="#0891b2"/>
+<text x="241.3389121338912" y="181.0" font-size="12" fill="#e6e9ec" text-anchor="start" font-weight="400">36 <tspan fill='#6d7680'>(9%)</tspan></text>
+<text x="140" y="229.0" font-size="12" fill="#a9b1b9" text-anchor="end" font-weight="400">tip-over</text>
+<path d="M150,208 h41.18828451882845 a4,4 0 0 1 4,4 v26 a4,4 0 0 1 -4,4 h-41.18828451882845 z" fill="#0891b2"/>
+<text x="205.18828451882845" y="229.0" font-size="12" fill="#e6e9ec" text-anchor="start" font-weight="400">20 <tspan fill='#6d7680'>(5%)</tspan></text>
+<text x="140" y="277.0" font-size="12" fill="#a9b1b9" text-anchor="end" font-weight="400">pallet slip</text>
+<path d="M150,256 h-2 a4,4 0 0 1 4,4 v26 a4,4 0 0 1 -4,4 h--2 z" fill="#0891b2"/>
+<text x="162" y="277.0" font-size="12" fill="#e6e9ec" text-anchor="start" font-weight="400">0 <tspan fill='#6d7680'>(0%)</tspan></text>
+</svg>

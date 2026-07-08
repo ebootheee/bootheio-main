@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" role="img" aria-label="Distribution of solver max safe speed">
+<rect width="760" height="360" rx="10" fill="#0b0f12"/>
+<text x="64" y="28" font-size="15" fill="#e6e9ec" text-anchor="start" font-weight="600">Max safe speed: most pallets are being throttled</text>
+<text x="64" y="46" font-size="11" fill="#6d7680" text-anchor="start" font-weight="400">solver ceiling = 2.0 m/s search bound · typical fixed line speed ≈ 1.0 m/s</text>
+<line x1="64" y1="314" x2="736" y2="314" stroke="rgba(230,233,236,0.08)" stroke-width="1"/>
+<text x="56" y="318" font-size="11" fill="#6d7680" text-anchor="end" font-weight="400">0</text>
+<line x1="64" y1="251.5" x2="736" y2="251.5" stroke="rgba(230,233,236,0.08)" stroke-width="1"/>
+<text x="56" y="255.5" font-size="11" fill="#6d7680" text-anchor="end" font-weight="400">60</text>
+<line x1="64" y1="189.0" x2="736" y2="189.0" stroke="rgba(230,233,236,0.08)" stroke-width="1"/>
+<text x="56" y="193.0" font-size="11" fill="#6d7680" text-anchor="end" font-weight="400">121</text>
+<line x1="64" y1="126.5" x2="736" y2="126.5" stroke="rgba(230,233,236,0.08)" stroke-width="1"/>
+<text x="56" y="130.5" font-size="11" fill="#6d7680" text-anchor="end" font-weight="400">182</text>
+<line x1="64" y1="64.0" x2="736" y2="64.0" stroke="rgba(230,233,236,0.08)" stroke-width="1"/>
+<text x="56" y="68.0" font-size="11" fill="#6d7680" text-anchor="end" font-weight="400">242</text>
+<path d="M67.0,314 v-133.39669421487602 a4,4 0 0 1 4,-4 h47.09090909090909 a4,4 0 0 1 4,4 v133.39669421487602 z" fill="#0891b2"/>
+<text x="94.54545454545455" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">0.0</text>
+<path d="M128.0909090909091,314 v-5.297520661157025 a4,4 0 0 1 4,-4 h47.09090909090909 a4,4 0 0 1 4,4 v5.297520661157025 z" fill="#0891b2"/>
+<text x="155.63636363636363" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">0.2</text>
+<rect x="189.1818181818182" y="310.900826446281" width="55.09090909090909" height="3.0991735537190084" fill="#0891b2"/>
+<text x="216.72727272727275" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">0.4</text>
+<rect x="250.27272727272728" y="310.900826446281" width="55.09090909090909" height="3.0991735537190084" fill="#0891b2"/>
+<text x="277.8181818181818" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">0.6</text>
+<rect x="311.3636363636364" y="310.900826446281" width="55.09090909090909" height="3.0991735537190084" fill="#0891b2"/>
+<text x="338.90909090909093" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">0.8</text>
+<rect x="372.4545454545455" y="311.93388429752065" width="55.09090909090909" height="2.066115702479339" fill="#0891b2"/>
+<text x="400.00000000000006" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">1.0</text>
+<rect x="433.54545454545456" y="312.9669421487603" width="55.09090909090909" height="1.0330578512396695" fill="#0891b2"/>
+<text x="461.0909090909091" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">1.2</text>
+<rect x="494.6363636363636" y="312.9669421487603" width="55.09090909090909" height="1.0330578512396695" fill="#0891b2"/>
+<text x="522.1818181818181" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">1.4</text>
+<rect x="555.7272727272727" y="311.93388429752065" width="55.09090909090909" height="2.066115702479339" fill="#0891b2"/>
+<text x="583.2727272727273" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">1.6</text>
+<rect x="616.8181818181819" y="312.9669421487603" width="55.09090909090909" height="1.0330578512396695" fill="#0891b2"/>
+<text x="644.3636363636364" y="330" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">1.8</text>
+<path d="M677.909090909091,314 v-246.0 a4,4 0 0 1 4,-4 h47.09090909090909 a4,4 0 0 1 4,4 v246.0 z" fill="#c98500"/>
+<text x="705.4545454545455" y="330" font-size="10" fill="#c98500" text-anchor="middle" font-weight="400">≥2.0</text>
+<text x="705.4545454545455" y="54.0" font-size="12" fill="#c98500" text-anchor="middle" font-weight="600">242</text>
+<text x="695.4545454545455" y="38.0" font-size="10" fill="#6d7680" text-anchor="middle" font-weight="400">at search ceiling</text>
+<line x1="369.4545454545455" y1="64" x2="369.4545454545455" y2="314" stroke="#6d7680" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="375.4545454545455" y="78" font-size="10" fill="#6d7680" text-anchor="start" font-weight="400">typical fixed line speed</text>
+<text x="400.0" y="350" font-size="11" fill="#6d7680" text-anchor="middle" font-weight="400">solver max safe speed (m/s)</text>
+</svg>
