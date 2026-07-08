@@ -227,6 +227,10 @@ Push to main → live in under six minutes, on hardware I can physically kick.
 
 ## What I'd build next
 
+**Next up — the GPU experiment.** NVIDIA and Google DeepMind now ship [MuJoCo Warp](https://github.com/google-deepmind/mujoco_warp), a GPU reimplementation of this exact engine that steps thousands of parallel worlds per call and consumes the same MJCF models this project already builds — and the envelope search is a perfect fit, since every world shares one pallet and only the conveyor profile changes. Instead of bisecting one profile at a time, a single batched call evaluates the entire speed × acceleration grid and returns a full failure-mode map for the pallet, not just one edge of the envelope. The gate is an agreement study: MuJoCo Warp runs single-precision, so its verdicts have to match the float64 CPU solver near the stick/slip boundaries before it earns any trust. If this works, a single consumer GPU could handle the simulations behind hundreds of simultaneous safety-margin decisions, on premise, with the CPU solver as complete redundancy — results in a follow-up post.
+
+Beyond that:
+
 - **Real inputs.** The `RawInputs` contract was designed for a depth-camera + barcode adapter; the mock random adapter proves the path. A cheap overhead camera and a segmentation model would close the loop.
 - **Deceleration and cornering.** The solver already sweeps decel and reports lateral-g tolerance; the interesting production question is zone-to-zone handoff profiles.
 - **Calibration.** The friction table and wrap stiffnesses are literature-plausible starting points. A day of instrumented runs on a real line would turn them into measurements — the code paths are already parameterized for it.
