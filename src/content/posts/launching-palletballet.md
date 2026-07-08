@@ -7,6 +7,12 @@ tags: ["physics", "mujoco", "fastapi", "self-hosting", "simulation"]
 categories: ["projects"]
 ---
 
+Opus 4.6 made me realize that I could transpose "what if" ideas somewhat easily into functional reality. Physics simulations in their many forms have always interested me -- the idea that math and code could, given enough parameters, emulate the real world is especially important in the fields that I work in (logistics, energy, and built environments). A friend pointed me in the direction of logistics automations and how friction coefficients in cold-storage (big refrigerated/frozen warehouses that touch virtually every perishable food good in the world) makes automation more complicated than traditional warehouses: transitional temperature changes, an innately hostile environment, and mixed palletization (many good types on one pallet) are just some of the physics challenges that means every pallet must be simulated and handled slightly differently.
+
+Conveyor automation is just a big system of acceleration and speed. So, to make that system optimal, you must first solve the safe limits for both that speed and acceleration on an individual pallet basis. My question became: could Claude help me build a physics engine that could take a series of inputs (pallet type, goods, some machine vision data, etc.) and simulate individual pallet conveyor safety limits within a few 100ms and then feed those safety limits to the conveyor system?
+
+## Overview
+
 Cold-storage warehouses run pallets down conveyors at speeds chosen by a table. One number for everything: the perfectly wrapped dairy slab and the unwrapped, top-heavy tower of frozen meat both get 1.0 m/s. The first is being throttled for no reason. The second is being launched.
 
 **[PalletBallet](https://boothe.io/palletballet)** replaces the table with physics. Describe a pallet — geometry, masses, wrap, temperature — and it runs a batch of MuJoCo simulations to answer a narrow question: *what conveyor motion can this specific pallet survive, right now?* Out comes a speed limit, an acceleration limit, the failure mode that would otherwise govern, and a full 6-DoF replay of the moment it would have gone over.
