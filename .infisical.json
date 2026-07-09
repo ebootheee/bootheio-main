@@ -1,0 +1,9 @@
+{
+  "workspaceId": "51a50995-9a16-4258-83a0-dfded7c3c2fb",
+  "defaultEnvironment": "prod",
+  "secretPath": "/bootheio-main",
+  "sync": {
+    "github": ["ebootheee/bootheio-main"],
+    "keys": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"]
+  }
+}

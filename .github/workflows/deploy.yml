@@ -1,9 +1,11 @@
 name: Deploy
 
-# Manual only — boothe.io is deployed with `npm run build && npm run deploy`
-# locally. Trigger this from the Actions tab (workflow_dispatch) if you want CI
-# to deploy instead. (Re-add `push: branches: [main]` to deploy on every push.)
+# Deploys on every push to main (so GitHub-web edits to posts go live without
+# a terminal), and stays manually triggerable from the Actions tab. Secrets
+# come from Infisical /bootheio-main via `secret sync --apply`.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
