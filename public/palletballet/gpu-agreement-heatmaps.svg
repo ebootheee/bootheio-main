@@ -1,0 +1,220 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 860 430' font-family='ui-sans-serif,system-ui,sans-serif'>
+<rect width='860' height='430' rx='10' fill='#0b0f12'/>
+<text x='64' y='28' fill='#e6e9ec' font-size='16' font-weight='600'>Fraction of wrapped pallets called unsafe, per profile cell</text>
+<text x='64' y='46' fill='#9aa4ad' font-size='12'>303 stretch-wrapped pallets x 72 conveyor profiles, both backends, same failure detectors.</text>
+<text x='64' y='66' fill='#e6e9ec' font-size='13' font-weight='600'>CPU fp64 (production)</text>
+<rect x='64' y='221' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='93' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='122' y='221' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='151' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='180' y='221' width='27' height='27' rx='3' fill='#4e8e9b'/>
+<rect x='209' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='238' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='267' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='296' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='325' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='354' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='383' y='221' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='64' y='192' width='27' height='27' rx='3' fill='#50919e'/>
+<rect x='93' y='192' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='122' y='192' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='151' y='192' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='180' y='192' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='209' y='192' width='27' height='27' rx='3' fill='#4e8e9b'/>
+<rect x='238' y='192' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='267' y='192' width='27' height='27' rx='3' fill='#4e8e9b'/>
+<rect x='296' y='192' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='325' y='192' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='354' y='192' width='27' height='27' rx='3' fill='#4e8e9b'/>
+<rect x='383' y='192' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='64' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='93' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='122' y='163' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='151' y='163' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='180' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='209' y='163' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='238' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='267' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='296' y='163' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='325' y='163' width='27' height='27' rx='3' fill='#5498a6'/>
+<rect x='354' y='163' width='27' height='27' rx='3' fill='#5ba5b4'/>
+<rect x='383' y='163' width='27' height='27' rx='3' fill='#63b4c4'/>
+<rect x='64' y='134' width='27' height='27' rx='3' fill='#50919e'/>
+<rect x='93' y='134' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='122' y='134' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='151' y='134' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='180' y='134' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='209' y='134' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='238' y='134' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='267' y='134' width='27' height='27' rx='3' fill='#5194a1'/>
+<rect x='296' y='134' width='27' height='27' rx='3' fill='#5fadbd'/>
+<rect x='325' y='134' width='27' height='27' rx='3' fill='#67bbcc'/>
+<rect x='354' y='134' width='27' height='27' rx='3' fill='#6ac1d2'/>
+<rect x='383' y='134' width='27' height='27' rx='3' fill='#6fcadb'/>
+<rect x='64' y='105' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='93' y='105' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='122' y='105' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='151' y='105' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='180' y='105' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='209' y='105' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='238' y='105' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='267' y='105' width='27' height='27' rx='3' fill='#5ca7b6'/>
+<rect x='296' y='105' width='27' height='27' rx='3' fill='#67bbcc'/>
+<rect x='325' y='105' width='27' height='27' rx='3' fill='#6dc6d7'/>
+<rect x='354' y='105' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='383' y='105' width='27' height='27' rx='3' fill='#7addf0'/>
+<rect x='64' y='76' width='27' height='27' rx='3' fill='#50919e'/>
+<rect x='93' y='76' width='27' height='27' rx='3' fill='#4e8e9c'/>
+<rect x='122' y='76' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='151' y='76' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='180' y='76' width='27' height='27' rx='3' fill='#4f8f9c'/>
+<rect x='209' y='76' width='27' height='27' rx='3' fill='#4f909d'/>
+<rect x='238' y='76' width='27' height='27' rx='3' fill='#5194a1'/>
+<rect x='267' y='76' width='27' height='27' rx='3' fill='#63b4c4'/>
+<rect x='296' y='76' width='27' height='27' rx='3' fill='#69c0d1'/>
+<rect x='325' y='76' width='27' height='27' rx='3' fill='#72cfe1'/>
+<rect x='354' y='76' width='27' height='27' rx='3' fill='#7adef1'/>
+<rect x='383' y='76' width='27' height='27' rx='3' fill='#7ce1f5'/>
+<text x='56' y='238.5' fill='#9aa4ad' font-size='10' text-anchor='end'>0.5</text>
+<text x='56' y='209.5' fill='#9aa4ad' font-size='10' text-anchor='end'>2.0</text>
+<text x='56' y='180.5' fill='#9aa4ad' font-size='10' text-anchor='end'>3.5</text>
+<text x='56' y='151.5' fill='#9aa4ad' font-size='10' text-anchor='end'>5.0</text>
+<text x='56' y='122.5' fill='#9aa4ad' font-size='10' text-anchor='end'>6.5</text>
+<text x='56' y='93.5' fill='#9aa4ad' font-size='10' text-anchor='end'>8.0</text>
+<text x='77.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>0.2</text>
+<text x='135.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>0.7</text>
+<text x='193.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.1</text>
+<text x='251.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.5</text>
+<text x='309.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.9</text>
+<text x='367.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>2.3</text>
+<text x='238.0' y='282' fill='#9aa4ad' font-size='11' text-anchor='middle'>belt speed (m/s)</text>
+<text x='482' y='66' fill='#e6e9ec' font-size='13' font-weight='600'>GPU fp32 (mujoco_warp)</text>
+<rect x='482' y='221' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='511' y='221' width='27' height='27' rx='3' fill='#72d0e2'/>
+<rect x='540' y='221' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='569' y='221' width='27' height='27' rx='3' fill='#73d0e3'/>
+<rect x='598' y='221' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='627' y='221' width='27' height='27' rx='3' fill='#73d1e4'/>
+<rect x='656' y='221' width='27' height='27' rx='3' fill='#73d1e3'/>
+<rect x='685' y='221' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='714' y='221' width='27' height='27' rx='3' fill='#71cee0'/>
+<rect x='743' y='221' width='27' height='27' rx='3' fill='#73d1e3'/>
+<rect x='772' y='221' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='801' y='221' width='27' height='27' rx='3' fill='#73d0e3'/>
+<rect x='482' y='192' width='27' height='27' rx='3' fill='#72d0e2'/>
+<rect x='511' y='192' width='27' height='27' rx='3' fill='#72d0e2'/>
+<rect x='540' y='192' width='27' height='27' rx='3' fill='#73d1e3'/>
+<rect x='569' y='192' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='598' y='192' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='627' y='192' width='27' height='27' rx='3' fill='#74d3e6'/>
+<rect x='656' y='192' width='27' height='27' rx='3' fill='#74d3e5'/>
+<rect x='685' y='192' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='714' y='192' width='27' height='27' rx='3' fill='#75d4e6'/>
+<rect x='743' y='192' width='27' height='27' rx='3' fill='#75d5e7'/>
+<rect x='772' y='192' width='27' height='27' rx='3' fill='#74d3e5'/>
+<rect x='801' y='192' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='482' y='163' width='27' height='27' rx='3' fill='#73d0e3'/>
+<rect x='511' y='163' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='540' y='163' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='569' y='163' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='598' y='163' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='627' y='163' width='27' height='27' rx='3' fill='#75d4e7'/>
+<rect x='656' y='163' width='27' height='27' rx='3' fill='#75d5e7'/>
+<rect x='685' y='163' width='27' height='27' rx='3' fill='#75d5e7'/>
+<rect x='714' y='163' width='27' height='27' rx='3' fill='#75d4e7'/>
+<rect x='743' y='163' width='27' height='27' rx='3' fill='#76d7e9'/>
+<rect x='772' y='163' width='27' height='27' rx='3' fill='#77d8eb'/>
+<rect x='801' y='163' width='27' height='27' rx='3' fill='#79ddf0'/>
+<rect x='482' y='134' width='27' height='27' rx='3' fill='#73d1e4'/>
+<rect x='511' y='134' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='540' y='134' width='27' height='27' rx='3' fill='#76d6e8'/>
+<rect x='569' y='134' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='598' y='134' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='627' y='134' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='656' y='134' width='27' height='27' rx='3' fill='#76d6e9'/>
+<rect x='685' y='134' width='27' height='27' rx='3' fill='#77d8ea'/>
+<rect x='714' y='134' width='27' height='27' rx='3' fill='#79dbee'/>
+<rect x='743' y='134' width='27' height='27' rx='3' fill='#7adef2'/>
+<rect x='772' y='134' width='27' height='27' rx='3' fill='#7addf0'/>
+<rect x='801' y='134' width='27' height='27' rx='3' fill='#7be0f3'/>
+<rect x='482' y='105' width='27' height='27' rx='3' fill='#74d2e5'/>
+<rect x='511' y='105' width='27' height='27' rx='3' fill='#73d2e4'/>
+<rect x='540' y='105' width='27' height='27' rx='3' fill='#75d4e7'/>
+<rect x='569' y='105' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='598' y='105' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='627' y='105' width='27' height='27' rx='3' fill='#76d7ea'/>
+<rect x='656' y='105' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='685' y='105' width='27' height='27' rx='3' fill='#79dcef'/>
+<rect x='714' y='105' width='27' height='27' rx='3' fill='#7adff2'/>
+<rect x='743' y='105' width='27' height='27' rx='3' fill='#7ce1f5'/>
+<rect x='772' y='105' width='27' height='27' rx='3' fill='#7ce2f6'/>
+<rect x='801' y='105' width='27' height='27' rx='3' fill='#7de4f8'/>
+<rect x='482' y='76' width='27' height='27' rx='3' fill='#73d1e3'/>
+<rect x='511' y='76' width='27' height='27' rx='3' fill='#75d4e6'/>
+<rect x='540' y='76' width='27' height='27' rx='3' fill='#75d4e6'/>
+<rect x='569' y='76' width='27' height='27' rx='3' fill='#76d6e8'/>
+<rect x='598' y='76' width='27' height='27' rx='3' fill='#75d4e7'/>
+<rect x='627' y='76' width='27' height='27' rx='3' fill='#74d4e6'/>
+<rect x='656' y='76' width='27' height='27' rx='3' fill='#75d5e8'/>
+<rect x='685' y='76' width='27' height='27' rx='3' fill='#79ddf0'/>
+<rect x='714' y='76' width='27' height='27' rx='3' fill='#7bdff2'/>
+<rect x='743' y='76' width='27' height='27' rx='3' fill='#7de3f7'/>
+<rect x='772' y='76' width='27' height='27' rx='3' fill='#7ee5f9'/>
+<rect x='801' y='76' width='27' height='27' rx='3' fill='#7ee6fa'/>
+<text x='474' y='238.5' fill='#9aa4ad' font-size='10' text-anchor='end'>0.5</text>
+<text x='474' y='209.5' fill='#9aa4ad' font-size='10' text-anchor='end'>2.0</text>
+<text x='474' y='180.5' fill='#9aa4ad' font-size='10' text-anchor='end'>3.5</text>
+<text x='474' y='151.5' fill='#9aa4ad' font-size='10' text-anchor='end'>5.0</text>
+<text x='474' y='122.5' fill='#9aa4ad' font-size='10' text-anchor='end'>6.5</text>
+<text x='474' y='93.5' fill='#9aa4ad' font-size='10' text-anchor='end'>8.0</text>
+<text x='495.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>0.2</text>
+<text x='553.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>0.7</text>
+<text x='611.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.1</text>
+<text x='669.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.5</text>
+<text x='727.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>1.9</text>
+<text x='785.5' y='264' fill='#9aa4ad' font-size='10' text-anchor='middle'>2.3</text>
+<text x='656.0' y='282' fill='#9aa4ad' font-size='11' text-anchor='middle'>belt speed (m/s)</text>
+<text x='20' y='163.0' fill='#9aa4ad' font-size='11' transform='rotate(-90 20 163.0)' text-anchor='middle'>accel (m/s&#178;)</text>
+<rect x='64.0' y='302' width='6.0' height='10' fill='#122029'/>
+<rect x='69.5' y='302' width='6.0' height='10' fill='#1d343d'/>
+<rect x='75.0' y='302' width='6.0' height='10' fill='#24424a'/>
+<rect x='80.5' y='302' width='6.0' height='10' fill='#2a4d56'/>
+<rect x='86.0' y='302' width='6.0' height='10' fill='#2f565f'/>
+<rect x='91.5' y='302' width='6.0' height='10' fill='#345e68'/>
+<rect x='97.0' y='302' width='6.0' height='10' fill='#386670'/>
+<rect x='102.5' y='302' width='6.0' height='10' fill='#3c6d77'/>
+<rect x='108.0' y='302' width='6.0' height='10' fill='#3f737e'/>
+<rect x='113.5' y='302' width='6.0' height='10' fill='#437984'/>
+<rect x='119.0' y='302' width='6.0' height='10' fill='#467f8a'/>
+<rect x='124.5' y='302' width='6.0' height='10' fill='#498490'/>
+<rect x='130.0' y='302' width='6.0' height='10' fill='#4b8996'/>
+<rect x='135.5' y='302' width='6.0' height='10' fill='#4e8e9b'/>
+<rect x='141.0' y='302' width='6.0' height='10' fill='#5193a0'/>
+<rect x='146.5' y='302' width='6.0' height='10' fill='#5397a5'/>
+<rect x='152.0' y='302' width='6.0' height='10' fill='#559ba9'/>
+<rect x='157.5' y='302' width='6.0' height='10' fill='#58a0ae'/>
+<rect x='163.0' y='302' width='6.0' height='10' fill='#5aa4b2'/>
+<rect x='168.5' y='302' width='6.0' height='10' fill='#5ca8b7'/>
+<rect x='174.0' y='302' width='6.0' height='10' fill='#5eabbb'/>
+<rect x='179.5' y='302' width='6.0' height='10' fill='#60afbf'/>
+<rect x='185.0' y='302' width='6.0' height='10' fill='#62b3c3'/>
+<rect x='190.5' y='302' width='6.0' height='10' fill='#64b6c7'/>
+<rect x='196.0' y='302' width='6.0' height='10' fill='#66baca'/>
+<rect x='201.5' y='302' width='6.0' height='10' fill='#68bdce'/>
+<rect x='207.0' y='302' width='6.0' height='10' fill='#6ac1d2'/>
+<rect x='212.5' y='302' width='6.0' height='10' fill='#6cc4d5'/>
+<rect x='218.0' y='302' width='6.0' height='10' fill='#6ec7d9'/>
+<rect x='223.5' y='302' width='6.0' height='10' fill='#6fcadc'/>
+<rect x='229.0' y='302' width='6.0' height='10' fill='#71cddf'/>
+<rect x='234.5' y='302' width='6.0' height='10' fill='#73d0e3'/>
+<rect x='240.0' y='302' width='6.0' height='10' fill='#74d3e6'/>
+<rect x='245.5' y='302' width='6.0' height='10' fill='#76d6e9'/>
+<rect x='251.0' y='302' width='6.0' height='10' fill='#77d9ec'/>
+<rect x='256.5' y='302' width='6.0' height='10' fill='#79dcef'/>
+<rect x='262.0' y='302' width='6.0' height='10' fill='#7bdff2'/>
+<rect x='267.5' y='302' width='6.0' height='10' fill='#7ce2f5'/>
+<rect x='273.0' y='302' width='6.0' height='10' fill='#7ee4f8'/>
+<rect x='278.5' y='302' width='6.0' height='10' fill='#7fe7fb'/>
+<text x='64' y='326' fill='#9aa4ad' font-size='10'>0% unsafe</text>
+<text x='284' y='326' fill='#9aa4ad' font-size='10' text-anchor='end'>100% unsafe</text>
+</svg>
