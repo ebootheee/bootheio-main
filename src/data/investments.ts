@@ -41,7 +41,8 @@ export const investments: Investment[] = [
     "pitch": "EV charging management for fleets, multifamily, and commercial sites — monitoring, energy management, billing, and an AI ops agent watching the network 24/7.",
     "industry": "EV charging",
     "sort_order": 3,
-    "co_investors": "CRV, Accel, Comma Capital, Background Capital"
+    "co_investors": "CRV, Accel, Comma Capital, Background Capital",
+    "acquired_by": "Einride (2026)"
   },
   {
     "name": "Power Neutron",
