@@ -26,4 +26,11 @@ export default defineConfig({
 	},
 	integrations: [mdx()],
 	devToolbar: { enabled: false },
+	vite: {
+		// The PalletBallet engine runs MuJoCo (wasm) in a Web Worker that
+		// dynamically imports the wasm module. Vite's default worker format is
+		// `iife`, which cannot code-split, so that dynamic import fails the
+		// build outright. ES workers are supported everywhere WebAssembly is.
+		worker: { format: "es" },
+	},
 });

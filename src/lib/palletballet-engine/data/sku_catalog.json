@@ -1,0 +1,392 @@
+[
+ {
+  "sku": "SKU-FM-001",
+  "name": "Frozen Beef Cuts 10kg Box",
+  "weight_kg": 10.5,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "frozen_meat",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FM-002",
+  "name": "Frozen Pork Loin 15kg Carton",
+  "weight_kg": 15.2,
+  "dims_m": [
+   0.5,
+   0.3,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "frozen_meat",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FM-003",
+  "name": "Frozen Chicken Breast 12kg Case",
+  "weight_kg": 12.0,
+  "dims_m": [
+   0.45,
+   0.3,
+   0.18
+  ],
+  "fragility": "rigid",
+  "category": "frozen_meat",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FS-001",
+  "name": "Frozen Salmon Fillets 8kg Box",
+  "weight_kg": 8.0,
+  "dims_m": [
+   0.4,
+   0.28,
+   0.15
+  ],
+  "fragility": "rigid",
+  "category": "frozen_seafood",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FS-002",
+  "name": "Frozen Shrimp 5kg Bag-in-Box",
+  "weight_kg": 5.0,
+  "dims_m": [
+   0.3,
+   0.25,
+   0.15
+  ],
+  "fragility": "semi_rigid",
+  "category": "frozen_seafood",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FS-003",
+  "name": "Frozen Whitefish 20kg Master Carton",
+  "weight_kg": 20.0,
+  "dims_m": [
+   0.55,
+   0.35,
+   0.22
+  ],
+  "fragility": "rigid",
+  "category": "frozen_seafood",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FV-001",
+  "name": "Frozen Mixed Vegetables 6kg Bag",
+  "weight_kg": 6.0,
+  "dims_m": [
+   0.45,
+   0.3,
+   0.1
+  ],
+  "fragility": "semi_rigid",
+  "category": "frozen_vegetables",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FV-002",
+  "name": "Frozen Peas 10kg Carton",
+  "weight_kg": 10.0,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.18
+  ],
+  "fragility": "rigid",
+  "category": "frozen_vegetables",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FV-003",
+  "name": "Frozen Spinach 4kg Bag",
+  "weight_kg": 4.0,
+  "dims_m": [
+   0.35,
+   0.25,
+   0.08
+  ],
+  "fragility": "semi_rigid",
+  "category": "frozen_vegetables",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-IC-001",
+  "name": "Ice Cream Tubs 12-pack 8kg",
+  "weight_kg": 8.0,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "ice_cream",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-IC-002",
+  "name": "Ice Cream Bars 24-pack 5kg",
+  "weight_kg": 5.0,
+  "dims_m": [
+   0.35,
+   0.25,
+   0.15
+  ],
+  "fragility": "rigid",
+  "category": "ice_cream",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-FD-001",
+  "name": "Cheese Wheel 25kg",
+  "weight_kg": 25.0,
+  "dims_m": [
+   0.4,
+   0.4,
+   0.15
+  ],
+  "fragility": "rigid",
+  "category": "fresh_dairy",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FD-002",
+  "name": "Yogurt Cups 24-pack 6kg",
+  "weight_kg": 6.0,
+  "dims_m": [
+   0.35,
+   0.25,
+   0.12
+  ],
+  "fragility": "rigid",
+  "category": "fresh_dairy",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FD-003",
+  "name": "Butter Blocks 10kg Carton",
+  "weight_kg": 10.0,
+  "dims_m": [
+   0.3,
+   0.25,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "fresh_dairy",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FD-004",
+  "name": "Milk Crates 16L 18kg",
+  "weight_kg": 18.0,
+  "dims_m": [
+   0.5,
+   0.35,
+   0.3
+  ],
+  "fragility": "rigid",
+  "category": "fresh_dairy",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FP-001",
+  "name": "Apples 15kg Crate",
+  "weight_kg": 15.0,
+  "dims_m": [
+   0.5,
+   0.35,
+   0.25
+  ],
+  "fragility": "deformable",
+  "category": "fresh_produce",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FP-002",
+  "name": "Lettuce Cases 8kg",
+  "weight_kg": 8.0,
+  "dims_m": [
+   0.45,
+   0.3,
+   0.2
+  ],
+  "fragility": "deformable",
+  "category": "fresh_produce",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FP-003",
+  "name": "Berries Trays 4kg",
+  "weight_kg": 4.0,
+  "dims_m": [
+   0.3,
+   0.25,
+   0.1
+  ],
+  "fragility": "deformable",
+  "category": "fresh_produce",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-FP-004",
+  "name": "Citrus 18kg Crate",
+  "weight_kg": 18.0,
+  "dims_m": [
+   0.5,
+   0.35,
+   0.28
+  ],
+  "fragility": "deformable",
+  "category": "fresh_produce",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-DG-001",
+  "name": "Flour Sacks 25kg",
+  "weight_kg": 25.0,
+  "dims_m": [
+   0.55,
+   0.35,
+   0.15
+  ],
+  "fragility": "semi_rigid",
+  "category": "dry_goods",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-DG-002",
+  "name": "Sugar Bags 20kg",
+  "weight_kg": 20.0,
+  "dims_m": [
+   0.5,
+   0.3,
+   0.18
+  ],
+  "fragility": "semi_rigid",
+  "category": "dry_goods",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-DG-003",
+  "name": "Pasta Cartons 12kg",
+  "weight_kg": 12.0,
+  "dims_m": [
+   0.45,
+   0.3,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "dry_goods",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-DG-004",
+  "name": "Cereal Cases 6kg",
+  "weight_kg": 6.0,
+  "dims_m": [
+   0.5,
+   0.35,
+   0.3
+  ],
+  "fragility": "rigid",
+  "category": "dry_goods",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-BV-001",
+  "name": "Bottled Water 12-pack 18kg",
+  "weight_kg": 18.0,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.25
+  ],
+  "fragility": "rigid",
+  "category": "beverage",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-BV-002",
+  "name": "Beer Cases 24-pack 16kg",
+  "weight_kg": 16.0,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.3
+  ],
+  "fragility": "rigid",
+  "category": "beverage",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-BV-003",
+  "name": "Soda Cans 24-pack 9kg",
+  "weight_kg": 9.0,
+  "dims_m": [
+   0.35,
+   0.25,
+   0.2
+  ],
+  "fragility": "rigid",
+  "category": "beverage",
+  "default_env": "thawed"
+ },
+ {
+  "sku": "SKU-BV-004",
+  "name": "Juice Cartons 12-pack 14kg",
+  "weight_kg": 14.0,
+  "dims_m": [
+   0.4,
+   0.3,
+   0.25
+  ],
+  "fragility": "rigid",
+  "category": "beverage",
+  "default_env": "refrigerated"
+ },
+ {
+  "sku": "SKU-MS-001",
+  "name": "Mixed Frozen Pizza 7kg",
+  "weight_kg": 7.0,
+  "dims_m": [
+   0.45,
+   0.4,
+   0.1
+  ],
+  "fragility": "rigid",
+  "category": "ice_cream",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-MS-002",
+  "name": "Frozen Bread Loaves 8kg",
+  "weight_kg": 8.0,
+  "dims_m": [
+   0.5,
+   0.3,
+   0.15
+  ],
+  "fragility": "semi_rigid",
+  "category": "frozen_vegetables",
+  "default_env": "frozen"
+ },
+ {
+  "sku": "SKU-MS-003",
+  "name": "Heavy Cheese Wheel 35kg",
+  "weight_kg": 35.0,
+  "dims_m": [
+   0.45,
+   0.45,
+   0.18
+  ],
+  "fragility": "rigid",
+  "category": "fresh_dairy",
+  "default_env": "refrigerated"
+ }
+]

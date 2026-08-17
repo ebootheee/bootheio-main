@@ -1,7 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
 
-const API_BASE = "https://palletballet-api.boothe.io";
+// The physics runs in the browser now, so there is no hosted API to talk to.
+// This is the base the in-game console prints its curl commands against: a
+// local `docker compose up` of the public repo, which serves the identical
+// engine. `?api=<url>` at runtime overrides it and switches the game back to
+// HTTP against whatever you point it at.
+const API_BASE = "http://localhost:8000";
 const REPO_URL = "https://github.com/ebootheee/palletballet";
 
 const failureFrames = [
@@ -28,7 +33,7 @@ const techStack = [
 
 <Base
 	title="PalletBallet"
-	description="Dial a conveyor speed, send a pallet, watch the real MuJoCo replay — then see the envelope the solver would have set. Per-pallet physics inference served from a home server."
+	description="Dial a conveyor speed, send a pallet, watch the real MuJoCo replay — then see the envelope the solver would have set. Per-pallet physics inference, running in your browser."
 	type="website"
 >
 	<!-- ============== HERO ============== -->
@@ -66,7 +71,7 @@ const techStack = [
 			<div class="pb-hero-meta">
 				<span class="pb-meta-item"><span class="pb-meta-k">repo</span> ebootheee/palletballet</span>
 				<span class="pb-meta-sep">·</span>
-				<span class="pb-meta-item"><span class="pb-meta-k">api</span> palletballet-api.boothe.io</span>
+				<span class="pb-meta-item"><span class="pb-meta-k">engine</span> mujoco · wasm · fp64</span>
 				<span class="pb-meta-sep">·</span>
 				<span class="pb-meta-item"><span class="pb-meta-k">stack</span> python · mujoco · fastapi · three.js</span>
 			</div>
@@ -291,7 +296,7 @@ const techStack = [
 					<span class="pb-stage-tag">06</span>
 					<div>
 						<h3>FastAPI hands back a SafetyResult</h3>
-						<p>Plus the sweep points, the dominant failure mode, the cache hit count, and a confidence score. Available at <a href={`${API_BASE}/docs`} target="_blank" rel="noopener">{API_BASE}/docs</a>. Cache hits return in ~1 ms.</p>
+						<p>Plus the sweep points, the dominant failure mode, the cache hit count, and a confidence score. That is the shape the API returns — run the repo and it is self-documented at <code>{API_BASE}/docs</code>. Cache hits return in ~1 ms.</p>
 					</div>
 				</li>
 			</ol>
@@ -304,34 +309,36 @@ const techStack = [
 			<div class="pb-section-head">
 				<span class="pb-section-label">// the wiring</span>
 				<h2 class="pb-section-title">How this page actually serves you a physics result</h2>
+				<p class="pb-section-note">It used to call a FastAPI service on a home server through a Cloudflare Tunnel. As of August 2026 the solver ships to you instead: the same MuJoCo build, at the same fp64 precision, compiled to WebAssembly and run in a worker thread in this tab. The API still exists in the repo — it is just no longer in the path.</p>
 			</div>
 
 			<pre class="pb-arch">
  your browser
-       │
-       ▼
- ┌─────────────────────┐         ┌───────────────────────────────┐
- │ boothe.io/          │         │ palletballet-api.boothe.io    │
- │ palletballet        │         │                               │
- │  (Astro on          │ fetch   │  ┌─────────────────────────┐  │
- │   Cloudflare        │────────►│  │ Cloudflare Tunnel       │  │
- │   Workers)          │  CORS   │  └─────────────┬───────────┘  │
- └─────────────────────┘         │                ▼              │
-                                 │  ┌─────────────────────────┐  │
-                                 │  │ home server (docker)    │  │
-                                 │  │  ├── palletballet:8000  │  │
-                                 │  │  ├── cloudflared        │  │
-                                 │  │  └── watchtower         │  │
-                                 │  └─────────────────────────┘  │
-                                 └───────────────────────────────┘
-                                            ▲
-                                            │ pull on every push to main
-                                            │
-                                  ghcr.io/ebootheee/palletballet
-                                            ▲
-                                            │ build &amp; push
-                                            │
-                                       GitHub Actions
+ ┌──────────────────────────────────────────────┐
+ │ boothe.io/palletballet                       │
+ │  (Astro on Cloudflare Workers, static)       │
+ │                                              │
+ │   main thread          worker thread         │
+ │  ┌──────────────┐     ┌────────────────────┐ │
+ │  │ game UI      │────►│ @palletballet/     │ │
+ │  │ three.js     │◄────│   engine           │ │
+ │  └──────────────┘     │  ├── mujoco.wasm   │ │
+ │                       │  │   (fp64, 2.5 MB)│ │
+ │                       │  ├── solver        │ │
+ │                       │  ├── detectors     │ │
+ │                       │  └── envelope      │ │
+ │                       │      search        │ │
+ │                       └────────────────────┘ │
+ └──────────────────────────────────────────────┘
+       no network · no server · works offline
+
+ the same engine, still packaged as a service:
+
+       docker compose up  ──►  localhost:8000
+                               ├── /solve
+                               ├── /safety/analyze
+                               └── /docs
+                          ghcr.io/ebootheee/palletballet
 </pre>
 		</div>
 	</section>
@@ -371,7 +378,7 @@ const techStack = [
 				<p class="pb-cta-text">
 					The code is open. The Dockerfile and tunnel config are in
 					<code>infra/</code>. Cloning and running <code>docker compose up -d</code>
-					gets you a working copy of the same system this page is talking to — and the
+					gets you the same engine this page is running, with the HTTP API in front of it — and the
 					<a href="/posts/launching-palletballet">launch post</a> walks through every
 					endpoint, the batch runner, and the physics.
 				</p>
@@ -379,8 +386,8 @@ const techStack = [
 					<a href={REPO_URL} target="_blank" rel="noopener noreferrer" class="pb-btn pb-btn-primary">
 						github.com/ebootheee/palletballet →
 					</a>
-					<a href={`${API_BASE}/docs`} target="_blank" rel="noopener noreferrer" class="pb-btn">
-						Live API docs →
+					<a href="/posts/launching-palletballet#the-api-endpoint-by-endpoint" class="pb-btn">
+						API walkthrough →
 					</a>
 				</div>
 			</div>
@@ -393,29 +400,15 @@ const techStack = [
 	initPalletGame();
 </script>
 
-<script is:inline define:vars={{ API_BASE }}>
-	// Hero uptime probe (best-effort, fails quietly to "offline")
-	(async () => {
-		const uptimeEl = document.getElementById("pb-uptime");
-		if (!uptimeEl) return;
-		try {
-			const t0 = performance.now();
-			const controller = new AbortController();
-			const t = setTimeout(() => controller.abort(), 4000);
-			const r = await fetch(`${API_BASE}/healthz`, { signal: controller.signal });
-			clearTimeout(t);
-			const ms = Math.round(performance.now() - t0);
-			if (r.ok) {
-				uptimeEl.textContent = `online · ${ms}ms`;
-				uptimeEl.classList.add("pb-uptime-ok");
-			} else {
-				uptimeEl.textContent = `degraded · http ${r.status}`;
-				uptimeEl.classList.add("pb-uptime-warn");
-			}
-		} catch {
-			uptimeEl.textContent = "offline";
-			uptimeEl.classList.add("pb-uptime-off");
-		}
+<script is:inline>
+	// There is no hosted API to probe any more — the solver runs in this tab.
+	// The label is set here rather than in the markup so it only appears once
+	// JS is alive, which is also the condition for the game working at all.
+	(() => {
+		const el = document.getElementById("pb-uptime");
+		if (!el) return;
+		el.textContent = "in this tab · no server";
+		el.classList.add("pb-uptime-ok");
 	})();
 </script>
 
@@ -590,6 +583,17 @@ const techStack = [
 		font-weight: 400 !important;
 		color: var(--color-text);
 		line-height: 1.15;
+	}
+
+	/* Standfirst under a section title — used to explain the Aug 2026 move from
+	   a hosted API to the in-browser engine. */
+	.pb-section-note {
+		font-family: var(--font-serif);
+		font-size: 1.05rem;
+		line-height: 1.7;
+		color: var(--color-text-secondary);
+		max-width: 62ch;
+		margin-top: 0.9rem;
 	}
 
 	.pb-prose {

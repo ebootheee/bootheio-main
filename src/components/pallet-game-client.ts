@@ -11,6 +11,7 @@
  * quaternions pass straight through (reordered to three's x,y,z,w).
  */
 
+import { createEngineClient } from "../lib/palletballet-engine/client";
 import type * as THREE_NS from "three";
 import type { OrbitControls as OrbitControlsT } from "three/addons/controls/OrbitControls.js";
 
@@ -151,6 +152,9 @@ const SHIFT_SEQUENCE = [
 	"asymmetric-load",
 	"tall-unwrapped-tower",
 ];
+// Bumped when the vendored engine is re-synced; shown in the status line so
+// a stale bundle is visible rather than inferred.
+const ENGINE_VERSION = "0.1.0";
 const MYSTERY_SLUG = "__mystery__";
 const LS_BEST = "pb_best_shift_v1";
 
@@ -514,9 +518,28 @@ class ApiConsole {
 	}
 }
 
-// ---------- API client (logs every call) ----------
+// ---------- solver transports ----------
 
-class Api {
+/**
+ * What the game needs from a solver, regardless of where the physics runs.
+ *
+ * Two implementations: `LocalApi` runs MuJoCo in a Web Worker in this tab
+ * (the default), `RemoteApi` calls the hosted FastAPI service (`?api=<url>`).
+ * Both are the same engine at the same precision — see PLAN_WASM.md in the
+ * palletballet repo for the agreement study behind that claim.
+ */
+interface SolverApi {
+	health(): Promise<{ status: string; version: string }>;
+	scenarios(): Promise<ScenarioSummary[]>;
+	scenario(slug: string): Promise<Scenario>;
+	randomPallet(seed: number): Promise<PalletConfig>;
+	solve(
+		pallet: PalletConfig, speed: number, accel: number, duration: number, slugHint: string,
+	): Promise<SolveResponse>;
+	analyze(pallet: PalletConfig, slugHint: string): Promise<SafetyResponse>;
+}
+
+class RemoteApi implements SolverApi {
 	constructor(
 		private base: string,
 		private con: ApiConsole,
@@ -601,6 +624,106 @@ class Api {
 	}
 }
 
+/**
+ * The same engine, in this tab: MuJoCo compiled to WebAssembly (fp64, the same
+ * build the server runs) driving the same solver, detectors and envelope search
+ * ported to TypeScript.
+ *
+ * The console still shows the curl for each step. Those commands now target a
+ * self-hosted clone (`docker compose up` in the public repo serves the same
+ * engine behind the same endpoints) rather than a URL I run — the hosted API
+ * was retired once nothing depended on it.
+ */
+class LocalApi implements SolverApi {
+	private engine = createEngineClient();
+	private warmed: Promise<unknown> | null = null;
+
+	constructor(
+		private base: string,
+		private con: ApiConsole,
+	) {}
+
+	/** Log a local call in the same shape a network call would produce. */
+	private async run<T>(
+		method: string, path: string, note: string, curl: string, fn: () => Promise<T>,
+	): Promise<T> {
+		const t0 = performance.now();
+		try {
+			const out = await fn();
+			this.con.log({
+				method, path, status: 200, note, curl,
+				ms: Math.round(performance.now() - t0),
+				bytes: JSON.stringify(out ?? null).length,
+			});
+			return out;
+		} catch (e) {
+			this.con.log({
+				method, path, status: 500, note: `local engine error`, curl,
+				ms: Math.round(performance.now() - t0), bytes: 0,
+			});
+			throw e;
+		}
+	}
+
+	/** Pull the wasm down once, on first physics use. */
+	private warmUp() {
+		if (!this.warmed) this.warmed = this.engine.warmUp();
+		return this.warmed;
+	}
+
+	async health() {
+		await this.run("GET", "/healthz", "wasm engine, in this tab — no server",
+			`curl -s ${this.base}/healthz`,
+			() => this.engine.ready());
+		return { status: "ok", version: `${ENGINE_VERSION} (wasm)` };
+	}
+
+	scenarios() {
+		return this.run("GET", "/scenarios", "curated demo pallets (bundled)",
+			`curl -s ${this.base}/scenarios | jq '.[].slug'`,
+			() => this.engine.scenarios() as Promise<ScenarioSummary[]>);
+	}
+
+	scenario(slug: string) {
+		return this.run("GET", `/scenarios/${slug}`, "full pallet config (bundled)",
+			`curl -s ${this.base}/scenarios/${slug} | jq .pallet`,
+			() => this.engine.scenario(slug) as unknown as Promise<Scenario>);
+	}
+
+	randomPallet(seed: number) {
+		return this.run("POST", "/pallet/random", `mystery pallet, seed ${seed}`,
+			`curl -s -X POST ${this.base}/pallet/random -H 'content-type: application/json' -d '{"seed": ${seed}, "anomaly_rate": 0.25, "min_layers": 2, "max_layers": 5}'`,
+			() => this.engine.randomPallet({
+				seed, anomalyRate: 0.25, minLayers: 2, maxLayers: 5,
+			}) as unknown as Promise<PalletConfig>);
+	}
+
+	solve(pallet: PalletConfig, speed: number, accel: number, duration: number, slugHint: string) {
+		const curl = [
+			`PALLET=$(curl -s ${this.base}/scenarios/${slugHint} | jq .pallet)`,
+			`curl -s -X POST ${this.base}/solve -H 'content-type: application/json' \\`,
+			`  -d "{\\"pallet\\": $PALLET, \\"profile\\": {\\"target_speed_mps\\": ${speed}, \\"accel_mps2\\": ${accel}, \\"duration_s\\": ${duration}}, \\"include_replay\\": true}" | jq .failure`,
+		].join("\n");
+		return this.run("POST", "/solve", `live MuJoCo run @ ${fmt(speed)} m/s`, curl, async () => {
+			await this.warmUp();
+			return this.engine.solve(pallet as never, {
+				profile: { target_speed_mps: speed, accel_mps2: accel, duration_s: duration },
+				includeReplay: true,
+				outputHz: 30,
+			}) as unknown as Promise<SolveResponse>;
+		});
+	}
+
+	analyze(pallet: PalletConfig, slugHint: string) {
+		return this.run("POST", "/safety/analyze", "envelope search (bisection)",
+			`curl -s ${this.base}/scenarios/${slugHint} | jq .pallet | curl -s -X POST ${this.base}/safety/analyze -H 'content-type: application/json' -d @- | jq .result`,
+			async () => {
+				await this.warmUp();
+				return this.engine.analyze(pallet as never) as unknown as SafetyResponse;
+			});
+	}
+}
+
 // ---------- game ----------
 
 type Phase = "boot" | "ready" | "simulating" | "replaying" | "revealed" | "offline";
@@ -619,7 +742,7 @@ interface DispatchResult {
 class Game {
 	private root: HTMLElement;
 	private apiBase: string;
-	private api: Api;
+	private api: SolverApi;
 	private stage: Stage | null = null;
 	private phase: Phase = "boot";
 
@@ -640,10 +763,10 @@ class Game {
 	private shiftIndex = 0;
 	private shiftResults: DispatchResult[] = [];
 
-	constructor(root: HTMLElement) {
+	constructor(root: HTMLElement, api?: SolverApi) {
 		this.root = root;
 		this.apiBase = root.dataset.apiBase || "";
-		this.api = new Api(this.apiBase, new ApiConsole(root));
+		this.api = api ?? new LocalApi(this.apiBase, new ApiConsole(root));
 		this.bindControls();
 	}
 
@@ -1123,15 +1246,25 @@ export function initPalletGame(): void {
 	const root = document.querySelector<HTMLElement>("[data-pallet-game]");
 	if (!root) return;
 
-	// ?api=http://localhost:8000 → play against your own clone. The API's
-	// default ALLOWED_ORIGINS includes boothe.io, so a stock `docker compose
-	// up` instance accepts these requests as-is.
+	// The physics runs in this tab by default — MuJoCo compiled to wasm, same
+	// engine and same fp64 precision as the service.
+	//
+	// ?api=http://localhost:8000 → play against your own clone instead, which
+	// is what the launch post tells people to do. The hosted API is still live
+	// and every curl in the console below still works against it; the page just
+	// doesn't depend on it any more. The API's default ALLOWED_ORIGINS includes
+	// boothe.io, so a stock `docker compose up` instance accepts these as-is.
 	const override = new URLSearchParams(location.search).get("api");
-	if (override && /^https?:\/\//.test(override)) {
-		root.dataset.apiBase = override.replace(/\/+$/, "");
+	const useRemote = !!override && /^https?:\/\//.test(override);
+	if (useRemote) {
+		root.dataset.apiBase = override!.replace(/\/+$/, "");
 	}
 
-	const game = new Game(root);
+	const console_ = new ApiConsole(root);
+	const api: SolverApi = useRemote
+		? new RemoteApi(root.dataset.apiBase || "", console_)
+		: new LocalApi(root.dataset.apiBase || "", console_);
+	const game = new Game(root, api);
 	void game.boot();
 
 	// Load three.js when the stage approaches the viewport.

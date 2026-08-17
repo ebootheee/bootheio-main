@@ -31,6 +31,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The engine in src/lib/palletballet-engine is a generated copy of
+      # physics-sim/web/src. This can't check it against upstream (that repo
+      # isn't here) but it does catch someone editing the vendored copy in
+      # place, which would be lost on the next sync.
+      - name: Verify vendored engine
+        run: pnpm run verify-engine
+
       - name: Build
         run: pnpm run build
 

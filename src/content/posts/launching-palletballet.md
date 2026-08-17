@@ -105,21 +105,29 @@ Results are cached by a SHA-256 fingerprint of the physically-relevant config fi
 
 ## The API, endpoint by endpoint
 
-Everything below is live at `https://palletballet-api.boothe.io` (rate-limited at the edge; be reasonable). The interactive docs are at [/docs](https://palletballet-api.boothe.io/docs).
+> **Update, 2026-08-17.** The hosted instance at `palletballet-api.boothe.io` is
+> retired. The solver now runs *in your browser* — the same MuJoCo build at the
+> same fp64 precision, compiled to WebAssembly, which reproduces the server's
+> envelope on all 307 pallets of the agreement study. The API is unchanged in
+> the repo and still the way to script against it; the commands below now assume
+> a local `docker compose up`, so they run verbatim once you have the repo. The
+> [game](/palletballet) needs no server at all.
+
+Everything below runs against your own instance at `http://localhost:8000` (`docker compose up` in `infra/`). The interactive docs are at `/docs`.
 
 **Get the curated scenarios** — the exact pallets the game and the operator console use, one trust-building baseline and four engineered failures plus a randomized scanner payload:
 
 ```bash
-curl -s https://palletballet-api.boothe.io/scenarios | jq -r '.[].slug'
+curl -s http://localhost:8000/scenarios | jq -r '.[].slug'
 # stable-dairy-slab, frozen-meat-sprint, tall-unwrapped-tower, ...
 
-curl -s https://palletballet-api.boothe.io/scenarios/tall-unwrapped-tower | jq .pallet
+curl -s http://localhost:8000/scenarios/tall-unwrapped-tower | jq .pallet
 ```
 
 **Generate a random pallet** through the same adapter path a real camera/WMS integration would use:
 
 ```bash
-curl -s -X POST https://palletballet-api.boothe.io/pallet/random \
+curl -s -X POST http://localhost:8000/pallet/random \
   -H 'content-type: application/json' \
   -d '{"seed": 23, "anomaly_rate": 0.25, "min_layers": 2, "max_layers": 5}'
 ```
@@ -127,8 +135,8 @@ curl -s -X POST https://palletballet-api.boothe.io/pallet/random \
 **Run one conveyor profile and get the replay.** `include_replay: true` attaches per-frame world poses (position + `wxyz` quaternion) for the pallet and every item, plus integrated belt displacement — everything a renderer needs, ~60–100 KB at 30 Hz:
 
 ```bash
-PALLET=$(curl -s https://palletballet-api.boothe.io/scenarios/tall-unwrapped-tower | jq .pallet)
-curl -s -X POST https://palletballet-api.boothe.io/solve \
+PALLET=$(curl -s http://localhost:8000/scenarios/tall-unwrapped-tower | jq .pallet)
+curl -s -X POST http://localhost:8000/solve \
   -H 'content-type: application/json' \
   -d "{\"pallet\": $PALLET,
        \"profile\": {\"target_speed_mps\": 2.0, \"accel_mps2\": 6.0, \"duration_s\": 1.5},
@@ -139,7 +147,7 @@ curl -s -X POST https://palletballet-api.boothe.io/solve \
 **Compute the safe envelope:**
 
 ```bash
-echo "$PALLET" | curl -s -X POST https://palletballet-api.boothe.io/safety/analyze \
+echo "$PALLET" | curl -s -X POST http://localhost:8000/safety/analyze \
   -H 'content-type: application/json' -d @- | jq .result
 # max_speed_mps, max_accel_mps2, dominant_failure_mode, margin, confidence, config_hash
 ```
@@ -147,7 +155,7 @@ echo "$PALLET" | curl -s -X POST https://palletballet-api.boothe.io/safety/analy
 **Batch a list of pallets** — the cache is shared across the batch, so duplicates cost ~nothing:
 
 ```bash
-curl -s -X POST https://palletballet-api.boothe.io/safety/batch \
+curl -s -X POST http://localhost:8000/safety/batch \
   -H 'content-type: application/json' \
   -d "[$PALLET, $PALLET]" | jq 'map(.sims_run)'
 # [8, 0]  ← the second one was free
@@ -222,6 +230,8 @@ The production wiring is deliberately boring and fully described in `infra/`:
 - **Watchtower** on the home server polls every 5 minutes and swaps the container.
 - **Cloudflare Tunnel** (`cloudflared` sidecar) publishes `:8000` as `palletballet-api.boothe.io` — no open ports, no reverse proxy config, WAF rate-limiting at the edge.
 - This page is Astro on Cloudflare Workers, calling the tunnel over CORS.
+
+*(As of 2026-08-17 the tunnel and container are switched off: the game carries its own solver, so there was nothing left for them to serve. The `infra/` stack still works if you want to run it.)*
 
 Push to main → live in under six minutes, on hardware I can physically kick.
 
