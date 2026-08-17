@@ -168,7 +168,7 @@ const techStack = [
 				<button class="pbg-share" data-pbg-share type="button" hidden>share shift report ⧉</button>
 
 				<details class="pbg-console-wrap" open>
-					<summary>API traffic — every call this page makes, copyable as curl</summary>
+					<summary>Solver calls — every request the game makes, in the API's shape, copyable as curl</summary>
 					<div class="pbg-console" data-pbg-console></div>
 				</details>
 			</div>
@@ -358,10 +358,11 @@ const techStack = [
 			</div>
 
 			<p class="pb-prose pb-prose-small">
-				The whole runtime self-hosts on a Ryzen 9 home server. A single conveyor sim
-				lands in 60–200 ms; a full envelope search in 400–800 ms; cache hits in ~1 ms.
-				Batch mode chews through ~7 pallets/second across all cores. You're hitting
-				that machine through a Cloudflare Tunnel right now.
+				Those numbers are from the Python service on a Ryzen 9 box: a single conveyor
+				sim in 60–200 ms, a full envelope search in 400–800 ms, cache hits in ~1 ms,
+				and ~7 pallets/second in batch mode across all cores. In your browser the same
+				engine runs about 1.4–2.2× slower per step — typically a few hundred
+				milliseconds for the search above, which is what the console is reporting.
 			</p>
 		</div>
 	</section>
