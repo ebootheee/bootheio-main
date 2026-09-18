@@ -1,0 +1,88 @@
+---
+import Legal from "../../layouts/Legal.astro";
+
+export const prerender = true;
+---
+
+<Legal
+	title="Privacy Policy"
+	description="How boothe.io handles your data: it mostly doesn't. Standard hosting logs only, no accounts, no tracking."
+	label="privacy"
+	updated="2026-09-18"
+>
+	<p>
+		boothe.io is the personal website of Eric Boothe: a blog, a portfolio, and a
+		few in-browser demos. This policy explains what the site does and doesn't
+		collect. The short version is that it collects almost nothing.
+	</p>
+
+	<h2>What this site collects</h2>
+	<p>
+		The site has no accounts, no sign-up, no comments, no newsletter, and no
+		contact forms. It does not set advertising or analytics cookies and does not
+		use third-party analytics or tracking pixels.
+	</p>
+	<p>
+		The only data associated with your visit is the standard information any web
+		server receives when it serves a page:
+	</p>
+	<ul>
+		<li>your IP address,</li>
+		<li>the URL you requested and the referring page, if any,</li>
+		<li>your browser's user-agent string and request headers,</li>
+		<li>the date and time of the request.</li>
+	</ul>
+	<p>
+		This information is processed by the hosting provider (Cloudflare) as part
+		of serving the site, protecting it from abuse, and producing aggregate
+		traffic statistics. I do not combine it with any other data or use it to
+		identify individual visitors.
+	</p>
+
+	<h2>Local storage on your device</h2>
+	<p>
+		The site remembers a few preferences in your own browser so that pages look
+		the same from one visit to the next, for example your light/dark theme choice
+		and the state of in-browser demos. That data is stored with
+		<code>localStorage</code> and a first-party <code>theme</code> cookie. It
+		never leaves your device and you can clear it at any time through your
+		browser settings.
+	</p>
+
+	<h2>Third-party services</h2>
+	<p>
+		Pages load web fonts from Google Fonts, which means your browser sends a
+		request (including your IP address) to Google when a page loads. Google's
+		handling of those requests is described in the
+		<a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Google Privacy Policy</a>.
+		Links to external sites (GitHub, portfolio companies, and so on) are
+		governed by those sites' own policies.
+	</p>
+
+	<h2>OAuth applications</h2>
+	<p>
+		I also build small Google OAuth applications for my own personal automation.
+		They access only my own Google account data and are not intended for other
+		users. See the <a href="/legal/app-terms">App Terms</a> for details. Any data
+		those applications handle is treated according to this policy: it is not
+		sold, shared, or used for advertising.
+	</p>
+
+	<h2>Children</h2>
+	<p>
+		This site is not directed at children under 13 and does not knowingly
+		collect personal information from anyone.
+	</p>
+
+	<h2>Changes</h2>
+	<p>
+		If this policy changes, the updated version will be posted on this page with
+		a new "last updated" date.
+	</p>
+
+	<h2>Contact</h2>
+	<p>
+		Questions about this policy can be sent to
+		<a href="mailto:ericboothe@gmail.com">ericboothe@gmail.com</a>.
+	</p>
+</Legal>

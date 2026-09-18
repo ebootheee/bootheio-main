@@ -1,0 +1,136 @@
+---
+// Shared layout for the /legal/* pages: a narrow prose column on top of Base,
+// styled to match the bio section of /about.
+import Base from "./Base.astro";
+
+interface Props {
+	title: string;
+	description: string;
+	label: string;
+	updated: string; // ISO date, e.g. "2026-09-18"
+}
+
+const { title, description, label, updated } = Astro.props;
+const updatedHuman = new Date(`${updated}T00:00:00Z`).toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+	timeZone: "UTC",
+});
+---
+
+<Base title={title} description={description} type="website">
+	<section class="lg-section">
+		<div class="lg-inner">
+			<div class="lg-head">
+				<span class="lg-label">// legal &nbsp;·&nbsp; {label}</span>
+				<h1 class="lg-title">{title}</h1>
+				<p class="lg-updated">Last updated <time datetime={updated}>{updatedHuman}</time></p>
+			</div>
+			<div class="lg-prose">
+				<slot />
+			</div>
+			<nav class="lg-nav" aria-label="Legal pages">
+				<a href="/legal/privacy">Privacy Policy</a>
+				<span class="lg-nav-sep">·</span>
+				<a href="/legal/terms">Terms of Use</a>
+				<span class="lg-nav-sep">·</span>
+				<a href="/legal/app-terms">App Terms</a>
+			</nav>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.lg-section {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 4rem var(--spacing-6) 3rem;
+	}
+	.lg-inner {
+		max-width: var(--content-width);
+		margin: 0 auto;
+	}
+
+	.lg-head { margin-bottom: 2rem; }
+	.lg-label {
+		display: block;
+		font-family: var(--font-pixel);
+		font-size: 0.7rem;
+		color: var(--color-retro-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.18em;
+		margin-bottom: 0.4rem;
+	}
+	.lg-title {
+		font-family: var(--font-serif) !important;
+		font-size: 2.75rem;
+		font-weight: 400 !important;
+		color: var(--color-text);
+		line-height: 1.1;
+		letter-spacing: 0;
+		margin-bottom: 0.6rem;
+	}
+	.lg-updated {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--color-muted);
+	}
+
+	.lg-prose {
+		font-family: var(--font-serif);
+		font-size: 1.05rem;
+		line-height: 1.75;
+		color: var(--color-text-secondary);
+	}
+	.lg-prose :global(h2) {
+		font-family: var(--font-serif) !important;
+		font-size: 1.5rem;
+		font-weight: 400 !important;
+		color: var(--color-text);
+		line-height: 1.2;
+		margin: 2.25rem 0 0.75rem;
+	}
+	.lg-prose :global(p) { margin-bottom: 1.25rem; }
+	.lg-prose :global(ul) {
+		list-style: disc;
+		padding-left: 1.5rem;
+		margin-bottom: 1.25rem;
+	}
+	.lg-prose :global(li) { margin-bottom: 0.4rem; }
+	.lg-prose :global(strong) { color: var(--color-text); font-weight: 600; }
+	.lg-prose :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+		color: var(--color-text);
+	}
+	.lg-prose :global(a) {
+		color: var(--color-accent);
+		text-decoration: none;
+		border-bottom: 1px solid var(--color-accent-border);
+		transition: border-color var(--transition-fast), color var(--transition-fast);
+	}
+	.lg-prose :global(a:hover) {
+		color: var(--color-accent-hover);
+		border-bottom-color: var(--color-accent-hover);
+	}
+
+	.lg-nav {
+		margin-top: 3rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--color-border);
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+	}
+	.lg-nav a { color: var(--color-text-secondary); }
+	.lg-nav a:hover { color: var(--color-accent); }
+	.lg-nav-sep {
+		margin: 0 0.6rem;
+		color: var(--color-muted);
+	}
+
+	@media (max-width: 720px) {
+		.lg-section { padding: 2.5rem var(--spacing-4) 2rem; }
+		.lg-title { font-size: 2.1rem; }
+	}
+</style>
