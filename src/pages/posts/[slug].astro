@@ -530,6 +530,52 @@ const canonical = `${siteUrl}/posts/${post.id}`;
 		border-top: 1px solid var(--color-border);
 	}
 
+	/* Tables: smaller type, top-aligned rows, and a sideways scroll
+	   instead of squeezed columns when a table is wider than the screen */
+	.article-content :global(table) {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		margin: 2em 0;
+		border-collapse: collapse;
+		font-size: var(--font-size-sm);
+		line-height: 1.5;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.article-content :global(th),
+	.article-content :global(td) {
+		padding: 0.65em 0.75em;
+		text-align: left;
+		vertical-align: top;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.article-content :global(th:first-child),
+	.article-content :global(td:first-child) {
+		padding-left: 0;
+	}
+
+	.article-content :global(th:last-child),
+	.article-content :global(td:last-child) {
+		padding-right: 0;
+	}
+
+	.article-content :global(th) {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: var(--tracking-wide);
+		color: var(--color-muted);
+		vertical-align: bottom;
+		border-bottom-color: var(--color-text-secondary);
+	}
+
+	.article-content :global(tbody tr:last-child td) {
+		border-bottom: none;
+	}
+
 	.article-content :global(a) {
 		color: var(--color-accent);
 		text-decoration: underline;
@@ -741,6 +787,21 @@ const canonical = `${siteUrl}/posts/${post.id}`;
 
 		.more-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.article-content :global(th),
+		.article-content :global(td) {
+			padding-inline: 0.4em;
+		}
+
+		.article-content :global(th:first-child),
+		.article-content :global(td:first-child) {
+			padding-left: 0;
+		}
+
+		.article-content :global(th:last-child),
+		.article-content :global(td:last-child) {
+			padding-right: 0;
 		}
 	}
 </style>
