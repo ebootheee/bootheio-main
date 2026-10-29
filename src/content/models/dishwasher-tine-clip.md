@@ -4,6 +4,7 @@ model_url: "/stls/dishwasher-tine-clip/dishwasher-tine-clip-v5.stl"
 material: "matte"
 color: "#e9e7e2"
 height: "tall"
+up: "z"
 related_posts: ["scan-to-cad-dishwasher-clip"]
 publishedAt: "2026-10-29"
 ---

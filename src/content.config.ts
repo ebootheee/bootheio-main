@@ -28,6 +28,7 @@ const models = defineCollection({
 		height: z.string().optional(),
 		auto_rotate: z.boolean().default(true),
 		show_grid: z.boolean().default(true),
+		up: z.string().optional(),
 		related_posts: z.array(z.string()).default([]),
 		publishedAt: z.coerce.date().optional(),
 	}),

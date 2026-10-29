@@ -38,6 +38,7 @@ interface ViewerConfig {
 	autoRotate: boolean;
 	showGrid: boolean;
 	format: ModelFormat | "auto";
+	up: "auto" | "z";
 }
 
 interface ThreeCore {
@@ -103,6 +104,7 @@ function parseConfig(el: HTMLElement): ViewerConfig {
 			autoRotate: parsed.autoRotate !== false,
 			showGrid: parsed.showGrid !== false,
 			format: parsed.format === "stl" || parsed.format === "3mf" ? parsed.format : "auto",
+			up: parsed.up === "z" ? "z" : "auto",
 		};
 	} catch {
 		return {
@@ -112,6 +114,7 @@ function parseConfig(el: HTMLElement): ViewerConfig {
 			autoRotate: true,
 			showGrid: true,
 			format: "auto",
+			up: "auto",
 		};
 	}
 }
@@ -316,11 +319,12 @@ async function startViewer(viewer: Viewer) {
 			const mesh = new THREE.Mesh(geometry, material);
 
 			// Most printable STLs are exported Z-up. If the longest extent is along
-			// Z, rotate to make Y up so OrbitControls' default frame feels natural.
+			// Z, or the page says the file is Z-up, rotate to make Y up so
+			// OrbitControls' default frame feels natural.
 			const preBox = new THREE.Box3().setFromObject(mesh);
 			const preSize = new THREE.Vector3();
 			preBox.getSize(preSize);
-			if (preSize.z > preSize.x && preSize.z > preSize.y) {
+			if (config.up === "z" || (preSize.z > preSize.x && preSize.z > preSize.y)) {
 				mesh.rotation.x = -Math.PI / 2;
 			}
 			mesh.updateMatrixWorld(true);
@@ -360,7 +364,7 @@ async function startViewer(viewer: Viewer) {
 			const preBox = new THREE.Box3().setFromObject(group);
 			const preSize = new THREE.Vector3();
 			preBox.getSize(preSize);
-			if (preSize.z > preSize.x && preSize.z > preSize.y) {
+			if (config.up === "z" || (preSize.z > preSize.x && preSize.z > preSize.y)) {
 				group.rotation.x = -Math.PI / 2;
 			}
 			group.updateMatrixWorld(true);

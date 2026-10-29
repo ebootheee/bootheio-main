@@ -18,6 +18,8 @@
  *   autoRotate  boolean
  *   showGrid    boolean
  *   format      auto | stl | 3mf  (default: auto, detected from URL)
+ *   up          auto | z  (default: auto, stands the model up only when Z is
+ *               its longest side; z always treats the file as Z-up)
  */
 
 interface Props {
@@ -31,6 +33,7 @@ interface Props {
 		autoRotate?: boolean | string;
 		showGrid?: boolean | string;
 		format?: string;
+		up?: string;
 	};
 }
 
@@ -84,6 +87,7 @@ const config = {
 	autoRotate,
 	showGrid,
 	format,
+	up: node.up === "z" ? "z" : "auto",
 };
 ---
 
@@ -434,6 +438,12 @@ const config = {
 		font-size: 0.7rem;
 		color: var(--stl-muted);
 		pointer-events: none;
+	}
+
+	/* `display: flex` above beats the `hidden` attribute, so restate it or
+	 * the bar stays on screen after the model loads. */
+	.stl-viewer__progress[hidden] {
+		display: none;
 	}
 
 	.stl-viewer__progress-track {
