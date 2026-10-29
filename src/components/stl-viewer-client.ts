@@ -436,7 +436,11 @@ async function startViewer(viewer: Viewer) {
 		Math.max(radius / 1000, 0.01),
 		radius * 100,
 	);
-	const camDist = radius / Math.tan((38 * Math.PI) / 180 / 2) * 1.25;
+	// Fit to the narrower half-angle so long parts aren't cut off on portrait
+	// (phone) stages; on landscape stages the vertical angle is narrower, as before.
+	const vHalf = (38 * Math.PI) / 180 / 2;
+	const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+	const camDist = radius / Math.tan(Math.min(vHalf, hHalf)) * 1.25;
 	const initialCamPos = new THREE.Vector3(
 		camDist * 0.78,
 		camDist * 0.45,
