@@ -16,8 +16,8 @@ const posts = defineCollection({
 	}),
 });
 
-// Models collection — currently empty (the prod collection had no entries).
-// Kept so /models and /models/[slug] stay wired and ready for future 3D prints.
+// Models collection — one .md per 3D print in src/content/models, shown at
+// /models and /models/[slug]. Model files live under public/stls.
 const models = defineCollection({
 	loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/models" }),
 	schema: z.object({
